@@ -34,5 +34,7 @@ module RailsModularMonolithWithDdd
 
     # Don't generate system test files.
     config.generators.system_tests = nil
+
+    config.paths.add 'components', glob: '*/app/{*,*/concerns}', eager_load: true
   end
 end
