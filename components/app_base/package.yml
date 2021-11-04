@@ -1,0 +1,8 @@
+# Turn on dependency checks for this package
+enforce_dependencies: true
+
+# Turn off privacy checks for this package
+enforce_privacy: false
+
+# A list of this package's dependencies
+# dependencies:
