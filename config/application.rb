@@ -34,6 +34,7 @@ module RailsModularMonolithWithDdd
 
     # Don't generate system test files.
     config.generators.system_tests = nil
+    config.action_mailer.default_url_options = { host: ENV['SERVER_HOST'], port: 3000 }
 
     config.paths.add 'components', glob: '*/app/{*,*/concerns}', eager_load: true
   end
