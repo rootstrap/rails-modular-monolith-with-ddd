@@ -38,13 +38,12 @@ group :development, :test do
   gem 'graphwerk', '~> 1.2.0'
   gem 'factory_bot_rails', '~> 6.2'
   gem 'faker', '~> 2.19'
-  gem 'letter_opener', '~> 1.4', '>= 1.4.1'
-  gem 'rspec-rails', '~> 5.0', '>= 5.0.2'
-  gem 'figaro', '~> 1.2'
+  gem 'dotenv-rails', '~> 2.7', '>= 2.7.6'
 end
 
 group :test do
   gem 'rails-controller-testing', '~> 1.0', '>= 1.0.5'
+  gem 'rspec-rails', '~> 5.0', '>= 5.0.2'
 end
 
 group :development do
@@ -54,6 +53,7 @@ group :development do
   # Can be configured to work on production as well see: https://github.com/MiniProfiler/rack-mini-profiler/blob/master/README.md
   gem 'rack-mini-profiler', '~> 2.0'
   gem 'listen', '~> 3.3'
+  gem 'letter_opener', '~> 1.4', '>= 1.4.1'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
