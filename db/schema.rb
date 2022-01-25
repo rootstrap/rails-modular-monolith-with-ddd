@@ -14,6 +14,24 @@ ActiveRecord::Schema[7.0].define(version: 2022_02_10_200906) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "user_access_permissions", force: :cascade do |t|
+    t.string "code", null: false
+    t.string "name", null: false
+    t.string "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["code"], name: "index_user_access_permissions_on_code"
+  end
+
+  create_table "user_access_role_to_permissions", force: :cascade do |t|
+    t.integer "role_code", null: false
+    t.string "permission_code", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["permission_code"], name: "index_user_access_role_to_permissions_on_permission_code"
+    t.index ["role_code"], name: "index_user_access_role_to_permissions_on_role_code"
+  end
+
   create_table "user_access_user_registrations", force: :cascade do |t|
     t.string "login", null: false
     t.string "email", null: false
@@ -29,6 +47,15 @@ ActiveRecord::Schema[7.0].define(version: 2022_02_10_200906) do
     t.string "confirmation_token"
     t.datetime "confirmation_sent_at", precision: nil
     t.string "unconfirmed_email"
+  end
+
+  create_table "user_access_user_roles", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.integer "role_code", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["role_code"], name: "index_user_access_user_roles_on_role_code"
+    t.index ["user_id"], name: "index_user_access_user_roles_on_user_id"
   end
 
   create_table "user_access_users", force: :cascade do |t|
