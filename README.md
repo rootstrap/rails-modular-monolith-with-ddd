@@ -376,7 +376,6 @@ List of technologies, frameworks and libraries used for implementation:
 - [Puma](https://puma.io/) (Web Server)
 - [Sass-Rails](https://github.com/rails/sass-rails) (CSS Extension Language)
 - [Webpacker](https://guides.rubyonrails.org/webpacker.html) (JS Bundler)
-- [JBuilder](https://github.com/rails/jbuilder) (JSON Generation)
 
 ## 5. How to Run
 
