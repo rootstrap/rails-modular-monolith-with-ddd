@@ -22,6 +22,9 @@ module UserAccess
     attr_reader :password, :current_password
     attr_accessor :password_confirmation
 
+    validates_uniqueness_of :email, :login
+    validates_presence_of :email, :encrypted_password, :first_name, :last_name, :name,
+                          :login, :registered_at, :status_code
     validates_confirmation_of :password
 
     enum status_code: {

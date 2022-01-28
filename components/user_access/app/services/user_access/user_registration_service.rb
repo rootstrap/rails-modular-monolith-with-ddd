@@ -12,7 +12,13 @@ module UserAccess
     end
 
     def call
-      UserRegistration.create(
+      user_registration.save
+    end
+
+    private
+
+    def user_registration
+      UserRegistration.new(
         login: login,
         password: password,
         password_confirmation: password_confirmation,
