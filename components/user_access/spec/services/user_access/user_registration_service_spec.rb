@@ -33,11 +33,36 @@ RSpec.describe UserAccess::UserRegistrationService do
       expect(user_registration.encrypted_password).to_not eq(password)
     end
 
+    it 'triggers a new_user_registered_domain_event' do
+      freeze_time do
+        new_user_registered_domain_event = {
+          login: attributes[:login],
+          email: attributes[:email],
+          first_name: attributes[:first_name],
+          last_name: attributes[:last_name],
+          name: "#{attributes[:first_name]} #{attributes[:last_name]}",
+          registered_at: Time.current
+        }
+  
+        expect(ActiveSupport::Notifications).to receive(:publish).with(
+          'new_user_registered_domain_event.user_access',
+          new_user_registered_domain_event
+        )
+  
+        subject
+      end
+    end
+
     context 'when the password and password confirmation do not match' do
       let(:password_confirmation) { 'wrong password' }
 
       it 'does not create a new user registration' do
         expect { subject }.to_not change(UserAccess::UserRegistration, :count)
+      end
+
+      it 'does not trigger a new_user_registered_domain_event' do
+        expect(ActiveSupport::Notifications).not_to receive(:publish)
+        subject
       end
     end
   end
