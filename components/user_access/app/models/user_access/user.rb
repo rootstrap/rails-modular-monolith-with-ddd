@@ -10,6 +10,11 @@
 #  confirmed_at           :datetime
 #  email                  :string           default(""), not null
 #  encrypted_password     :string           default(""), not null
+#  first_name             :string           not null
+#  is_active              :boolean          not null
+#  last_name              :string           not null
+#  login                  :string           not null
+#  name                   :string           not null
 #  remember_created_at    :datetime
 #  reset_password_sent_at :datetime
 #  reset_password_token   :string
