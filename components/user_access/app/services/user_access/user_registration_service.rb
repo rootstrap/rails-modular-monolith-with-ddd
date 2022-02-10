@@ -14,12 +14,12 @@ module UserAccess
     def call
       return false unless user_registration.valid?
 
+      user_registration.save
+
       ActiveSupport::Notifications.publish(
         'new_user_registered_domain_event.user_access',
         new_user_registered_domain_event
       )
-
-      user_registration.save
     end
 
     private
@@ -44,6 +44,7 @@ module UserAccess
 
     def new_user_registered_domain_event
       {
+        user_registration_id: user_registration.id,
         login: login,
         email: email,
         first_name: first_name,
