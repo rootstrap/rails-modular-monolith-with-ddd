@@ -2,9 +2,9 @@
   "name": "rails-modular-monolith-with-ddd",
   "private": true,
   "dependencies": {
-    "@rails/actioncable": "^6.0.0",
-    "@rails/activestorage": "^6.0.0",
-    "@rails/ujs": "^6.0.0",
+    "@rails/actioncable": "^7.0.0",
+    "@rails/activestorage": "^7.0.0",
+    "@rails/ujs": "^7.0.0",
     "@rails/webpacker": "5.4.3",
     "webpack": "^4.46.0",
     "webpack-cli": "^3.3.12"
