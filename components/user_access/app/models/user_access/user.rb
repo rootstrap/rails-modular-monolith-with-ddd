@@ -5,9 +5,6 @@
 # Table name: user_access_users
 #
 #  id                     :bigint           not null, primary key
-#  confirmation_sent_at   :datetime
-#  confirmation_token     :string
-#  confirmed_at           :datetime
 #  email                  :string           default(""), not null
 #  encrypted_password     :string           default(""), not null
 #  first_name             :string           not null
@@ -18,7 +15,6 @@
 #  remember_created_at    :datetime
 #  reset_password_sent_at :datetime
 #  reset_password_token   :string
-#  unconfirmed_email      :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #
@@ -29,7 +25,12 @@
 #
 module UserAccess
   class User < ApplicationRecord
-    devise :database_authenticatable, :registerable,
-           :recoverable, :rememberable, :validatable, :confirmable
+    devise :database_authenticatable, :recoverable, :rememberable, :validatable
+
+    private
+
+    def send_devise_notification(notification, *args)
+      devise_mailer.send(notification, self, *args).deliver_later
+    end
   end
 end
