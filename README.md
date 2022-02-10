@@ -371,7 +371,7 @@ TBD
 List of technologies, frameworks and libraries used for implementation:
 
 - [Ruby 3](https://www.ruby-lang.org/) (Programming Language)
-- [Rails 6](https://rubyonrails.org/) (Web Framework)
+- [Rails 7](https://rubyonrails.org/) (Web Framework)
 - [PostgreSQL](https://www.postgresql.org/) (Database)
 - [Puma](https://puma.io/) (Web Server)
 - [Sass-Rails](https://github.com/rails/sass-rails) (CSS Extension Language)
