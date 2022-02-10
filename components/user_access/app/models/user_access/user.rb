@@ -25,7 +25,8 @@
 #
 module UserAccess
   class User < ApplicationRecord
-    devise :database_authenticatable, :recoverable, :rememberable, :validatable
+    devise :registerable, :database_authenticatable, :recoverable,
+           :rememberable, :validatable
 
     private
 
