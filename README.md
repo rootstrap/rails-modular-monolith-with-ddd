@@ -375,7 +375,7 @@ List of technologies, frameworks and libraries used for implementation:
 - [PostgreSQL](https://www.postgresql.org/) (Database)
 - [Puma](https://puma.io/) (Web Server)
 - [Sass-Rails](https://github.com/rails/sass-rails) (CSS Extension Language)
-- [Webpacker](https://guides.rubyonrails.org/webpacker.html) (JS Bundler)
+- [esbuild](https://github.com/rails/jsbundling-rails) (JS Bundler)
 
 ## 5. How to Run
 
