@@ -374,8 +374,9 @@ List of technologies, frameworks and libraries used for implementation:
 - [Rails 7](https://rubyonrails.org/) (Web Framework)
 - [PostgreSQL](https://www.postgresql.org/) (Database)
 - [Puma](https://puma.io/) (Web Server)
-- [Sass-Rails](https://github.com/rails/sass-rails) (CSS Extension Language)
-- [esbuild](https://github.com/rails/jsbundling-rails) (JS Bundler)
+- [Dart Sass](https://sass-lang.com/dart-sass) (CSS Extension Language)
+- [Bootstrap](https://getbootstrap.com/) (CSS Framework)
+- [esbuild](https://esbuild.github.io/) (JS Bundler)
 
 ## 5. How to Run
 
@@ -394,7 +395,7 @@ List of technologies, frameworks and libraries used for implementation:
 - Run `bundle exec rails db:migrate` to run the migrations
 
 ### Start the server
-- Run `bundle exec rails server` to start the server
+- Run `./bin/dev` to start the server
 
 ### Visit the app
 - Go to `http://localhost:3000` on your browser to access the server
