@@ -37,3 +37,6 @@ yarn-debug.log*
 
 # Ignore application configuration
 .env
+
+# Ignore spec output
+spec/examples.txt

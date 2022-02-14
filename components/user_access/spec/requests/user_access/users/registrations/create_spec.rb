@@ -41,7 +41,7 @@ RSpec.describe 'POST /users' do
       }
     end
 
-    it 'creates a new user registration' do
+    it 'does not create a new user registration' do
       expect { subject }.to_not change(UserAccess::UserRegistration, :count)
     end
 
