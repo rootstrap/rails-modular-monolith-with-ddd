@@ -38,5 +38,8 @@ yarn-debug.log*
 # Ignore application configuration
 .env
 
+/app/assets/builds/*
+!/app/assets/builds/.keep
+
 # Ignore spec output
 spec/examples.txt
