@@ -14,13 +14,16 @@ module UserAccess
     def call
       return false unless user_registration.valid?
 
-      if user_registration.save
+      valid = user_registration.save
+
+      if valid
         ActiveSupport::Notifications.instrument(
           'new_user_registered_domain_event.user_access',
           new_user_registered_domain_event
         )
       end
-      user_registration
+
+      valid
     end
 
     private
