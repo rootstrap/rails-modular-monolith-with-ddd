@@ -45,7 +45,7 @@ RSpec.describe UserAccess::UserRegistrationService do
           registered_at: Time.current
         }
   
-        expect(ActiveSupport::Notifications).to receive(:publish).with(
+        expect(ActiveSupport::Notifications).to receive(:instrument).with(
           'new_user_registered_domain_event.user_access',
           new_user_registered_domain_event
         )
