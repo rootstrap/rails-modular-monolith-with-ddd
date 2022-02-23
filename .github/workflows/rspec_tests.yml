@@ -23,6 +23,10 @@ jobs:
         ports:
           # Maps tcp port 5432 on service container to the host
           - 5432:5432
+    env:
+      PG_HOST: localhost
+      PG_USER: postgres
+      PG_PASSWORD: postgres
 
     steps:
       - uses: actions/checkout@v2
