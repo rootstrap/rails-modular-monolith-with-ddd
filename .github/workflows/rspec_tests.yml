@@ -30,13 +30,20 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Ruby
+      - name: Setup Ruby
         uses: ruby/setup-ruby@v1.99.0
         with:
           bundler-cache: true
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+          cache: 'yarn'
       - name: Install dependencies
-        run: bundle install
+        run: bundle install && yarn install
       - name: Setup database
         run: bundle exec rails db:test:prepare
+      - name: Build Javascript
+        run: bundle exec rails javascript:build
       - name: Run tests
         run: bundle exec rspec
