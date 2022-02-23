@@ -1,0 +1,49 @@
+name: Rspec tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  test:
+
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps tcp port 5432 on service container to the host
+          - 5432:5432
+    env:
+      PG_HOST: localhost
+      PG_USER: postgres
+      PG_PASSWORD: postgres
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1.99.0
+        with:
+          bundler-cache: true
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+          cache: 'yarn'
+      - name: Install dependencies
+        run: bundle install && yarn install
+      - name: Setup env for tests
+        run: bundle exec rails db:test:prepare test:prepare
+      - name: Build Javascript
+        run: bundle exec rails javascript:build
+      - name: Run tests
+        run: bundle exec rspec
