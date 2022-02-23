@@ -41,8 +41,8 @@ jobs:
           cache: 'yarn'
       - name: Install dependencies
         run: bundle install && yarn install
-      - name: Setup database
-        run: bundle exec rails db:test:prepare
+      - name: Setup env for tests
+        run: bundle exec rails db:test:prepare test:prepare
       - name: Build Javascript
         run: bundle exec rails javascript:build
       - name: Run tests
