@@ -7,16 +7,17 @@ module UserAccess
     end
 
     def call
-      if user_registration.confirmed
+      unless user_registration.confirmed?
         Rails.logger.info { 'User cannot be created when registration is not confirmed' }
-      else
-        User.create!(
-          user_registration.slice(
-            :login, :email, :encrypted_password,
-            :first_name, :last_name, :name
-          )
-        )
+        return
       end
+
+      User.create!(
+        user_registration.slice(
+          :login, :email, :encrypted_password,
+          :first_name, :last_name, :name
+        ).merge!(is_active: true)
+      )
     end
 
     private

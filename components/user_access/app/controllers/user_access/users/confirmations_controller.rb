@@ -14,7 +14,11 @@ module UserAccess
 
     # GET /resource/confirmation?confirmation_token=abcdef
     def show
-      ConfirmUserRegistrationService.new(params[:confirmation_token]).call
+      result = ConfirmUserRegistrationService.new(params[:confirmation_token]).call
+
+      flash[:error] = "Couldn't confirm your account" unless result
+
+      redirect_to root_path
     end
 
     # protected
@@ -23,10 +27,5 @@ module UserAccess
     # def after_resending_confirmation_instructions_path_for(resource_name)
     #   super(resource_name)
     # end
-
-    # The path used after confirmation.
-    def after_confirmation_path_for(resource_name, resource)
-      root_path
-    end
   end
 end

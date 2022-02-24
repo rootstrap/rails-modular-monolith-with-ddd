@@ -30,11 +30,11 @@ module UserAccess
     end
 
     def pending_confirmation?
-      user_registration.pending_any_confirmation?
+      user_registration.confirmed_at.blank?
     end
 
     def confirmation_period_expired?
-      user_registration.confirmation_period_expired?
+      Time.current > (user_registration.confirmation_sent_at.utc + user_registration.class.confirm_within)
     end
 
     def user_registration_confirmed_domain_event
