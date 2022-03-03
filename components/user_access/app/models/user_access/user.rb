@@ -30,6 +30,10 @@ module UserAccess
 
     attr_accessor :skip_password_validation  # virtual attribute to skip password validation while saving
 
+    validates_uniqueness_of :email, :login
+    validates_presence_of :email, :encrypted_password, :first_name, :last_name, :name,
+                          :login, :is_active
+
     protected
 
     def password_required?
