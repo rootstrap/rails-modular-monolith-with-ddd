@@ -28,6 +28,15 @@ module UserAccess
     devise :registerable, :database_authenticatable,
            :rememberable, :validatable
 
+    attr_accessor :skip_password_validation  # virtual attribute to skip password validation while saving
+
+    protected
+
+    def password_required?
+      return false if skip_password_validation
+      super
+    end
+
     private
 
     def send_devise_notification(notification, *args)

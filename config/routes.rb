@@ -6,7 +6,14 @@ Rails.application.routes.draw do
     registrations: 'user_access/users/registrations',
     confirmations: 'user_access/users/confirmations'
   }
+
+  authenticated do
+    root to: 'rails/welcome#index'
+  end
+
   devise_scope :user do
-    root to: 'user_access/users/sessions#new'
+    unauthenticated do
+      root to: 'user_access/users/sessions#new', as: :unauthenticated_root
+    end
   end
 end

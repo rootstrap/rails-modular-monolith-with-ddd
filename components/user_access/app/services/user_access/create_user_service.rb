@@ -12,12 +12,15 @@ module UserAccess
         return
       end
 
-      User.create!(
+      user = User.new(
         user_registration.slice(
           :login, :email, :encrypted_password,
           :first_name, :last_name, :name
         ).merge!(is_active: true)
       )
+
+      user.skip_password_validation = true
+      user.save!
     end
 
     private
