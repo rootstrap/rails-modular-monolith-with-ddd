@@ -8,6 +8,9 @@ Bundler.require(*Rails.groups)
 
 module RailsModularMonolithWithDdd
   class Application < Rails::Application
+    PATHS = ['app', 'app/controllers', 'app/channels', 'app/helpers', 'app/models', 'app/mailers', 'app/views',
+             'lib', 'lib/tasks', 'config', 'config/locales', 'config/initializers'].freeze
+
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.0
 
@@ -21,6 +24,10 @@ module RailsModularMonolithWithDdd
 
     config.action_mailer.default_url_options = { host: ENV['SERVER_HOST'], port: 3000 }
 
-    config.paths.add 'components', glob: '*/app/{*,*/concerns}', eager_load: true
+    Dir.glob('components/*').each do |component_root|
+      PATHS.each do |path|
+        config.paths[path] << Rails.root.join(component_root, path)
+      end
+    end
   end
 end

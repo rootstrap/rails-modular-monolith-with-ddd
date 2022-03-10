@@ -39,6 +39,8 @@ jobs:
         with:
           node-version: '14'
           cache: 'yarn'
+      - name: Packwerk checks
+        run: bundle exec packwerk validate && bundle exec packwerk check
       - name: Install dependencies
         run: bundle install && yarn install
       - name: Setup env for tests
