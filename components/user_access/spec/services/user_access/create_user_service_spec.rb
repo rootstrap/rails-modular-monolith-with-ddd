@@ -27,6 +27,17 @@ RSpec.describe UserAccess::CreateUserService do
           )
         )
       end
+
+      it 'assigns the member role to the user' do
+        subject
+
+        expect(new_user.user_roles.size).to eq(1)
+        expect(new_user.user_roles.pluck(:role_code)).to eq(['member'])
+      end
+
+      it 'creates a new user role' do
+        expect { subject }.to change(UserAccess::UserRole, :count).by(1)
+      end
     end
 
     context 'when user registration is not confirmed' do
@@ -36,6 +47,10 @@ RSpec.describe UserAccess::CreateUserService do
 
       it 'does not create a user' do
         expect { subject }.not_to change(UserAccess::User, :count)
+      end
+
+      it 'does not create a new user role' do
+        expect { subject }.not_to change(UserAccess::UserRole, :count)
       end
     end
 

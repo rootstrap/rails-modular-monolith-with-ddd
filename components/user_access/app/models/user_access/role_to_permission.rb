@@ -18,5 +18,6 @@
 module UserAccess
   class RoleToPermission < ApplicationRecord
     belongs_to :permission, primary_key: :code, foreign_key: :permission_code
+    belongs_to :user_role, primary_key: :role_code, foreign_key: :role_code
   end
 end
