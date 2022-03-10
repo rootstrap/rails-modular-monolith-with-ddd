@@ -43,5 +43,3 @@ yarn-debug.log*
 
 # Ignore spec output
 spec/examples.txt
-
-.tool-versions
