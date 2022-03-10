@@ -11,6 +11,14 @@
   </head>
 
   <body>
+    <% if flash.any? %>
+      <div class="flashes">
+        <% flash.each do |key, value| %>
+          <div class="flash flash-<%= key %>"><%= value.html_safe %></div>
+        <% end %>
+      </div>
+    <% end %>
+
     <%= yield %>
   </body>
 </html>

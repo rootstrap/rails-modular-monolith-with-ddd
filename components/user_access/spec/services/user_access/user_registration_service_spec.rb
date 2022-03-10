@@ -36,6 +36,7 @@ RSpec.describe UserAccess::UserRegistrationService do
     it 'triggers a new_user_registered_domain_event' do
       freeze_time do
         new_user_registered_domain_event = {
+          user_registration_id: anything,
           login: attributes[:login],
           email: attributes[:email],
           first_name: attributes[:first_name],
@@ -44,7 +45,7 @@ RSpec.describe UserAccess::UserRegistrationService do
           registered_at: Time.current
         }
   
-        expect(ActiveSupport::Notifications).to receive(:publish).with(
+        expect(ActiveSupport::Notifications).to receive(:instrument).with(
           'new_user_registered_domain_event.user_access',
           new_user_registered_domain_event
         )

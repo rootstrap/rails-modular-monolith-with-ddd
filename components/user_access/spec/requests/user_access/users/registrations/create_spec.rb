@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe 'POST /users' do
   subject do
-    post user_registration_path, params: params
+    post user_registration_registration_path, params: params
   end
 
   context 'when params are valid' do
