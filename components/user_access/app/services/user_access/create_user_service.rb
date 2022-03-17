@@ -19,6 +19,7 @@ module UserAccess
         ).merge!(is_active: true)
       )
 
+      user.user_roles.new(role_code: :member)
       user.skip_password_validation = true
       user.save!
     end

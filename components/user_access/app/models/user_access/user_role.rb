@@ -18,11 +18,12 @@
 module UserAccess
   class UserRole < ApplicationRecord
     belongs_to :user
-    belongs_to :role_to_permission, primary_key: :role_code, foreign_key: :role_code
+    has_many :role_to_permissions, primary_key: :role_code, foreign_key: :role_code
 
     enum role_code: {
       member: 0,
-      administrator: 1
+      administrator: 1,
+      payer: 2
     }
   end
 end
