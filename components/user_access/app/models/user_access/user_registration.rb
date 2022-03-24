@@ -29,8 +29,8 @@ module UserAccess
   class UserRegistration < ApplicationRecord
     devise :database_authenticatable, :registerable, :validatable, :confirmable
 
-    validates_uniqueness_of :email, :login
-    validates_presence_of :email, :encrypted_password, :first_name, :last_name, :name,
+    validates_uniqueness_of :identifier, :email, :login
+    validates_presence_of :identifier, :email, :encrypted_password, :first_name, :last_name, :name,
                           :login, :registered_at, :status_code
 
     enum status_code: {

@@ -7,14 +7,20 @@ module Meetings
     end
 
     def call
-      # TODO: pending write implementation
-      Meetings::Member.new()
+      member = Member.new(
+        user_registration.slice(
+          :identifier, :login, :email,
+          :first_name, :last_name, :name
+        )
+      )
+
+      member.save!
     end
 
     private
 
     def user_registration
-      UserAccess::UserRegistration.find(user_registration_id)
+      @user_registration ||= UserAccess::UserRegistration.find(user_registration_id)
     end
   end
 end

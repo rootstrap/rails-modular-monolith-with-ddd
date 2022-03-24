@@ -36,8 +36,8 @@ module UserAccess
     has_many :role_to_permissions, through: :user_roles
     has_many :permissions, through: :role_to_permissions
 
-    validates_uniqueness_of :email, :login
-    validates_presence_of :email, :encrypted_password, :first_name, :last_name, :name,
+    validates_uniqueness_of :identifier, :email, :login
+    validates_presence_of :identifier, :email, :encrypted_password, :first_name, :last_name, :name,
                           :login, :is_active
 
     protected
