@@ -2,6 +2,7 @@
 
 FactoryBot.define do
   factory :user_access_user, class: 'UserAccess::User' do
+    identifier { SecureRandom.uuid }
     email { Faker::Internet.unique.email }
     password { 'password123' }
     first_name { Faker::Name.first_name }

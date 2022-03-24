@@ -2,6 +2,7 @@
 
 FactoryBot.define do
   factory :user_access_user_registration, class: 'UserAccess::UserRegistration' do
+    identifier { SecureRandom.uuid }
     confirmation_sent_at { 1.day.ago }
     email { Faker::Internet.unique.email }
     password { 'password123' }

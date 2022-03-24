@@ -14,7 +14,7 @@ module UserAccess
 
       user = User.new(
         user_registration.slice(
-          :login, :email, :encrypted_password,
+          :identifier, :login, :email, :encrypted_password,
           :first_name, :last_name, :name
         ).merge!(is_active: true)
       )
