@@ -8,6 +8,7 @@
 #  email                  :string           default(""), not null
 #  encrypted_password     :string           default(""), not null
 #  first_name             :string           not null
+#  identifier             :uuid             not null
 #  is_active              :boolean          not null
 #  last_name              :string           not null
 #  login                  :string           not null
@@ -21,6 +22,7 @@
 # Indexes
 #
 #  index_user_access_users_on_email                 (email) UNIQUE
+#  index_user_access_users_on_identifier            (identifier) UNIQUE
 #  index_user_access_users_on_reset_password_token  (reset_password_token) UNIQUE
 #
 module UserAccess

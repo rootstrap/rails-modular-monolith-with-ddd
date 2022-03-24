@@ -11,6 +11,7 @@
 #  email                :string           not null
 #  encrypted_password   :string           not null
 #  first_name           :string           not null
+#  identifier           :uuid             not null
 #  last_name            :string           not null
 #  login                :string           not null
 #  name                 :string           not null
@@ -19,6 +20,10 @@
 #  unconfirmed_email    :string
 #  created_at           :datetime         not null
 #  updated_at           :datetime         not null
+#
+# Indexes
+#
+#  index_user_access_user_registrations_on_identifier  (identifier) UNIQUE
 #
 module UserAccess
   class UserRegistration < ApplicationRecord
