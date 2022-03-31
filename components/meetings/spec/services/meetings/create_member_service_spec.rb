@@ -4,7 +4,19 @@ require 'rails_helper'
 
 RSpec.describe Meetings::CreateMemberService do
   describe '#call' do
-    subject { described_class.new(user_registration.id).call }
+    subject { described_class.new(event_payload).call }
+
+    let(:event_payload) do
+      {
+        identifier: user_registration.identifier,
+        user_registration_id: user_registration.id,
+        login: user_registration.login,
+        email: user_registration.email,
+        first_name: user_registration.first_name,
+        last_name: user_registration.last_name,
+        name: "#{user_registration.first_name} #{user_registration.last_name}",
+      }
+    end
 
     context 'when user registration is confirmed' do
       let(:user_registration) do
