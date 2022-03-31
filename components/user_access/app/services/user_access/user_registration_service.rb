@@ -30,6 +30,7 @@ module UserAccess
 
     def user_registration
       @user_registration ||= UserRegistration.new(
+        identifier: SecureRandom.uuid,
         login: login,
         password: password,
         password_confirmation: password_confirmation,
@@ -48,6 +49,7 @@ module UserAccess
 
     def new_user_registered_domain_event
       {
+        identifier: user_registration.identifier,
         user_registration_id: user_registration.id,
         login: login,
         email: email,

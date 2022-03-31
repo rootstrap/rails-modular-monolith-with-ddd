@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe UserAccess::CreateUserService do
   describe '#call' do
-    subject { described_class.new(user_registration.id).call }
+    subject { described_class.new({ user_registration_id: user_registration.id }).call }
 
     context 'when user registration is confirmed' do
       let(:user_registration) do

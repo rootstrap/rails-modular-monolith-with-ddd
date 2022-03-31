@@ -36,6 +36,7 @@ RSpec.describe UserAccess::UserRegistrationService do
     it 'triggers a new_user_registered_domain_event' do
       freeze_time do
         new_user_registered_domain_event = {
+          identifier: anything,
           user_registration_id: anything,
           login: attributes[:login],
           email: attributes[:email],

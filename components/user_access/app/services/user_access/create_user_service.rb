@@ -2,8 +2,8 @@ module UserAccess
   class CreateUserService
     attr_reader :user_registration_id
 
-    def initialize(user_registration_id)
-      @user_registration_id = user_registration_id
+    def initialize(event_payload)
+      @user_registration_id = event_payload[:user_registration_id]
     end
 
     def call
@@ -14,7 +14,7 @@ module UserAccess
 
       user = User.new(
         user_registration.slice(
-          :login, :email, :encrypted_password,
+          :identifier, :login, :email, :encrypted_password,
           :first_name, :last_name, :name
         ).merge!(is_active: true)
       )
