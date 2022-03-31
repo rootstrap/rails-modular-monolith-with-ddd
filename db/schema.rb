@@ -19,11 +19,12 @@ ActiveRecord::Schema[7.0].define(version: 2022_03_24_201027) do
     t.text "description"
     t.string "location_city", null: false
     t.string "location_country_code", null: false
-    t.bigint "proposal_user_id", null: false
     t.datetime "proposal_date", precision: nil, null: false
     t.integer "status_code", null: false
+    t.bigint "proposal_user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["proposal_user_id"], name: "index_meetings_meeting_group_proposals_on_proposal_user_id"
   end
 
   create_table "meetings_members", force: :cascade do |t|
@@ -103,4 +104,5 @@ ActiveRecord::Schema[7.0].define(version: 2022_03_24_201027) do
     t.index ["reset_password_token"], name: "index_user_access_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "meetings_meeting_group_proposals", "meetings_members", column: "proposal_user_id"
 end

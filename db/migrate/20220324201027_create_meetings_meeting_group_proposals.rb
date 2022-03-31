@@ -5,9 +5,9 @@ class CreateMeetingsMeetingGroupProposals < ActiveRecord::Migration[7.0]
       t.text :description
       t.string :location_city, null: false
       t.string :location_country_code, null: false
-      t.bigint :proposal_user_id, null: false
       t.timestamp :proposal_date, null: false
       t.integer :status_code, null: false
+      t.references :proposal_user, null: false, foreign_key: { to_table: :meetings_members }
 
       t.timestamps
     end
