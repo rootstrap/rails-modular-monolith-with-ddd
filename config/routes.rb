@@ -16,4 +16,8 @@ Rails.application.routes.draw do
       root to: 'user_access/users/sessions#new', as: :unauthenticated_root
     end
   end
+
+  namespace :meetings do
+    resources :meeting_group_proposals
+  end
 end
