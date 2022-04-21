@@ -1,6 +1,6 @@
 module Meetings
   class CreateMeetingGroupProposalService
-    attr_reader :description, :location_city :location_country_code, :name, :identifier
+    attr_reader :description, :location_city, :location_country_code, :name, :identifier
 
     def initialize(attributes, proposal_user_identifier)
       @description = attributes[:description]
