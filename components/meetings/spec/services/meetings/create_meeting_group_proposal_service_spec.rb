@@ -11,7 +11,7 @@ RSpec.describe Meetings::CreateMeetingGroupProposalService do
 
     context 'when valid' do
       it 'creates the meeting group proposal' do
-        expect { subject }.to change(Meetings::MeetingGroupProposal, :count).by (1)
+        expect { subject }.to change(Meetings::MeetingGroupProposal, :count).by(1)
       end
 
       it 'creates the meeting group proposal with a in_verification status' do

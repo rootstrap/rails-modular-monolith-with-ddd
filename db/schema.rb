@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_03_24_201027) do
+ActiveRecord::Schema[7.0].define(version: 2022_04_28_195201) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -25,6 +25,20 @@ ActiveRecord::Schema[7.0].define(version: 2022_03_24_201027) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["proposal_user_id"], name: "index_meetings_meeting_group_proposals_on_proposal_user_id"
+  end
+
+  create_table "meetings_meeting_groups", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "description"
+    t.string "location_city", null: false
+    t.string "location_country_code", null: false
+    t.bigint "creator_id", null: false
+    t.bigint "meeting_group_proposal_id", null: false
+    t.date "payment_date_to"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["creator_id"], name: "index_meetings_meeting_groups_on_creator_id"
+    t.index ["meeting_group_proposal_id"], name: "index_meetings_meeting_groups_on_meeting_group_proposal_id"
   end
 
   create_table "meetings_members", force: :cascade do |t|
@@ -105,4 +119,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_03_24_201027) do
   end
 
   add_foreign_key "meetings_meeting_group_proposals", "meetings_members", column: "proposal_user_id"
+  add_foreign_key "meetings_meeting_groups", "meetings_meeting_group_proposals", column: "meeting_group_proposal_id"
+  add_foreign_key "meetings_meeting_groups", "meetings_members", column: "creator_id"
 end
