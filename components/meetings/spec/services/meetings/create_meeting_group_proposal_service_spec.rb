@@ -7,15 +7,15 @@ RSpec.describe Meetings::CreateMeetingGroupProposalService do
   let(:attributes) { attributes_for(:meetings_meeting_group_proposal) }
 
   describe '#call' do
-    let(:service) { described_class.new(attributes, member.identifier) }
+    subject { described_class.new(attributes, member.identifier).call }
 
     context 'when valid' do
       it 'creates the meeting group proposal' do
-        expect { service.call }.to change(Meetings::MeetingGroupProposal, :count).by (1)
+        expect { subject }.to change(Meetings::MeetingGroupProposal, :count).by (1)
       end
 
       it 'creates the meeting group proposal with a in_verification status' do
-        service.call
+        subject        
         expect(Meetings::MeetingGroupProposal.last.status_code).to eq('in_verification')
       end
 
@@ -27,7 +27,7 @@ RSpec.describe Meetings::CreateMeetingGroupProposalService do
             **attributes
           }
         )
-        service.call
+        subject
       end
     end
   end
