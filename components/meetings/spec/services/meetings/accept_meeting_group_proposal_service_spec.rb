@@ -22,7 +22,7 @@ RSpec.describe Meetings::AcceptMeetingGroupProposalService do
       end
 
       it 'creates the meeting group proposal with the correct attributes' do
-        subject        
+        subject
 
         expect(Meetings::MeetingGroup.last).to have_attributes(
           description: meeting_group_proposal.description,

@@ -9,11 +9,11 @@ module Meetings
     def call
       MeetingGroup.new(
         attributes.slice(
-          :description, 
-          :name, 
-          :location_city, 
-          :location_country_code, 
-          :creator_id, 
+          :description,
+          :name,
+          :location_city,
+          :location_country_code,
+          :creator_id,
           :meeting_group_proposal_id
         )
       ).save
@@ -22,6 +22,6 @@ module Meetings
     private
 
     # TODO
-    def add_meeting_group_member; end 
+    def add_meeting_group_member; end
   end
 end

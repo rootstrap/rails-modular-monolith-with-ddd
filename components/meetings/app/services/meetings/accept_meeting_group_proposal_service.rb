@@ -10,7 +10,7 @@ module Meetings
       return if meeting_group_proposal.accepted?
 
       meeting_group_proposal.accepted!
-      
+
       CreateMeetingGroupService.new(
         description: meeting_group_proposal.description,
         name: meeting_group_proposal.name,

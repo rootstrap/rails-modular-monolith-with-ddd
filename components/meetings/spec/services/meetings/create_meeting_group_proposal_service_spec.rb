@@ -15,7 +15,7 @@ RSpec.describe Meetings::CreateMeetingGroupProposalService do
       end
 
       it 'creates the meeting group proposal with a in_verification status' do
-        subject        
+        subject
         expect(Meetings::MeetingGroupProposal.last.status_code).to eq('in_verification')
       end
 
