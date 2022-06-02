@@ -9,7 +9,7 @@ Bundler.require(*Rails.groups)
 module RailsModularMonolithWithDdd
   class Application < Rails::Application
     PATHS = ['app', 'app/controllers', 'app/channels', 'app/helpers', 'app/models', 'app/mailers', 'app/views',
-             'lib', 'lib/tasks', 'config', 'config/locales', 'config/initializers'].freeze
+             'lib', 'lib/tasks', 'config', 'config/locales', 'config/initializers', 'config/routes'].freeze
 
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.0
