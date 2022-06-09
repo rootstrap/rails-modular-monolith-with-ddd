@@ -4,7 +4,14 @@ require 'rails_helper'
 
 RSpec.describe Meetings::CreateMeetingGroupProposalService do
   let(:member) { create(:meetings_member) }
-  let(:attributes) { attributes_for(:meetings_meeting_group_proposal) }
+  let(:attributes) do
+    attributes_for(:meetings_meeting_group_proposal, proposal_user_id: member.id,
+                                                     status_code: 'in_verification')
+  end
+
+  before do
+    freeze_time
+  end
 
   describe '#call' do
     subject { described_class.new(attributes, member.identifier).call }
@@ -20,12 +27,12 @@ RSpec.describe Meetings::CreateMeetingGroupProposalService do
       end
 
       it 'publishes the meeting_group_proposed_domain_event' do
+        allow(ActiveSupport::Notifications).to receive(:instrument).and_call_original
         expect(ActiveSupport::Notifications).to receive(:instrument).with(
           'meeting_group_proposed_domain_event.meetings',
-          {
-            id: anything,
-            **attributes
-          }
+          attributes.merge(
+            id: anything
+          )
         )
         subject
       end
