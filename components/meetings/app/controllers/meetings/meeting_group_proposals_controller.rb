@@ -1,13 +1,11 @@
 module Meetings
-  class MeetingGroupProposalsController < ApplicationController
-    before_action :authenticate_user!
-
+  class MeetingGroupProposalsController < Meetings::ApplicationController
     def new; end
 
     def create
       result = CreateMeetingGroupProposalService.new(
         meeting_group_proposal_params,
-        current_user.identifier
+        current_user_identifier
       ).call
 
       if result
