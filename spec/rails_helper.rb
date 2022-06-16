@@ -64,6 +64,7 @@ RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
 
   config.include ActiveSupport::Testing::TimeHelpers
+  config.include Devise::Test::IntegrationHelpers
 
   FactoryBot.definition_file_paths = Dir.glob('components/*/spec/factories')
   FactoryBot.find_definitions
