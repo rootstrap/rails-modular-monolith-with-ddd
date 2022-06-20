@@ -1,0 +1,32 @@
+version: '3.9'
+
+services:
+  web:
+    build: .
+    entrypoint: >
+      bash -c "
+      rm -f tmp/pids/server.pid
+      && bundle exec rails s -b 0.0.0.0 -p 3000"
+    environment:
+      - PG_USER=postgres
+      - PG_PASSWORD=postgres
+      - PG_HOST=db
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/app/src
+    depends_on:
+      - db
+    links:
+      - "db:db"
+  db:
+    image: postgres:13
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+volumes:
+  db_data:
