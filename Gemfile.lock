@@ -160,6 +160,8 @@ GEM
       racc (~> 1.4)
     nokogiri (1.13.6-x86_64-darwin)
       racc (~> 1.4)
+    nokogiri (1.13.6-x86_64-linux)
+      racc (~> 1.4)
     orm_adapter (0.5.0)
     packwerk (2.0.0)
       activesupport (>= 5.2)
@@ -269,6 +271,7 @@ GEM
 PLATFORMS
   aarch64-linux
   x86_64-darwin-21
+  x86_64-linux
 
 DEPENDENCIES
   annotate (~> 3.2.0)
