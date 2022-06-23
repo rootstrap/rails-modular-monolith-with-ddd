@@ -32,7 +32,7 @@ group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   # Modularization
-  gem 'packwerk', '~> 2.0.0'
+  gem 'packwerk', '~> 2.2'
   # Visual representation of components
   gem 'graphwerk', '~> 1.2.0'
   gem 'factory_bot_rails', '~> 6.2'
