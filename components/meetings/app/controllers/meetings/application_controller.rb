@@ -4,8 +4,8 @@ module Meetings
 
     # TODO: rescue from Member not found error and redirect to a friendly html page
 
-    def current_user_identifier
-      user_authentication_service.current_user_identifier
+    def current_user
+      user_authentication_service.current_user
     end
 
     def authenticate_user!

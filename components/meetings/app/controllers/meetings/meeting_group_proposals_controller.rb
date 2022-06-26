@@ -5,7 +5,7 @@ module Meetings
     def create
       result = CreateMeetingGroupProposalService.new(
         meeting_group_proposal_params,
-        current_user_identifier
+        current_user.identifier
       ).call
 
       if result

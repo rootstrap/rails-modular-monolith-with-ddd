@@ -8,8 +8,8 @@ module UserAccess
       warden.authenticate!(scope: :user)
     end
 
-    def current_user_identifier
-      @current_user_identifier ||= warden.authenticate(scope: :user)&.identifier
+    def current_user
+      @current_user ||= warden.authenticate(scope: :user)&.to_dto
     end
 
     private
