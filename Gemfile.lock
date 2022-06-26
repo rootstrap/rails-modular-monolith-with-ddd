@@ -1,3 +1,11 @@
+GIT
+  remote: https://github.com/santib/ar2dto.git
+  revision: a12fedf674060e5f302c938b90f59351fd185e2d
+  specs:
+    ar2dto (0.1.0)
+      activemodel (>= 5.2)
+      activerecord (>= 5.2)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -271,11 +279,13 @@ GEM
 
 PLATFORMS
   aarch64-linux
+  x86_64-darwin-20
   x86_64-darwin-21
   x86_64-linux
 
 DEPENDENCIES
   annotate (~> 3.2.0)
+  ar2dto!
   bootsnap (>= 1.4.4)
   byebug
   cssbundling-rails (~> 1.0.0)
