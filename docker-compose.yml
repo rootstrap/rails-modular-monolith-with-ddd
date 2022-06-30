@@ -38,17 +38,22 @@ services:
       - PG_USER=postgres
       - PG_PASSWORD=postgres
       - PG_HOST=db
+      - PRODUCER_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - KAFKA_CONNECT_DB_SERVER_NAME=dbserver
+      - KAFKA_CONNECT=connect:8083
     ports:
       - 3001:3001
     volumes:
       - .:/app/src
     depends_on:
       - db
+      - zookeeper
+      - kafka
       - connect
     links:
       - "db:db"
   db:
-    image: debezium/postgres:13
+    image: postgres:13
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
@@ -56,5 +61,9 @@ services:
       - db_data:/var/lib/postgresql/data
     ports:
       - 5432:5432
+    command:
+      - "postgres"
+      - "-c"
+      - "wal_level=logical"
 volumes:
   db_data:

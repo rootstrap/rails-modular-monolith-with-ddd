@@ -1,0 +1,15 @@
+{
+  "name": "user-access-outbox-connector",
+  "config": {
+    "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+    "tasks.max": "1",
+    "plugin.name": "pgoutput",
+    "database.hostname": "db",
+    "database.port": "5432",
+    "database.user": "postgres",
+    "database.password": "postgres",
+    "database.dbname" : "rails_modular_monolith_with_ddd_development",
+    "database.server.name": "dbserver1",
+    "schema.whitelist": "public"
+  }
+}
