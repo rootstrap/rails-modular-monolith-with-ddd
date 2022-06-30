@@ -1,3 +1,4 @@
+# typed: false
 class CreateUserAccessPermissions < ActiveRecord::Migration[6.1]
   def change
     create_table :user_access_permissions do |t|

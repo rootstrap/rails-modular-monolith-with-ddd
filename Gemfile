@@ -28,6 +28,10 @@ gem 'bootsnap', '>= 1.4.4', require: false
 # Authentication
 gem 'devise', '~> 4.8'
 
+# typechecker
+gem 'sorbet-runtime'
+gem 'sorbet-rails'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
@@ -55,6 +59,7 @@ group :development do
   gem 'rack-mini-profiler', '~> 2.0'
   gem 'listen', '~> 3.3'
   gem 'letter_opener', '~> 1.4', '>= 1.4.1'
+  gem 'sorbet'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

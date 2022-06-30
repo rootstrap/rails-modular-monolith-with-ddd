@@ -1,3 +1,4 @@
+# typed: false
 module Meetings
   class CreateMemberService
     attr_reader :event_payload

@@ -1,3 +1,4 @@
+# typed: false
 module Meetings
   class AcceptMeetingGroupProposalService
     attr_reader :meeting_group_proposal

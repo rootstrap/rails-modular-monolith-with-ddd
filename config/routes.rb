@@ -1,3 +1,4 @@
+# typed: false
 Rails.application.routes.draw do
   draw(:user_access)
 
