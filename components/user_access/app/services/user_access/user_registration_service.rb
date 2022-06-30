@@ -1,3 +1,4 @@
+# typed: false
 module UserAccess
   class UserRegistrationService
     attr_reader :login, :password, :password_confirmation, :email, :first_name, :last_name

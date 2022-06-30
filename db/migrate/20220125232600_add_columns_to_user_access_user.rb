@@ -1,3 +1,4 @@
+# typed: false
 class AddColumnsToUserAccessUser < ActiveRecord::Migration[6.1]
   def change
     add_column :user_access_users, :login, :string, null: false

@@ -1,3 +1,4 @@
+# typed: false
 module Meetings
   class MeetingGroupProposalsController < Meetings::ApplicationController
     def new; end

@@ -1,3 +1,4 @@
+# typed: false
 # == Schema Information
 #
 # Table name: meetings_meeting_group_proposals

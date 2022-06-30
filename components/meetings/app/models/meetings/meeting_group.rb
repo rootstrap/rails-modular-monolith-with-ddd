@@ -1,3 +1,4 @@
+# typed: strict
 # == Schema Information
 #
 # Table name: meetings_meeting_groups

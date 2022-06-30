@@ -1,3 +1,4 @@
+# typed: false
 class CreateMeetingsMembers < ActiveRecord::Migration[7.0]
   def change
     create_table :meetings_members do |t|

@@ -1,3 +1,4 @@
+# typed: false
 module Meetings
   class CreateMeetingGroupService
     attr_reader :attributes

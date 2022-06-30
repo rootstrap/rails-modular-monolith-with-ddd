@@ -1,3 +1,4 @@
+# typed: false
 class AddConfirmationColumnsToUserAccessUserRegistration < ActiveRecord::Migration[6.1]
   def change
     ## Confirmable

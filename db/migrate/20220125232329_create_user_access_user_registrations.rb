@@ -1,3 +1,4 @@
+# typed: false
 class CreateUserAccessUserRegistrations < ActiveRecord::Migration[6.1]
   def change
     create_table :user_access_user_registrations do |t|

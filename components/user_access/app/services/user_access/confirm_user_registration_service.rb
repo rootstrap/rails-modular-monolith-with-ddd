@@ -1,3 +1,4 @@
+# typed: false
 module UserAccess
   class ConfirmUserRegistrationService
     attr_reader :confirmation_token

@@ -1,3 +1,4 @@
+# typed: false
 module UserAccess
   class CreateUserService
     attr_reader :user_registration_id

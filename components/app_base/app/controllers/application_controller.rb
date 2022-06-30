@@ -1,3 +1,4 @@
+# typed: false
 class ApplicationController < ActionController::Base
   def current_user
     raise 'Never call this method. Call current_user_identifier instead'

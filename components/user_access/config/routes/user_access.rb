@@ -1,3 +1,4 @@
+# typed: false
 devise_for :users, only: :sessions, class_name: 'UserAccess::User', controllers: {
   sessions: 'user_access/users/sessions'
 }
