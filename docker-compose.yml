@@ -33,7 +33,7 @@ services:
     entrypoint: >
       bash -c "
       rm -f tmp/pids/server.pid
-      && bundle exec rails s -b 0.0.0.0 -p 3001"
+      && bundle exec rails s -b 0.0.0.0"
     environment:
       - PG_USER=postgres
       - PG_PASSWORD=postgres
@@ -42,7 +42,7 @@ services:
       - KAFKA_CONNECT_DB_SERVER_NAME=dbserver
       - KAFKA_CONNECT=connect:8083
     ports:
-      - 3001:3001
+      - 3001:3000
     volumes:
       - .:/app/src
     depends_on:
@@ -50,8 +50,6 @@ services:
       - zookeeper
       - kafka
       - connect
-    links:
-      - "db:db"
   db:
     image: postgres:13
     environment:
@@ -60,7 +58,7 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
     ports:
-      - 5432:5432
+      - 5433:5432
     command:
       - "postgres"
       - "-c"

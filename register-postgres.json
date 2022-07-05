@@ -10,6 +10,8 @@
     "database.password": "postgres",
     "database.dbname" : "rails_modular_monolith_with_ddd_development",
     "database.server.name": "dbserver1",
-    "schema.whitelist": "public"
+    "schema.whitelist" : "public",
+    "table.whitelist" : "public.user_access_outboxes",
+    "tombstones.on.delete" : "false"
   }
 }
