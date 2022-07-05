@@ -10,9 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_04_28_195201) do
+ActiveRecord::Schema[7.0].define(version: 2022_07_05_175451) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "meetings_consumed_messages", force: :cascade do |t|
+    t.uuid "event_id"
+    t.string "aggregate"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "meetings_meeting_group_proposals", force: :cascade do |t|
     t.string "name", null: false
@@ -51,6 +58,22 @@ ActiveRecord::Schema[7.0].define(version: 2022_04_28_195201) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["identifier"], name: "index_meetings_members_on_identifier", unique: true
+  end
+
+  create_table "user_access_consumed_messages", force: :cascade do |t|
+    t.uuid "event_id"
+    t.string "aggregate"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "user_access_outboxes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "event", null: false
+    t.jsonb "payload"
+    t.string "aggregate", null: false
+    t.uuid "aggregate_identifier", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "user_access_permissions", force: :cascade do |t|
