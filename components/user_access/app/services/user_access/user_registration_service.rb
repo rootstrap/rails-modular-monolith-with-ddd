@@ -14,16 +14,19 @@ module UserAccess
     def call
       return false unless user_registration.valid?
 
-      valid = user_registration.save
-
-      if valid
-        ActiveSupport::Notifications.instrument(
-          'new_user_registered_domain_event.user_access',
-          new_user_registered_domain_event
+      ActiveRecord::Base.transaction do
+        user_registration.save!
+        UserAccess::Outbox.create!(
+          event: 'new_user_registered_domain_event.user_access',
+          aggregate: UserAccess::UserRegistration.name,
+          aggregate_identifier: user_registration.identifier,
+          payload: new_user_registered_domain_event
         )
       end
-
-      valid
+      true
+    rescue ActiveRecord::RecordInvalid => exception
+      Rails.logger.error { exception.message }
+      false
     end
 
     private
