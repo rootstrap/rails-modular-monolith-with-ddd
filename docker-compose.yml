@@ -15,6 +15,12 @@ services:
       - ZOOKEEPER_CONNECT=zookeeper:2181
     depends_on:
       - zookeeper
+    healthcheck:
+        test: ["CMD", "curl", "-f", "http://localhost:9092"]
+        interval: 30s
+        timeout: 10s
+        retries: 5
+        start_period: 40s
   connect:
     image: debezium/connect:1.9
     ports:
@@ -32,7 +38,8 @@ services:
     build: .
     entrypoint: >
       bash -c "
-      rm -f tmp/pids/server.pid
+      bundle exec rails db:create db:migrate
+      && rm -f tmp/pids/server.pid
       && bundle exec rails s -b 0.0.0.0"
     environment:
       - PG_USER=postgres
@@ -41,6 +48,7 @@ services:
       - PRODUCER_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - KAFKA_CONNECT_DB_SERVER_NAME=dbserver
       - KAFKA_CONNECT=connect:8083
+      - SETUP_KAFKA_CONNECTOR=true
     ports:
       - 3001:3000
     volumes:
@@ -50,6 +58,21 @@ services:
       - zookeeper
       - kafka
       - connect
+  karafka:
+    build: .
+    entrypoint: >
+      bash -c "bundle exec karafka s"
+    environment:
+      - PG_USER=postgres
+      - PG_PASSWORD=postgres
+      - PG_HOST=db
+      - PRODUCER_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - KAFKA_CONNECT_DB_SERVER_NAME=dbserver
+      - KAFKA_CONNECT=connect:8083
+    volumes:
+      - .:/app/src
+    depends_on:
+      - web
   db:
     image: postgres:13
     environment:

@@ -408,16 +408,6 @@ List of technologies, frameworks and libraries used for implementation:
 ### Build and run images
 - Run `docker-compose up`
 
-### Create database
-Inside the `web` container
-- Run `bundle exec rails db:create` to create the database
-- Run `bundle exec rails db:migrate` to run the migrations
-### Register connector
-Register the connector once the kafka-connector service is running
-- Run `curl -i -X POST -H "Accept:application/json" -H  "Content-Type:application/json" http://localhost:8083/connectors/ -d @register-postgres.json`
-To check if the connector registered properly
-- Run `curl -i -X GET -H "Accept:application/json" localhost:8083/connectors/user-access-outbox-connector`
-
 ### Consume kafka topic
 You can list current kafka topics in the container
 - Run `docker-compose exec kafka bash` to access the terminal for the kafka container
