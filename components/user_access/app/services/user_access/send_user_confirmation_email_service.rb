@@ -3,7 +3,7 @@ module UserAccess
     attr_reader :user_registration_id
 
     def initialize(event_payload)
-      @user_registration_id = event_payload[:user_registration_id]
+      @user_registration_id = event_payload['user_registration_id']
     end
 
     def call

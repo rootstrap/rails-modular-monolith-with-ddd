@@ -26,7 +26,7 @@ default: &default
 
 development:
   <<: *default
-  database: rails_modular_monolith_with_ddd_development
+  database: <%= ENV.fetch('DB_NAME', 'rails_modular_monolith_with_ddd') %>_development
 
   # The specified database role being used to connect to postgres.
   # To create additional roles in postgres see `$ createuser --help`.
@@ -60,7 +60,7 @@ development:
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: rails_modular_monolith_with_ddd_test
+  database: <%= ENV.fetch('DB_NAME', 'rails_modular_monolith_with_ddd') %>_test
 
 # As with config/credentials.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
@@ -84,6 +84,6 @@ test:
 #
 production:
   <<: *default
-  database: rails_modular_monolith_with_ddd_production
+  database: <%= ENV.fetch('DB_NAME', 'rails_modular_monolith_with_ddd') %>_production
   username: rails_modular_monolith_with_ddd
   password: <%= ENV['RAILS_MODULAR_MONOLITH_WITH_DDD_DATABASE_PASSWORD'] %>

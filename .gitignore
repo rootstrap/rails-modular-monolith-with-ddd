@@ -43,3 +43,5 @@ yarn-debug.log*
 
 # Ignore spec output
 spec/examples.txt
+
+.DS_Store

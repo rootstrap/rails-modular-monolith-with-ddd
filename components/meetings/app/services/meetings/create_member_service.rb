@@ -9,8 +9,8 @@ module Meetings
     def call
       member = Member.new(
         event_payload.slice(
-          :identifier, :login, :email,
-          :first_name, :last_name, :name
+          'identifier', 'login', 'email',
+          'first_name', 'last_name', 'name'
         )
       )
 
