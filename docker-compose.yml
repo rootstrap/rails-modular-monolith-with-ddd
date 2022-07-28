@@ -25,6 +25,12 @@ services:
     image: debezium/connect:1.9
     ports:
       - 8083:8083
+    healthcheck:
+        test: ["CMD", "curl", "-f", "http://localhost:8083"]
+        interval: 30s
+        timeout: 10s
+        retries: 5
+        start_period: 40s
     environment:
       - BOOTSTRAP_SERVERS=kafka:9092
       - GROUP_ID=1
@@ -32,8 +38,10 @@ services:
       - OFFSET_STORAGE_TOPIC=my_connect_offsets
       - STATUS_STORAGE_TOPIC=my_connect_statuses
     depends_on:
-      - db
-      - kafka
+      db:
+        condition: service_started
+      kafka:
+        condition: service_started
   web:
     build: .
     entrypoint: >
@@ -50,14 +58,18 @@ services:
       - KAFKA_CONNECT=connect:8083
       - SETUP_KAFKA_CONNECTOR=true
     ports:
-      - 3001:3000
+      - 3000:3000
     volumes:
       - .:/app/src
     depends_on:
-      - db
-      - zookeeper
-      - kafka
-      - connect
+      db:
+        condition: service_started
+      zookeeper:
+        condition: service_started
+      kafka:
+        condition: service_started
+      connect:
+        condition: service_healthy
   karafka:
     build: .
     entrypoint: >
@@ -79,12 +91,12 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - db_data2:/var/lib/postgresql/data
     ports:
-      - 5433:5432
+      - 5432:5432
     command:
       - "postgres"
       - "-c"
       - "wal_level=logical"
 volumes:
-  db_data:
+  db_data2:

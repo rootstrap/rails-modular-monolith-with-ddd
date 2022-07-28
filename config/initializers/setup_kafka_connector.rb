@@ -19,7 +19,7 @@ if ENV["SETUP_KAFKA_CONNECTOR"] == "true"
 
   # Register connector
   # Register the connector once the kafka-connector service is running
-  `curl -i -X POST -H "Accept:application/json" -H  "Content-Type:application/json" connect:8083/connectors/ -d #{config.to_json}`
+  `curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" connect:8083/connectors/ -d #{config.to_json}`
   # To check if the connector registered properly
   # - Run `curl -i -X GET -H "Accept:application/json" localhost:8083/connectors/user-access-outbox-connector`
 end
