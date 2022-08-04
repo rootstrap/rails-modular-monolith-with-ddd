@@ -25,7 +25,8 @@ class KarafkaApp < Karafka::App
   setup do |config|
     config.kafka.seed_brokers = %w[kafka://kafka:9092]
     config.client_id = 'rails-modular-monolith-with-ddd'
-    config.logger = Rails.logger
+    config.logger = ::Karafka::Instrumentation::Logger.new # this is default
+    config.monitor = ::Karafka::Instrumentation::Monitor.new # this is default
     config.topic_mapper = KarafkaTopicMapper.new('dbserver1.public')
   end
 
