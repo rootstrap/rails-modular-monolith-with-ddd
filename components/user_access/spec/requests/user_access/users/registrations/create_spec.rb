@@ -25,6 +25,10 @@ RSpec.describe 'POST /users' do
       expect { subject }.to change(UserAccess::UserRegistration, :count).by(1)
     end
 
+    it 'creates an outbox record' do
+      expect { subject }.to change(UserAccess::Outbox, :count).by(1)
+    end
+
     it 'redirects to home page' do
       expect(subject).to redirect_to('/')
     end
