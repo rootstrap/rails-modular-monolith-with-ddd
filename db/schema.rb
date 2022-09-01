@@ -19,6 +19,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_05_175451) do
     t.string "aggregate"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["event_id", "aggregate"], name: "index_meetings_consumed_messages_on_event_id_and_aggregate", unique: true
   end
 
   create_table "meetings_meeting_group_proposals", force: :cascade do |t|
@@ -65,15 +66,18 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_05_175451) do
     t.string "aggregate"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["event_id", "aggregate"], name: "index_user_access_consumed_messages_on_event_id_and_aggregate", unique: true
   end
 
-  create_table "user_access_outboxes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "user_access_outboxes", force: :cascade do |t|
+    t.uuid "identifier", null: false
     t.string "event", null: false
     t.jsonb "payload"
     t.string "aggregate", null: false
     t.uuid "aggregate_identifier", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["identifier"], name: "index_user_access_outboxes_on_identifier", unique: true
   end
 
   create_table "user_access_permissions", force: :cascade do |t|

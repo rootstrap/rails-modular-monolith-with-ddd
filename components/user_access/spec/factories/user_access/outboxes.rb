@@ -2,7 +2,9 @@
 
 FactoryBot.define do
   factory :user_access_outbox, class: 'UserAccess::Outbox' do
+    aggregate { UserAccess::UserRegistration.name }
     event { 'new_user_registered_domain_event.user_access' }
+    identifier { SecureRandom.uuid }
     payload do
       {
         before: nil,
@@ -43,7 +45,5 @@ FactoryBot.define do
         transaction: nil
       }
     end
-    aggregate { UserAccess::UserRegistration.name }
-    identifier { SecureRandom.uuid }
   end
 end

@@ -4,6 +4,7 @@ class OutboxService
       created_record = yield
 
       outbox_class.create!(
+        identifier: SecureRandom.uuid,
         event: event,
         aggregate_identifier: created_record.identifier,
         aggregate: created_record.class.name,

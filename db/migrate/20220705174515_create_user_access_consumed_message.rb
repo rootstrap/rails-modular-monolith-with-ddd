@@ -6,5 +6,7 @@ class CreateUserAccessConsumedMessage < ActiveRecord::Migration[7.0]
 
       t.timestamps
     end
+
+    add_index :user_access_consumed_messages, [:event_id, :aggregate], unique: true
   end
 end

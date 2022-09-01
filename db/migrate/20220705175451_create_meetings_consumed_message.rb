@@ -6,5 +6,7 @@ class CreateMeetingsConsumedMessage < ActiveRecord::Migration[7.0]
 
       t.timestamps
     end
+
+    add_index :meetings_consumed_messages, [:event_id, :aggregate], unique: true
   end
 end
