@@ -10,6 +10,10 @@
 #  updated_at :datetime         not null
 #  event_id   :uuid
 #
+# Indexes
+#
+#  index_user_access_consumed_messages_on_event_id_and_aggregate  (event_id,aggregate) UNIQUE
+#
 module UserAccess
   class ConsumedMessage < ApplicationRecord
     validates_presence_of :aggregate, :event_id
