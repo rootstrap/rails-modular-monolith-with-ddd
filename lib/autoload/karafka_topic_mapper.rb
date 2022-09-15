@@ -1,3 +1,4 @@
+# TODO: Is this deprecated? Remove if so.
 class KarafkaTopicMapper
   def initialize(prefix)
     @prefix = prefix

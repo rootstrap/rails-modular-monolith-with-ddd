@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
 module Meetings
-  class BaseConsumer < Karafka::BaseConsumer
+  class BaseConsumer
+    def initialize(payload)
+      @payload = payload
+    end
+
     def consume
       if Meetings::ConsumedMessage.already_processed?(id, aggregate)
         Karafka.logger.info "Already processed event: <id: #{id}, aggregate: #{aggregate}>"
@@ -13,6 +17,8 @@ module Meetings
     end
 
     private
+
+    attr_reader :payload
 
     def id
       payload.dig('after', 'id')
@@ -28,10 +34,6 @@ module Meetings
 
     def data
       JSON.parse(payload.dig('after', 'payload'))
-    end
-
-    def payload
-      params.payload['payload']
     end
   end
 end
