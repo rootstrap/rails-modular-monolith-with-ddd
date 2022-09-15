@@ -76,6 +76,8 @@ services:
         condition: service_healthy
   karafka:
     build: .
+    stdin_open: true
+    tty: true
     entrypoint: >
       bash -c "bundle exec karafka s"
     environment:
