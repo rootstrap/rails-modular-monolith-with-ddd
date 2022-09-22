@@ -30,7 +30,7 @@ class KarafkaApp < Karafka::App
 
     consumer_group :user_access do
       topic "#{ENV["KAFKA_CONNECT_DB_SERVER_NAME"]}.public.user_access_outboxes" do
-        consumer UserAccess::OutboxConsumer # TODO: replicate batch consumer
+        consumer UserAccess::BatchBaseConsumer
       end
     end
 
