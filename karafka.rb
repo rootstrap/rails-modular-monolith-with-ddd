@@ -29,13 +29,13 @@ class KarafkaApp < Karafka::App
     active_job_topic :default
 
     consumer_group :user_access do
-      topic 'dbserver1.public.user_access_outboxes' do
+      topic "#{ENV["KAFKA_CONNECT_DB_SERVER_NAME"]}.public.user_access_outboxes" do
         consumer UserAccess::OutboxConsumer # TODO: replicate batch consumer
       end
     end
 
     consumer_group :meetings do
-      topic 'dbserver1.public.user_access_outboxes' do
+      topic "#{ENV["KAFKA_CONNECT_DB_SERVER_NAME"]}.public.user_access_outboxes" do
         consumer Meetings::BatchBaseConsumer
       end
     end
