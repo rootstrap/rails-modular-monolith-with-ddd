@@ -25,19 +25,19 @@ module Meetings
     attr_reader :payload
 
     def id
-      payload.dig('after', 'id')
+      payload.dig('payload', 'after', 'id')
     end
 
     def event
-      payload.dig('after', 'event')
+      payload.dig('payload', 'after', 'event')
     end
 
     def aggregate
-      payload.dig('after', 'aggregate')
+      payload.dig('payload', 'after', 'aggregate')
     end
 
     def data
-      JSON.parse(payload.dig('after', 'payload'))
+      JSON.parse(payload.dig('payload', 'after', 'payload'))
     end
   end
 end

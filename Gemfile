@@ -32,8 +32,7 @@ gem 'karafka', '~> 2.0'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem 'pry-remote'
-  gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+  gem 'pry-remote', require: 'pry-remote'
   # Modularization
   gem 'packwerk', '~> 2.2'
   # Visual representation of components
