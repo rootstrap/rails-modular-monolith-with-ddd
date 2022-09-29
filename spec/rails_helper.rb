@@ -6,6 +6,7 @@ require File.expand_path('../config/environment', __dir__)
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 require 'rspec/rails'
 # Add additional requires below this line. Rails is not loaded until this point!
+require 'karafka/testing/rspec/helpers'
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -65,6 +66,7 @@ RSpec.configure do |config|
 
   config.include ActiveSupport::Testing::TimeHelpers
   config.include Devise::Test::IntegrationHelpers
+  config.include Karafka::Testing::RSpec::Helpers
 
   FactoryBot.definition_file_paths = Dir.glob('components/*/spec/factories')
   FactoryBot.find_definitions

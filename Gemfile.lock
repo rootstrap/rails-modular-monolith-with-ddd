@@ -133,6 +133,8 @@ GEM
       zeitwerk (~> 2.3)
     karafka-core (2.0.2)
       concurrent-ruby (>= 1.1)
+    karafka-testing (2.0.2)
+      karafka (>= 2.0, < 3.0.0)
     launchy (2.5.0)
       addressable (~> 2.7)
     letter_opener (1.8.1)
@@ -312,6 +314,7 @@ DEPENDENCIES
   graphwerk (~> 1.2.0)
   jsbundling-rails (~> 1.0.0)
   karafka (~> 2.0)
+  karafka-testing
   letter_opener (~> 1.4, >= 1.4.1)
   listen (~> 3.3)
   packwerk (~> 2.2)

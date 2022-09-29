@@ -31,6 +31,7 @@ gem 'devise', '~> 4.8'
 gem 'karafka', '~> 2.0'
 
 group :development, :test do
+  gem 'byebug'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'pry-remote', require: 'pry-remote'
   # Modularization
@@ -43,6 +44,7 @@ group :development, :test do
 end
 
 group :test do
+  gem 'karafka-testing'
   gem 'rails-controller-testing', '~> 1.0', '>= 1.0.5'
   gem 'rspec-rails', '~> 5.0', '>= 5.0.2'
 end

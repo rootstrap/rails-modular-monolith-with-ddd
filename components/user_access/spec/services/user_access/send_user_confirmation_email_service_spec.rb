@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe UserAccess::SendUserConfirmationEmailService do
   describe '#call' do
-    subject { described_class.new({ user_registration_id: user_registration.id }).call }
+    subject { described_class.new({ 'id' => user_registration.id }).call }
 
     let(:user_registration) { create(:user_access_user_registration) }
     let(:token) { user_registration.confirmation_token }

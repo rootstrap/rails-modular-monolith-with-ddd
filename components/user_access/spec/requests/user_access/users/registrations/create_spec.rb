@@ -3,7 +3,21 @@
 require 'rails_helper'
 
 RSpec.describe 'POST /users' do
-  subject do
+  subject(:consumer) do
+    coordinators = Karafka::Processing::CoordinatorsBuffer.new
+    consumer = UserAccess::BatchBaseConsumer.new
+    topic_name = "#{ENV["KAFKA_CONNECT_DB_SERVER_NAME"]}.public.user_access_outboxes"
+    topic = ::Karafka::App.consumer_groups.map(&:topics).flat_map(&:to_a).find do |topic|
+      topic.name == topic_name
+    end # check if multiple consumer groups
+    consumer.topic = topic
+    consumer.producer = Karafka::App.producer
+    consumer.client = _karafka_consumer_client
+    consumer.coordinator = coordinators.find_or_create(topic.name, 0)
+    consumer
+  end
+
+  let(:request) do
     post user_registration_registration_path, params: params
   end
 
@@ -22,15 +36,29 @@ RSpec.describe 'POST /users' do
     end
 
     it 'creates a new user registration' do
-      expect { subject }.to change(UserAccess::UserRegistration, :count).by(1)
+      expect { request }.to change(UserAccess::UserRegistration, :count).by(1)
     end
 
     it 'creates an outbox record' do
-      expect { subject }.to change(UserAccess::Outbox, :count).by(1)
+      expect { request }.to change(UserAccess::Outbox, :count).by(1)
+    end
+
+    it 'enqueues the confirmation email' do
+      request
+
+      outbox_message = UserAccess::Outbox.last.tap { |h| h['payload'].to_json }
+      event_payload = { payload: { after: outbox_message } }
+
+      karafka.produce(event_payload.to_json)
+
+      expect { consumer.consume }
+        .to have_enqueued_job
+        .on_queue('default')
+        .with('Devise::Mailer', 'confirmation_instructions', 'deliver_now', args: anything)
     end
 
     it 'redirects to home page' do
-      expect(subject).to redirect_to('/')
+      expect(request).to redirect_to('/')
     end
   end
 
@@ -46,11 +74,11 @@ RSpec.describe 'POST /users' do
     end
 
     it 'does not create a new user registration' do
-      expect { subject }.to_not change(UserAccess::UserRegistration, :count)
+      expect { request }.to_not change(UserAccess::UserRegistration, :count)
     end
 
     it 'renders the errors' do
-      expect(subject).to render_template(:new)
+      expect(request).to render_template(:new)
     end
   end
 end
