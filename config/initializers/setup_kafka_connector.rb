@@ -1,4 +1,4 @@
-if ENV["SETUP_KAFKA_CONNECTOR"] == "true"
+if !Rails.env.test? && defined?(Rails::Server) && ENV["SETUP_KAFKA_CONNECTOR"] == "true"
   # Register the connector once the kafka-connector service is running
   `curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" connect:8083/connectors/ -d @- << EOF
     {
