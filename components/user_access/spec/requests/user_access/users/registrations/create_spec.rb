@@ -46,7 +46,7 @@ RSpec.describe 'POST /users' do
     it 'enqueues the confirmation email' do
       request
 
-      outbox_message = UserAccess::Outbox.last.tap { |h| h['payload'].to_json }
+      outbox_message = UserAccess::Outbox.last.as_json.tap { |h| h['payload'] = h['payload'].to_json }
       event_payload = { payload: { after: outbox_message } }
 
       karafka.produce(event_payload.to_json)
