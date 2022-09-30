@@ -44,14 +44,17 @@ RSpec.describe 'POST /users' do
     end
 
     it 'enqueues the confirmation email' do
-      request
+      expect(UserAccess::Outbox).to receive(:create!).and_wrap_original do |m, *args|
+        m.call(*args)
 
-      outbox_message = UserAccess::Outbox.last.as_json.tap { |h| h['payload'] = h['payload'].to_json }
-      event_payload = { payload: { after: outbox_message } }
+        outbox_message = UserAccess::Outbox.last.as_json.tap { |h| h['payload'] = h['payload'].to_json }
+        event_payload = { payload: { after: outbox_message } }
+        karafka.produce(event_payload.to_json)
 
-      karafka.produce(event_payload.to_json)
+        consumer.consume
+      end
 
-      expect { consumer.consume }
+      expect { request }
         .to have_enqueued_job
         .on_queue('default')
         .with('Devise::Mailer', 'confirmation_instructions', 'deliver_now', args: anything)
