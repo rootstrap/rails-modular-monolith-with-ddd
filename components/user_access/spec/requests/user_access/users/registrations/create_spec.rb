@@ -4,17 +4,11 @@ require 'rails_helper'
 
 RSpec.describe 'POST /users' do
   subject(:consumer) do
-    coordinators = Karafka::Processing::CoordinatorsBuffer.new
-    consumer = UserAccess::BatchBaseConsumer.new
-    topic_name = "#{ENV["KAFKA_CONNECT_DB_SERVER_NAME"]}.public.user_access_outboxes"
-    topic = ::Karafka::App.consumer_groups.map(&:topics).flat_map(&:to_a).find do |topic|
-      topic.name == topic_name
-    end # check if multiple consumer groups
-    consumer.topic = topic
-    consumer.producer = Karafka::App.producer
-    consumer.client = _karafka_consumer_client
-    consumer.coordinator = coordinators.find_or_create(topic.name, 0)
-    consumer
+    Support::KarafkaConsumerMock.build(
+      UserAccess::BatchBaseConsumer.new,
+      "#{ENV["KAFKA_CONNECT_DB_SERVER_NAME"]}.public.user_access_outboxes",
+      _karafka_consumer_client
+    )
   end
 
   let(:request) do
