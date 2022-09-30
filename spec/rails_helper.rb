@@ -7,6 +7,7 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 require 'rspec/rails'
 # Add additional requires below this line. Rails is not loaded until this point!
 require 'karafka/testing/rspec/helpers'
+require 'support/kafka_connect_mock'
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -70,4 +71,12 @@ RSpec.configure do |config|
 
   FactoryBot.definition_file_paths = Dir.glob('components/*/spec/factories')
   FactoryBot.find_definitions
+
+  config.before do
+    allow(UserAccess::Outbox).to receive(:create!).and_wrap_original do |m, *args|
+      outbox_message = m.call(*args)
+      karafka.produce(Support::KafkaConnectMock.wrap_message(outbox_message))
+      consumer.consume
+    end
+  end
 end
