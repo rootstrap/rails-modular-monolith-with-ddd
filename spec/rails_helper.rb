@@ -73,7 +73,7 @@ RSpec.configure do |config|
   FactoryBot.definition_file_paths = Dir.glob('components/*/spec/factories')
   FactoryBot.find_definitions
 
-  config.before do
+  config.before type: :request do
     allow(UserAccess::Outbox).to receive(:create!).and_wrap_original do |m, *args|
       outbox_message = m.call(*args)
       karafka.produce(Support::KafkaConnectMock.wrap_message(outbox_message))
