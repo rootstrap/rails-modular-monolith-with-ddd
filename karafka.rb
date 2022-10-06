@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 require ::File.expand_path('config/environment', __dir__)
+Dir.glob('components/*/config').each do |component_config|
+  karafka_path = "#{component_config}/karafka.rb"
+  require_relative karafka_path if File.exists? karafka_path
+end
 
 # Karafka app object
 class KarafkaApp < Karafka::App
@@ -28,12 +32,6 @@ class KarafkaApp < Karafka::App
   routes.draw do
     # This needs to match queues defined in your ActiveJobs
     active_job_topic :default
-
-    consumer_group :user_access do
-      topic "#{ENV["KAFKA_CONNECT_DB_SERVER_NAME"]}.public.user_access_outboxes" do
-        consumer UserAccess::BatchBaseConsumer
-      end
-    end
 
     consumer_group :meetings do
       topic "#{ENV["KAFKA_CONNECT_DB_SERVER_NAME"]}.public.user_access_outboxes" do
