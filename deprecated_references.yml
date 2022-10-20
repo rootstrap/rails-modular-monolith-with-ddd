@@ -1,0 +1,24 @@
+# This file contains a list of dependencies that are not part of the long term plan for ..
+# We should generally work to reduce this list, but not at the expense of actually getting work done.
+#
+# You can regenerate this file using the following command:
+#
+# bin/packwerk update-deprecations .
+---
+components/meetings:
+  "::Meetings::BatchBaseConsumer":
+    violations:
+    - privacy
+    files:
+    - karafka.rb
+components/user_access:
+  "::UserAccess::BatchBaseConsumer":
+    violations:
+    - privacy
+    files:
+    - karafka.rb
+  "::UserAccess::Outbox":
+    violations:
+    - privacy
+    files:
+    - spec/rails_helper.rb
