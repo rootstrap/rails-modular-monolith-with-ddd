@@ -2,7 +2,7 @@
 require 'shellwords'
 
 if !ENV['RAILS_LOCAL'] && system("which docker-compose > /dev/null 2>&1")
-  exec "docker-compose exec web sh -c 'bin/rails #{Shellwords.join(ARGV)}'"
+  exec "docker-compose exec $(docker-compose ps --services --filter 'status=running' | grep web) sh -c 'bin/rails #{Shellwords.join(ARGV)}'"
 else
   APP_PATH = File.expand_path('../config/application', __dir__)
   require_relative '../config/boot'
