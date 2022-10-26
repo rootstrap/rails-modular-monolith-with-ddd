@@ -4,6 +4,7 @@ on:
   push:
     branches: [ main ]
   pull_request:
+  workflow_dispatch:
 
 jobs:
   test:
@@ -12,7 +13,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres
+        image: postgres:13
         env:
           POSTGRES_PASSWORD: postgres
         options: >-
@@ -27,6 +28,7 @@ jobs:
       PG_HOST: localhost
       PG_USER: postgres
       PG_PASSWORD: postgres
+      RAILS_LOCAL: true
 
     steps:
       - uses: actions/checkout@v2

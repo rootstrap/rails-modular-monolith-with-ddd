@@ -29,5 +29,7 @@ module RailsModularMonolithWithDdd
     end
     # add lib/autoload files to Rails eager load path
     config.eager_load_paths << config.root.join('lib', 'autoload')
+
+    config.active_job.queue_adapter = :karafka
   end
 end

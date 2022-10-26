@@ -1,4 +1,4 @@
-if ENV["SETUP_KAFKA_CONNECTOR"] == "true"
+if !Rails.env.test? && defined?(Rails::Server) && ENV["SETUP_KAFKA_CONNECTOR"] == "true"
   # Register the connector once the kafka-connector service is running
   `curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" connect:8083/connectors/ -d @- << EOF
     {
@@ -7,12 +7,12 @@ if ENV["SETUP_KAFKA_CONNECTOR"] == "true"
         "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
         "tasks.max": "1",
         "plugin.name": "pgoutput",
-        "database.hostname": "db",
+        "database.hostname": "#{ENV["PG_HOST"]}",
         "database.port": "5432",
-        "database.user": "postgres",
-        "database.password": "postgres",
+        "database.user": "#{ENV["PG_USER"]}",
+        "database.password": "#{ENV["PG_PASSWORD"]}",
         "database.dbname": "rails_modular_monolith_with_ddd_development",
-        "database.server.name": "dbserver1",
+        "database.server.name": "#{ENV["KAFKA_CONNECT_DB_SERVER_NAME"]}",
         "schema.whitelist": "public",
         "table.whitelist": "public.user_access_outboxes",
         "tombstones.on.delete": "false"

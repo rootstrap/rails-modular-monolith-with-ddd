@@ -3,7 +3,15 @@
 require 'rails_helper'
 
 RSpec.describe 'POST /users' do
-  subject do
+  subject(:consumer) do
+    Support::KarafkaConsumerMock.build(
+      UserAccess::BatchBaseConsumer.new,
+      "#{ENV["KAFKA_CONNECT_DB_SERVER_NAME"]}.public.user_access_outboxes",
+      _karafka_consumer_client
+    )
+  end
+
+  let(:request) do
     post user_registration_registration_path, params: params
   end
 
@@ -22,15 +30,22 @@ RSpec.describe 'POST /users' do
     end
 
     it 'creates a new user registration' do
-      expect { subject }.to change(UserAccess::UserRegistration, :count).by(1)
+      expect { request }.to change(UserAccess::UserRegistration, :count).by(1)
     end
 
     it 'creates an outbox record' do
-      expect { subject }.to change(UserAccess::Outbox, :count).by(1)
+      expect { request }.to change(UserAccess::Outbox, :count).by(1)
+    end
+
+    it 'enqueues the confirmation email' do
+      expect { request }
+        .to have_enqueued_job
+        .on_queue('default')
+        .with('Devise::Mailer', 'confirmation_instructions', 'deliver_now', args: anything)
     end
 
     it 'redirects to home page' do
-      expect(subject).to redirect_to('/')
+      expect(request).to redirect_to('/')
     end
   end
 
@@ -46,11 +61,11 @@ RSpec.describe 'POST /users' do
     end
 
     it 'does not create a new user registration' do
-      expect { subject }.to_not change(UserAccess::UserRegistration, :count)
+      expect { request }.to_not change(UserAccess::UserRegistration, :count)
     end
 
     it 'renders the errors' do
-      expect(subject).to render_template(:new)
+      expect(request).to render_template(:new)
     end
   end
 end
