@@ -38,7 +38,10 @@ RSpec.describe 'POST /users' do
     end
 
     it 'enqueues the confirmation email' do
-      expect { request }
+      expect do
+        request
+        consumer.consume
+      end
         .to have_enqueued_job
         .on_queue('default')
         .with('Devise::Mailer', 'confirmation_instructions', 'deliver_now', args: anything)

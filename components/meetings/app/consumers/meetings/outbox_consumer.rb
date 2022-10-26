@@ -7,16 +7,16 @@ module Meetings
     end
 
     def consume
-      if Meetings::ConsumedMessage.already_processed?(id, aggregate)
-        Karafka.logger.info "Already processed event: <id: #{id}, aggregate: #{aggregate}>"
+      if Meetings::ConsumedMessage.already_processed?(identifier, aggregate)
+        Karafka.logger.info "Already processed event: <identifier: #{identifier}, aggregate: #{aggregate}>"
         return
       else
-        Karafka.logger.info "New [Meetings::Outbox] event: <id: #{id}, aggregate: #{aggregate}>"
+        Karafka.logger.info "New [Meetings::Outbox] event: <identifier: #{identifier}, aggregate: #{aggregate}>"
         if event == 'new_user_registered_domain_event.user_access'
           Meetings::CreateMemberService.new(data).call
         end
 
-        Meetings::ConsumedMessage.create!(event_id: id, aggregate: aggregate)
+        Meetings::ConsumedMessage.create!(event_id: identifier, aggregate: aggregate)
       end
     end
 
@@ -26,6 +26,10 @@ module Meetings
 
     def id
       payload.dig('payload', 'after', 'id')
+    end
+
+    def identifier
+      payload.dig('payload', 'after', 'identifier')
     end
 
     def event
