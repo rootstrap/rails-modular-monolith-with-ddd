@@ -33,26 +33,8 @@ RSpec.describe UserAccess::UserRegistrationService do
       expect(user_registration.encrypted_password).to_not eq(password)
     end
 
-    it 'triggers a new_user_registered_domain_event' do
-      freeze_time do
-        new_user_registered_domain_event = {
-          identifier: anything,
-          user_registration_id: anything,
-          login: attributes[:login],
-          email: attributes[:email],
-          first_name: attributes[:first_name],
-          last_name: attributes[:last_name],
-          name: "#{attributes[:first_name]} #{attributes[:last_name]}",
-          registered_at: Time.current
-        }
-  
-        expect(ActiveSupport::Notifications).to receive(:instrument).with(
-          'new_user_registered_domain_event.user_access',
-          new_user_registered_domain_event
-        )
-  
-        subject
-      end
+    it 'creates an outbox record' do
+      expect { subject }.to change(UserAccess::Outbox, :count).by(1)
     end
 
     context 'when the password and password confirmation do not match' do

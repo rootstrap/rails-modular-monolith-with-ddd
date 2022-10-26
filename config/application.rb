@@ -22,12 +22,14 @@ module RailsModularMonolithWithDdd
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
 
-    config.action_mailer.default_url_options = { host: ENV['SERVER_HOST'], port: 3000 }
-
     Dir.glob('components/*').each do |component_root|
       PATHS.each do |path|
         config.paths[path] << Rails.root.join(component_root, path)
       end
     end
+    # add lib/autoload files to Rails eager load path
+    config.eager_load_paths << config.root.join('lib', 'autoload')
+
+    config.active_job.queue_adapter = :karafka
   end
 end

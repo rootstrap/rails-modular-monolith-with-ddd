@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres
+        image: postgres:13
         env:
           POSTGRES_PASSWORD: postgres
         options: >-
@@ -26,6 +26,8 @@ jobs:
       PG_HOST: localhost
       PG_USER: postgres
       PG_PASSWORD: postgres
+      RAILS_LOCAL: true
+
     steps:
       - uses: actions/checkout@v2
       - name: Setup Ruby

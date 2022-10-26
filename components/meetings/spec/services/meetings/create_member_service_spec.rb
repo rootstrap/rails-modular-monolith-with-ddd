@@ -15,7 +15,7 @@ RSpec.describe Meetings::CreateMemberService do
         first_name: user_registration.first_name,
         last_name: user_registration.last_name,
         name: "#{user_registration.first_name} #{user_registration.last_name}",
-      }
+      }.stringify_keys
     end
 
     context 'when user registration is confirmed' do
