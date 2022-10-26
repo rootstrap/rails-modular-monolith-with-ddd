@@ -4,12 +4,11 @@ on:
   push:
     branches: [ main ]
   pull_request:
+  workflow_dispatch:
 
 jobs:
   test:
-
     runs-on: ubuntu-latest
-
     services:
       postgres:
         image: postgres
@@ -27,7 +26,6 @@ jobs:
       PG_HOST: localhost
       PG_USER: postgres
       PG_PASSWORD: postgres
-
     steps:
       - uses: actions/checkout@v2
       - name: Setup Ruby
