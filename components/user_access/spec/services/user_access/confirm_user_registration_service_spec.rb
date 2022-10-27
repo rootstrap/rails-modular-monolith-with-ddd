@@ -25,6 +25,10 @@ RSpec.describe UserAccess::ConfirmUserRegistrationService do
 
       it 'creates an outbox record' do
         expect { subject }.to change(UserAccess::Outbox, :count).by(1)
+        outbox = UserAccess::Outbox.last
+        expect(outbox.event).to eq('user_registration_confirmed_domain_event.user_access')
+        expect(outbox.aggregate).to eq('UserAccess::UserRegistration')
+        expect(outbox.aggregate_identifier).to eq(user_registration.identifier)
       end
     end
 

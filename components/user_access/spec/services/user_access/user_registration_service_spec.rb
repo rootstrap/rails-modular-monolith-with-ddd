@@ -35,6 +35,11 @@ RSpec.describe UserAccess::UserRegistrationService do
 
     it 'creates an outbox record' do
       expect { subject }.to change(UserAccess::Outbox, :count).by(1)
+      user_registration = UserAccess::UserRegistration.last
+      outbox = UserAccess::Outbox.last
+      expect(outbox.event).to eq('new_user_registered_domain_event.user_access')
+      expect(outbox.aggregate).to eq('UserAccess::UserRegistration')
+      expect(outbox.aggregate_identifier).to eq(user_registration.identifier)
     end
 
     context 'when the password and password confirmation do not match' do
