@@ -3,8 +3,8 @@
 module UserAccess
   class OutboxConsumer
     EVENTS_MAPPING = {
-      'new_user_registered_domain_event.user_access' => UserAccess::SendUserConfirmationEmailService,
-      'user_registration_confirmed_domain_event.user_access' => UserAccess::CreateUserService
+      UserAccess::Events::NEW_USER_REGISTERED => UserAccess::SendUserConfirmationEmailService,
+      UserAccess::Events::USER_REGISTRATION_CONFIRMED => UserAccess::CreateUserService
     }
 
     def initialize(payload)

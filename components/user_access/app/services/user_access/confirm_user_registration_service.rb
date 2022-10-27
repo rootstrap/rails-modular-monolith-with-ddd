@@ -12,7 +12,7 @@ module UserAccess
       user_registration.status_code = :confirmed
       user_registration.confirmed_at = Time.current
 
-      UserAccess::OutboxService.new.create!(event: 'user_registration_confirmed_domain_event.user_access') do
+      UserAccess::OutboxService.new.create!(event: UserAccess::Events::USER_REGISTRATION_CONFIRMED) do
         user_registration.save!
         user_registration
       end

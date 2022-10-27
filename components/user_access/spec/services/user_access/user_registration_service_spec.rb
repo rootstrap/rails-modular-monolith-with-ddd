@@ -37,7 +37,7 @@ RSpec.describe UserAccess::UserRegistrationService do
       expect { subject }.to change(UserAccess::Outbox, :count).by(1)
       user_registration = UserAccess::UserRegistration.last
       outbox = UserAccess::Outbox.last
-      expect(outbox.event).to eq('new_user_registered_domain_event.user_access')
+      expect(outbox.event).to eq(UserAccess::Events::NEW_USER_REGISTERED)
       expect(outbox.aggregate).to eq('UserAccess::UserRegistration')
       expect(outbox.aggregate_identifier).to eq(user_registration.identifier)
     end
