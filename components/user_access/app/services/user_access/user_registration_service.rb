@@ -14,7 +14,7 @@ module UserAccess
     def call
       return false unless user_registration.valid?
 
-      UserAccess::OutboxService.new.create!(event: 'new_user_registered_domain_event.user_access') do
+      UserAccess::OutboxService.new.create!(event: UserAccess::Events::NEW_USER_REGISTERED) do
         user_registration.save!
         user_registration
       end

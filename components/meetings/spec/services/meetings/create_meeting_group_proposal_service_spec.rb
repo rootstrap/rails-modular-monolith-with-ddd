@@ -29,7 +29,7 @@ RSpec.describe Meetings::CreateMeetingGroupProposalService do
       it 'publishes the meeting_group_proposed_domain_event' do
         allow(ActiveSupport::Notifications).to receive(:instrument).and_call_original
         expect(ActiveSupport::Notifications).to receive(:instrument).with(
-          'meeting_group_proposed_domain_event.meetings',
+          Meetings::Events::MEETING_GROUP_PROPOSED,
           attributes.merge(
             id: anything
           )

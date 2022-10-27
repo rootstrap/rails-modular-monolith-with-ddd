@@ -2,6 +2,10 @@
 
 module Meetings
   class OutboxConsumer
+    EVENTS_MAPPING = {
+      Meetings::Events::NEW_USER_REGISTERED => Meetings::CreateMemberService,
+    }
+
     def initialize(payload)
       @payload = payload
     end
@@ -12,10 +16,7 @@ module Meetings
         return
       else
         Karafka.logger.info "New [Meetings::Outbox] event: <identifier: #{identifier}, aggregate: #{aggregate}>"
-        if event == 'new_user_registered_domain_event.user_access'
-          Meetings::CreateMemberService.new(data).call
-        end
-
+        EVENTS_MAPPING[event].new(data).call
         Meetings::ConsumedMessage.create!(event_id: identifier, aggregate: aggregate)
       end
     end

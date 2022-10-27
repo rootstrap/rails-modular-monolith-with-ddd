@@ -15,7 +15,7 @@ module Meetings
 
       if valid
         ActiveSupport::Notifications.instrument(
-          'meeting_group_proposed_domain_event.meetings',
+          Meetings::Events::MEETING_GROUP_PROPOSED,
           meeting_group_proposed_domain_event_payload
         )
       end
