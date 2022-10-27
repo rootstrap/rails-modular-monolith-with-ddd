@@ -44,9 +44,8 @@ RSpec.describe UserAccess::UserRegistrationService do
         expect { subject }.to_not change(UserAccess::UserRegistration, :count)
       end
 
-      it 'does not trigger a new_user_registered_domain_event' do
-        expect(ActiveSupport::Notifications).not_to receive(:publish)
-        subject
+      it 'does not create an outbox record' do
+        expect { subject }.to_not change(UserAccess::Outbox, :count)
       end
     end
   end

@@ -2,6 +2,11 @@
 
 module UserAccess
   class OutboxConsumer
+    EVENTS_MAPPING = {
+      'new_user_registered_domain_event.user_access' => UserAccess::SendUserConfirmationEmailService,
+      'user_registration_confirmed_domain_event.user_access' => UserAccess::CreateUserService
+    }
+
     def initialize(payload)
       @payload = payload
     end
@@ -12,10 +17,7 @@ module UserAccess
         return
       else
         Karafka.logger.info "New [UserAccess::Outbox] event: <identifier: #{identifier}, aggregate: #{aggregate}>"
-        if event == 'new_user_registered_domain_event.user_access'
-          UserAccess::SendUserConfirmationEmailService.new(data).call
-        end
-
+        EVENTS_MAPPING[event].new(data).call
         UserAccess::ConsumedMessage.create!(event_id: identifier, aggregate: aggregate)
       end
     end

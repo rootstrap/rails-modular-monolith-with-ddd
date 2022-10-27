@@ -23,19 +23,8 @@ RSpec.describe UserAccess::ConfirmUserRegistrationService do
 
       it { is_expected.to be true }
 
-      it 'triggers a user_registration_confirmed_domain_event' do
-        freeze_time do
-          user_registration_confirmed_domain_event = {
-            user_registration_id: user_registration.id
-          }
-
-          expect(ActiveSupport::Notifications).to receive(:instrument).with(
-            'user_registration_confirmed_domain_event.user_access',
-            user_registration_confirmed_domain_event
-          )
-
-          subject
-        end
+      it 'creates an outbox record' do
+        expect { subject }.to change(UserAccess::Outbox, :count).by(1)
       end
     end
 
