@@ -7,7 +7,7 @@ RSpec.describe Meetings::AcceptMeetingGroupProposalService do
   let(:meeting_group_proposal) do
     create(:meetings_meeting_group_proposal, proposal_user_id: member.id)
   end
-  let(:event_payload) { { meeting_group_proposal_id: meeting_group_proposal.id} }
+  let(:event_payload) { meeting_group_proposal.as_json }
 
   describe '#call' do
     subject { described_class.new(event_payload).call }
