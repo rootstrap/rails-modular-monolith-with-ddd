@@ -4,6 +4,7 @@ module Meetings
   class OutboxConsumer
     EVENTS_MAPPING = {
       Meetings::Events::NEW_USER_REGISTERED => Meetings::CreateMemberService,
+      Meetings::Events::MEETING_GROUP_PROPOSAL_ACCEPTED => Meetings::AcceptMeetingGroupProposalService
     }
 
     def initialize(payload)

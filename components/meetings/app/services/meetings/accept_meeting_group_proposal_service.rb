@@ -3,7 +3,7 @@ module Meetings
     attr_reader :meeting_group_proposal
 
     def initialize(event_payload)
-      @meeting_group_proposal = MeetingGroupProposal.find(event_payload[:meeting_group_proposal_id])
+      @meeting_group_proposal = MeetingGroupProposal.find(event_payload['id'])
     end
 
     def call
