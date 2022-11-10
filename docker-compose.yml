@@ -11,8 +11,6 @@ services:
   kafka:
     image: debezium/kafka:1.9
     restart: on-failure
-    ports:
-      - 9092:9092
     environment:
       - ZOOKEEPER_CONNECT=zookeeper:2181
     depends_on:
@@ -26,8 +24,6 @@ services:
   connect:
     image: debezium/connect:1.9
     restart: on-failure
-    ports:
-      - 8083:8083
     healthcheck:
         test: ["CMD", "curl", "-f", "http://localhost:8083"]
         interval: 30s
@@ -49,7 +45,7 @@ services:
     build: .
     entrypoint: >
       bash -c "
-      bundle exec rails db:create db:migrate
+      bundle exec rails db:create db:migrate assets:precompile
       && rm -f tmp/pids/server.pid
       && bundle exec rails s -b 0.0.0.0"
     environment:
