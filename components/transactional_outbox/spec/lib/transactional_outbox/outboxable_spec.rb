@@ -3,25 +3,26 @@
 require 'rails_helper'
 
 RSpec.describe TransactionalOutbox::Outboxable do
-  let(:dummy_model) do
-    Class.new(ApplicationRecord) do
+  let!(:FakeModel) do
+    FakeModel = Class.new(ApplicationRecord) do
       include TransactionalOutbox::Outboxable
     end
   end
 
   before do
-    stub_const('Model', dummy_model)
+    ActiveRecord::Base.connection.create_table :fake_models do |t|
+      t.uuid :identifier
+      t.string :foo
+    end
   end
 
   describe '#save' do
-    let(:model) { instance_double(Model, save: true) }
-
-    subject { model.save }
+    subject { FakeModel.new(identifier: SecureRandom.uuid, foo: foo).save }
 
     context 'when record is created' do
       context 'when outbox record is created' do
-        # TODO: Do we want to check if the record is actually saved in the database?
-        # This expectation is just checking the stubbed value
+        let(:foo) { :bar }
+
         it { is_expected.to be true }
 
         it 'creates the outbox record' do
