@@ -6,6 +6,7 @@ RSpec.describe TransactionalOutbox::Outboxable do
   let!(:FakeModel) do
     FakeModel = Class.new(ApplicationRecord) do
       include TransactionalOutbox::Outboxable
+      validates :identifier, presence: true
     end
   end
 
@@ -18,9 +19,9 @@ RSpec.describe TransactionalOutbox::Outboxable do
   describe '#save' do
     subject { FakeModel.new(identifier: identifier).save }
 
-    context 'when record is created' do
-      let(:identifier) { SecureRandom.uuid }
+    let(:identifier) { SecureRandom.uuid }
 
+    context 'when record is created' do
       context 'when outbox record is created' do
         it { is_expected.to be true }
 
@@ -33,30 +34,52 @@ RSpec.describe TransactionalOutbox::Outboxable do
         end
       end
 
-      context 'when there is an error when creating the outbox record' do
+      context 'when there is a record invalid error when creating the outbox record' do
         before do
-          expect(TransactionalOutbox::Outbox).to receive(:create!).and_raise
+          allow(TransactionalOutbox::Outbox).to receive(:create!).and_raise(ActiveRecord::RecordInvalid)
         end
 
         it { is_expected.to be false }
 
         it 'does not create the record' do
-          expect { subject }.to raise_error.and not_to change(FakeModel, :count)
+          expect { subject }.not_to change(FakeModel, :count)
         end
 
         it 'does not create the outbox record' do
-          expect { subject }.to raise_error.and not_to change(TransactionalOutbox::Outbox, :count)
+          expect { subject }.not_to change(TransactionalOutbox::Outbox, :count)
+        end
+      end
+
+      context 'when there is an error when creating the outbox record' do
+        before do
+          allow(TransactionalOutbox::Outbox).to receive(:create!).and_raise(ActiveRecord::RecordNotSaved)
+        end
+
+        it 'raises error' do
+          expect { subject }.to raise_error(ActiveRecord::RecordNotSaved)
+        end
+
+        it 'does not create the record' do
+          expect { subject }.to raise_error.and not_change(FakeModel, :count)
+        end
+
+        it 'does not create the outbox record' do
+          expect { subject }.to raise_error.and not_change(TransactionalOutbox::Outbox, :count)
         end
       end
     end
 
     context 'when the record could not be created' do
-      it 'does not create the record' do
+      let(:identifier) { nil }
 
+      it { is_expected.to be false }
+
+      it 'does not create the record' do
+        expect { subject }.not_to change(FakeModel, :count)
       end
 
       it 'does not create the outbox record' do
-        expect { subject }.not_to change(TransactionalOutbox::Outbox, :count).by(1)
+        expect { subject }.not_to change(TransactionalOutbox::Outbox, :count)
       end
     end
   end
