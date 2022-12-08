@@ -16,7 +16,7 @@
 #  login                :string           not null
 #  name                 :string           not null
 #  registered_at        :datetime         not null
-#  status_code          :integer          not null
+#  status               :integer          not null
 #  unconfirmed_email    :string
 #  created_at           :datetime         not null
 #  updated_at           :datetime         not null
@@ -31,9 +31,9 @@ module UserAccess
 
     validates_uniqueness_of :identifier, :email, :login
     validates_presence_of :identifier, :email, :encrypted_password, :first_name, :last_name, :name,
-                          :login, :registered_at, :status_code
+                          :login, :registered_at, :status
 
-    enum status_code: {
+    enum status: {
       waiting_for_confirmation: 0,
       confirmed: 1,
       expired: 2

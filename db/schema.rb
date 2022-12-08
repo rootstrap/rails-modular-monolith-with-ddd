@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_07_05_175451) do
+ActiveRecord::Schema[7.0].define(version: 2022_12_07_223108) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -61,6 +61,17 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_05_175451) do
     t.index ["identifier"], name: "index_meetings_members_on_identifier", unique: true
   end
 
+  create_table "meetings_outboxes", force: :cascade do |t|
+    t.uuid "identifier", null: false
+    t.string "event", null: false
+    t.jsonb "payload"
+    t.string "aggregate", null: false
+    t.uuid "aggregate_identifier", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["identifier"], name: "index_meetings_outboxes_on_identifier", unique: true
+  end
+
   create_table "user_access_consumed_messages", force: :cascade do |t|
     t.uuid "event_id"
     t.string "aggregate"
@@ -105,7 +116,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_05_175451) do
     t.string "first_name", null: false
     t.string "last_name", null: false
     t.string "name", null: false
-    t.integer "status_code", null: false
+    t.integer "status", null: false
     t.datetime "registered_at", precision: nil, null: false
     t.datetime "confirmed_at", precision: nil
     t.datetime "created_at", null: false
@@ -135,11 +146,11 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_05_175451) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "login", null: false
-    t.boolean "is_active", null: false
     t.string "first_name", null: false
     t.string "last_name", null: false
     t.string "name", null: false
     t.uuid "identifier", null: false
+    t.integer "status", default: 0
     t.index ["email"], name: "index_user_access_users_on_email", unique: true
     t.index ["identifier"], name: "index_user_access_users_on_identifier", unique: true
     t.index ["reset_password_token"], name: "index_user_access_users_on_reset_password_token", unique: true
