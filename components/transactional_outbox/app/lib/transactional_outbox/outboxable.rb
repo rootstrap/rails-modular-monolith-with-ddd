@@ -16,7 +16,7 @@ module TransactionalOutbox
       TransactionalOutbox::Outbox.create!(
         aggregate: self.class.name,
         aggregate_identifier: identifier,
-        event: "#{action} #{self.class.name}",
+        event: "#{action.upcase}_#{self.class.name}",
         identifier: SecureRandom.uuid,
         payload: as_json
       )
