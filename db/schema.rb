@@ -71,6 +71,25 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_19_201406) do
     t.uuid "aggregate_identifier", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["identifier"], name: "index_meetings_outboxes_on_identifier", unique: true
+  end
+
+  create_table "user_access_consumed_messages", force: :cascade do |t|
+    t.uuid "event_id"
+    t.string "aggregate"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["event_id", "aggregate"], name: "index_user_access_consumed_messages_on_event_id_and_aggregate", unique: true
+  end
+
+  create_table "user_access_outboxes", force: :cascade do |t|
+    t.uuid "identifier", null: false
+    t.string "event", null: false
+    t.jsonb "payload"
+    t.string "aggregate", null: false
+    t.uuid "aggregate_identifier", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["aggregate_identifier"], name: "index_meetings_outboxes_on_aggregate_identifier"
     t.index ["identifier"], name: "index_meetings_outboxes_on_identifier", unique: true
   end
@@ -121,7 +140,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_19_201406) do
     t.string "first_name", null: false
     t.string "last_name", null: false
     t.string "name", null: false
-    t.integer "status_code", null: false
+    t.integer "status", null: false
     t.datetime "registered_at", precision: nil, null: false
     t.datetime "confirmed_at", precision: nil
     t.datetime "created_at", null: false
@@ -151,11 +170,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_19_201406) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "login", null: false
-    t.boolean "is_active", null: false
     t.string "first_name", null: false
     t.string "last_name", null: false
     t.string "name", null: false
     t.uuid "identifier", null: false
+    t.integer "status", default: 0
     t.index ["email"], name: "index_user_access_users_on_email", unique: true
     t.index ["identifier"], name: "index_user_access_users_on_identifier", unique: true
     t.index ["reset_password_token"], name: "index_user_access_users_on_reset_password_token", unique: true
