@@ -6,5 +6,7 @@ module Meetings
     NEW_USER_REGISTERED = 'NEW_USER_REGISTERED_DOMAIN_EVENT.USER_ACCESS'
     # Event triggered when an admin accepts a given meeting group proposal
     MEETING_GROUP_PROPOSAL_ACCEPTED = 'MEETING_GROUP_PROPOSAL_ACCEPTED_DOMAIN_EVENT.ADMINISTRATION'
+    # Event triggered when a member is created sucessfully
+    CREATED_MEMBER_SUCCESSFULLY = 'created_member_successfully.meetings'
   end
 end
