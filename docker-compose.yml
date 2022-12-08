@@ -62,7 +62,7 @@ services:
       - SETUP_KAFKA_CONNECTOR=true
     restart: on-failure
     ports:
-      - 3000:3000
+      - ${RAILS_PORT-3000}:3000
     volumes:
       - .:/app/src
     depends_on:
@@ -91,7 +91,7 @@ services:
       - SETUP_KAFKA_CONNECTOR=true
     restart: on-failure
     ports:
-      - 3000:3000
+      - ${RAILS_PORT-3000}:3000
     volumes:
       - .:/app/src
     depends_on:
