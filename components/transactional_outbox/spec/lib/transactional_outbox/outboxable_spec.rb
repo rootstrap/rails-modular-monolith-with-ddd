@@ -36,7 +36,7 @@ RSpec.describe TransactionalOutbox::Outboxable do
           outbox = TransactionalOutbox::Outbox.last
           expect(outbox.aggregate).to eq('FakeModel')
           expect(outbox.aggregate_identifier).to eq(identifier)
-          expect(outbox.event).to eq('CREATE_FakeModel')
+          expect(outbox.event).to eq('CREATE_FAKE_MODEL')
           expect(outbox.identifier).not_to be_nil
           expect(outbox.payload['after'].to_json).to eq(FakeModel.last.to_json)
           expect(outbox.payload['before']).to be_nil
@@ -187,7 +187,7 @@ RSpec.describe TransactionalOutbox::Outboxable do
           outbox = TransactionalOutbox::Outbox.last
           expect(outbox.aggregate).to eq('FakeModel')
           expect(outbox.aggregate_identifier).to eq(identifier)
-          expect(outbox.event).to eq('CREATE_FakeModel')
+          expect(outbox.event).to eq('CREATE_FAKE_MODEL')
           expect(outbox.identifier).not_to be_nil
           expect(outbox.payload['after'].to_json).to eq(FakeModel.last.to_json)
           expect(outbox.payload['before']).to be_nil
@@ -222,7 +222,7 @@ RSpec.describe TransactionalOutbox::Outboxable do
           outbox = TransactionalOutbox::Outbox.last
           expect(outbox.aggregate).to eq('FakeModel')
           expect(outbox.aggregate_identifier).to eq(new_identifier)
-          expect(outbox.event).to eq('UPDATE_FakeModel')
+          expect(outbox.event).to eq('UPDATE_FAKE_MODEL')
           expect(outbox.identifier).not_to be_nil
           expect(outbox.payload['before'].to_json).to eq(fake_old_model)
           expect(outbox.payload['after'].to_json).to eq(fake_model.reload.to_json)
@@ -254,7 +254,7 @@ RSpec.describe TransactionalOutbox::Outboxable do
           outbox = TransactionalOutbox::Outbox.last
           expect(outbox.aggregate).to eq('FakeModel')
           expect(outbox.aggregate_identifier).to eq(identifier)
-          expect(outbox.event).to eq('DESTROY_FakeModel')
+          expect(outbox.event).to eq('DESTROY_FAKE_MODEL')
           expect(outbox.identifier).not_to be_nil
           expect(outbox.payload['after']).to be_nil
           expect(outbox.payload['before'].to_json).to eq(fake_model.to_json)

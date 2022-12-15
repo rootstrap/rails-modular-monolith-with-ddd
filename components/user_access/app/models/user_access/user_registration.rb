@@ -27,6 +27,8 @@
 #
 module UserAccess
   class UserRegistration < ApplicationRecord
+    include TransactionalOutbox::Outboxable
+
     devise :database_authenticatable, :registerable, :validatable, :confirmable
 
     validates_uniqueness_of :identifier, :email, :login

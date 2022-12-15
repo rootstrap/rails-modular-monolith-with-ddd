@@ -10,16 +10,34 @@ module TransactionalOutbox
       after_destroy { create_outbox!(:destroy) }
     end
 
+    def save(**options, &block)
+      if options[:outbox_event].present?
+        @outbox_event = options[:outbox_event].underscore.upcase
+      end
+
+      super(**options, &block)
+    end
+
+    def save!(**options, &block)
+      if options[:outbox_event].present?
+        @outbox_event = options[:outbox_event].underscore.upcase
+      end
+
+      super(**options, &block)
+    end
+
     private
 
     def create_outbox!(action)
       TransactionalOutbox::Outbox.create!(
         aggregate: self.class.name,
         aggregate_identifier: identifier,
-        event: "#{action.upcase}_#{self.class.name}",
+        event: @outbox_event || "#{action.upcase}_#{self.class.name.underscore.upcase}",
         identifier: SecureRandom.uuid,
         payload: payload(action)
       )
+
+      @outbox_event = nil
     end
 
     def payload(action)

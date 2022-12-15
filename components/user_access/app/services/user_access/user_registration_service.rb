@@ -14,11 +14,12 @@ module UserAccess
     def call
       return false unless user_registration.valid?
 
-      UserAccess::OutboxService.new.create!(event: UserAccess::Events::NEW_USER_REGISTERED) do
-        user_registration.save!
-        user_registration
-      end
-      true
+      user_registration.save!(outbox_event: UserAccess::Events::NEW_USER_REGISTERED)
+
+      # UserAccess::OutboxService.new.create!(event: UserAccess::Events::NEW_USER_REGISTERED) do
+        # user_registration
+      # end
+      # true
     rescue ActiveRecord::RecordInvalid => exception
       Rails.logger.error { exception.message }
       false
