@@ -29,15 +29,22 @@ module TransactionalOutbox
     private
 
     def create_outbox!(action)
-      TransactionalOutbox::Outbox.create!(
+      outbox = TransactionalOutbox::Outbox.new(
         aggregate: self.class.name,
         aggregate_identifier: identifier,
         event: @outbox_event || "#{action.upcase}_#{self.class.name.underscore.upcase}",
         identifier: SecureRandom.uuid,
         payload: payload(action)
       )
-
       @outbox_event = nil
+
+      if outbox.invalid?
+        outbox.errors.each do |error|
+          self.errors.import(error, attribute: "outbox.#{error.attribute}")
+        end
+      end
+
+      outbox.save!
     end
 
     def payload(action)

@@ -15,8 +15,9 @@ RSpec.describe TransactionalOutbox::Outboxable do
   end
 
   describe '#save' do
-    subject { FakeModel.new(identifier: identifier).save }
+    subject { fake_model_instance.save }
 
+    let(:fake_model_instance) { FakeModel.new(identifier: identifier) }
     let(:identifier) { SecureRandom.uuid }
 
     context 'when record is created' do
@@ -45,7 +46,9 @@ RSpec.describe TransactionalOutbox::Outboxable do
 
       context 'when there is a record invalid error when creating the outbox record' do
         before do
-          allow(TransactionalOutbox::Outbox).to receive(:create!).and_raise(ActiveRecord::RecordInvalid)
+          outbox = build(:transactional_outbox_outbox, event: nil)
+          allow(TransactionalOutbox::Outbox).to receive(:new).and_return(outbox)
+          allow(outbox).to receive(:save!).and_raise(ActiveRecord::RecordInvalid)
         end
 
         it { is_expected.to be false }
@@ -57,11 +60,17 @@ RSpec.describe TransactionalOutbox::Outboxable do
         it 'does not create the outbox record' do
           expect { subject }.not_to change(TransactionalOutbox::Outbox, :count)
         end
+
+        it 'adds the errors to the model' do
+          expect { subject }.to change { fake_model_instance.errors.messages }.from({}).to({ "outbox.event": ["can't be blank"] })
+        end
       end
 
       context 'when there is an error when creating the outbox record' do
         before do
-          allow(TransactionalOutbox::Outbox).to receive(:create!).and_raise(ActiveRecord::RecordNotSaved)
+          outbox = instance_double(TransactionalOutbox::Outbox, invalid?: false)
+          allow(TransactionalOutbox::Outbox).to receive(:new).and_return(outbox)
+          allow(outbox).to receive(:save!).and_raise(ActiveRecord::RecordNotSaved)
         end
 
         it 'raises error' do
@@ -113,7 +122,9 @@ RSpec.describe TransactionalOutbox::Outboxable do
 
       context 'when there is a record invalid error when creating the outbox record' do
         before do
-          allow(TransactionalOutbox::Outbox).to receive(:create!).and_raise(ActiveRecord::RecordInvalid)
+          outbox = instance_double(TransactionalOutbox::Outbox, invalid?: false)
+          allow(TransactionalOutbox::Outbox).to receive(:new).and_return(outbox)
+          allow(outbox).to receive(:save!).and_raise(ActiveRecord::RecordInvalid)
         end
 
         it 'raises error' do
@@ -131,7 +142,9 @@ RSpec.describe TransactionalOutbox::Outboxable do
 
       context 'when there is an error when creating the outbox record' do
         before do
-          allow(TransactionalOutbox::Outbox).to receive(:create!).and_raise(ActiveRecord::RecordNotSaved)
+          outbox = instance_double(TransactionalOutbox::Outbox, invalid?: false)
+          allow(TransactionalOutbox::Outbox).to receive(:new).and_return(outbox)
+          allow(outbox).to receive(:save!).and_raise(ActiveRecord::RecordNotSaved)
         end
 
         it 'raises error' do
