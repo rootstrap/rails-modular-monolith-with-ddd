@@ -1,10 +1,10 @@
 # == Schema Information
 #
-# Table name: transactional_outbox_outboxes
+# Table name: meetings_outboxes
 #
 #  id                   :bigint           not null, primary key
 #  aggregate            :string           not null
-#  aggregate_identifier :string           not null
+#  aggregate_identifier :uuid             not null
 #  event                :string           not null
 #  identifier           :uuid             not null
 #  payload              :jsonb
@@ -13,7 +13,7 @@
 #
 # Indexes
 #
-#  index_transactional_outbox_outboxes_on_identifier  (identifier)
+#  index_meetings_outboxes_on_identifier  (identifier) UNIQUE
 #
 module Meetings
   class Outbox < TransactionalOutbox::Outbox

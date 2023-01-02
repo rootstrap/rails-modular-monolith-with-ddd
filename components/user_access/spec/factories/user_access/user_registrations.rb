@@ -12,6 +12,6 @@ FactoryBot.define do
     name { "#{first_name} #{last_name}" }
     login { Faker::Internet.username }
     registered_at { rand(9).days.ago }
-    status { UserAccess::UserRegistration.status.values.sample }
+    status_code { UserAccess::UserRegistration.status_code.values.sample }
   end
 end

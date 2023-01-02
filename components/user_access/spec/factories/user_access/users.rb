@@ -9,6 +9,6 @@ FactoryBot.define do
     last_name { Faker::Name.last_name }
     name { "#{first_name} #{last_name}" }
     login { Faker::Internet.username }
-    status { :pending }
+    status_code { :pending }
   end
 end
