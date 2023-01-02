@@ -15,7 +15,7 @@
 #  remember_created_at    :datetime
 #  reset_password_sent_at :datetime
 #  reset_password_token   :string
-#  status                 :integer          default("pending")
+#  status_code            :integer          default("pending")
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #
@@ -38,9 +38,9 @@ module UserAccess
 
     validates_uniqueness_of :identifier, :email, :login
     validates_presence_of :identifier, :email, :encrypted_password, :first_name, :last_name, :name,
-                          :login, :status
+                          :login, :status_code
 
-    enum status: {
+    enum status_code: {
       pending: 0,
       active: 1,
       failed: 2
