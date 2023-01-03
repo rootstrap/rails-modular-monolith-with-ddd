@@ -39,6 +39,15 @@ RSpec.describe Meetings::CreateMemberService do
           )
         )
       end
+
+      it 'creates an outbox record' do
+        expect { subject }.to change(Meetings::Outbox, :count).by(1)
+        member = Meetings::Member.last
+        outbox = Meetings::Outbox.last
+        expect(outbox.event).to eq(Meetings::Events::CREATED_MEMBER_SUCCESSFULLY)
+        expect(outbox.aggregate).to eq('Meetings::Member')
+        expect(outbox.aggregate_identifier).to eq(member.identifier)
+      end
     end
 
     context 'when there are validation errors' do
@@ -48,8 +57,17 @@ RSpec.describe Meetings::CreateMemberService do
                                                email: existing_member.email)
       end
 
-      it 'raises a validation error' do
-        expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
+      it 'does not create a new member' do
+        expect { subject }.to_not change(Meetings::Member, :count)
+      end
+
+      it 'does not create an outbox record' do
+        expect { subject }.to_not change(Meetings::Outbox, :count)
+      end
+
+      it 'logs error' do
+        expect(Rails.logger).to receive(:error)
+        subject
       end
     end
   end
