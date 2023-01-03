@@ -8,7 +8,7 @@ module UserAccess
 
     def call
       UserAccess::OutboxService.new.create!(event: UserAccess::Events::USER_ACTIVATION_SUCCEEDED) do
-        user.update!(status: :active)
+        user.update!(status_code: :active)
         user
       end
       true
@@ -16,7 +16,7 @@ module UserAccess
       Rails.logger.error { exception.message }
       # TODO: Handle failure events inside the OutboxService.create! method
       UserAccess::OutboxService.new.create!(event: UserAccess::Events::USER_ACTIVATION_FAILED) do
-        user.update!(status: :failed)
+        user.update!(status_code: :failed)
         user
       end
       false
