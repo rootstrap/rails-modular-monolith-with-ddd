@@ -32,12 +32,31 @@ class KarafkaApp < Karafka::App
     consumer_group :user_access do
       topic "#{ENV["KAFKA_CONNECT_DB_SERVER_NAME"]}.public.user_access_outboxes" do
         consumer UserAccess::BatchBaseConsumer
+
+        dead_letter_queue(
+          # Name of the target topic where problematic messages should be moved to
+          topic: 'dead_messages',
+          # How many times we should retry processing with a back-off before
+          # moving the message to the DLQ topic and continuing the work
+          #
+          # If set to zero, will not retry at all.
+          max_retries: 2
+        )
       end
     end
 
     consumer_group :meetings do
       topic "#{ENV["KAFKA_CONNECT_DB_SERVER_NAME"]}.public.user_access_outboxes" do
         consumer Meetings::BatchBaseConsumer
+        dead_letter_queue(
+          # Name of the target topic where problematic messages should be moved to
+          topic: 'dead_messages',
+          # How many times we should retry processing with a back-off before
+          # moving the message to the DLQ topic and continuing the work
+          #
+          # If set to zero, will not retry at all.
+          max_retries: 2
+        )
       end
     end
   end
