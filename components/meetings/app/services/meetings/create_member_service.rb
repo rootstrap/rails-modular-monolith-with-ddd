@@ -16,6 +16,7 @@ module Meetings
         )
 
         member.save!
+        member
       end
       true
     rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotFound => exception
