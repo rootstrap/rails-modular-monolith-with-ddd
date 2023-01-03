@@ -16,7 +16,7 @@ module UserAccess
         user_registration.slice(
           :identifier, :login, :email, :encrypted_password,
           :first_name, :last_name, :name
-        ).merge!(is_active: true)
+        ).merge!(status_code: :active)
       )
 
       user.user_roles.new(role_code: :member)
