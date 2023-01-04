@@ -16,7 +16,7 @@ module UserAccess
       Rails.logger.error { exception.message }
       # TODO: Handle failure events inside the OutboxService.create! method
       UserAccess::OutboxService.new.create!(event: UserAccess::Events::USER_ACTIVATION_FAILED) do
-        user.update!(status_code: :failed)
+        user.update_attribute(:status_code, :failed)
         user
       end
       false
