@@ -113,6 +113,12 @@ services:
       - .:/app/src
     depends_on:
       - web
+  mailcatcher:
+    image: schickling/mailcatcher
+    restart: unless-stopped
+    ports:
+      - 1025:1025
+      - 1080:1080
   db:
     image: postgres:13
     environment:
