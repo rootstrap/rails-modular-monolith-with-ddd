@@ -58,7 +58,7 @@ services:
       - SETUP_KAFKA_CONNECTOR=true
     restart: on-failure
     ports:
-      - 3000:3000
+      - ${RAILS_PORT-3000}:3000
     volumes:
       - .:/app/src
     depends_on:
@@ -111,6 +111,12 @@ services:
       - .:/app/src
     depends_on:
       - web
+  mailcatcher:
+    image: schickling/mailcatcher
+    restart: unless-stopped
+    ports:
+      - 1025:1025
+      - 1080:1080
   db:
     image: postgres:13
     environment:
