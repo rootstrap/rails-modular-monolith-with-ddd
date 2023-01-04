@@ -14,10 +14,10 @@ module UserAccess
 
     def consume
       if UserAccess::ConsumedMessage.already_processed?(identifier, aggregate)
-        Karafka.logger.info "Already processed event: <identifier: #{identifier}, aggregate: #{aggregate}>"
+        Karafka.logger.info "Already processed event: #{pretty_print_event}"
         return
-      else
-        Karafka.logger.info "New [UserAccess::Outbox] event: <identifier: #{identifier}, aggregate: #{aggregate}>"
+      elsif EVENTS_MAPPING.keys.include?(event)
+        Karafka.logger.info "New [UserAccess::Outbox] event: #{pretty_print_event}"
         EVENTS_MAPPING[event].new(data).call
         UserAccess::ConsumedMessage.create!(event_id: identifier, aggregate: aggregate)
       end
@@ -26,6 +26,10 @@ module UserAccess
     private
 
     attr_reader :payload
+
+    def pretty_print_event
+      "<identifier: #{identifier}, event: #{event} , aggregate: #{aggregate}>"
+    end
 
     def id
       payload.dig('payload', 'after', 'id')

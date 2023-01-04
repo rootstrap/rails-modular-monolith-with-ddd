@@ -21,6 +21,7 @@ module UserAccess
       true
     rescue ActiveRecord::RecordInvalid => exception
       Rails.logger.error { exception.message }
+      byebug
       false
     end
 
