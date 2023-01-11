@@ -44,7 +44,7 @@ RSpec.describe Meetings::CreateMemberService do
         expect { subject }.to change(Meetings::Outbox, :count).by(1)
         member = Meetings::Member.last
         outbox = Meetings::Outbox.last
-        expect(outbox.event).to eq(Meetings::Events::CREATED_MEMBER_SUCCESSFULLY)
+        expect(outbox.event).to eq(Meetings::Events::MEMBER_CREATED_SUCCESS)
         expect(outbox.aggregate).to eq('Meetings::Member')
         expect(outbox.aggregate_identifier).to eq(member.identifier)
       end
