@@ -8,14 +8,38 @@ if !Rails.env.test? && defined?(Rails::Server) && ENV["SETUP_KAFKA_CONNECTOR"] =
         "tasks.max": "1",
         "plugin.name": "pgoutput",
         "database.hostname": "#{ENV["PG_HOST"]}",
-        "database.port": "5432",
+        "database.port": "#{ENV["PG_PORT"]}",
         "database.user": "#{ENV["PG_USER"]}",
         "database.password": "#{ENV["PG_PASSWORD"]}",
-        "database.dbname": "rails_modular_monolith_with_ddd_development",
+        "database.dbname": "#{ENV["DB_NAME"]}_#{Rails.env}",
         "database.server.name": "#{ENV["KAFKA_CONNECT_DB_SERVER_NAME"]}",
-        "schema.whitelist": "public",
-        "table.whitelist": "public.user_access_outboxes",
-        "tombstones.on.delete": "false"
+        "schema.include.list": "public",
+        "table.include.list": "public.user_access_outboxes",
+        "tombstones.on.delete": "false",
+        "slot.name" : "user_access",
+        "slot.drop_on_stop": "#{Rails.env.development?}"
+      }
+    }
+  EOF`
+
+  `curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" connect:8083/connectors/ -d @- << EOF
+    {
+      "name": "meetings-outbox-connector",
+      "config": {
+        "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+        "tasks.max": "1",
+        "plugin.name": "pgoutput",
+        "database.hostname": "#{ENV["PG_HOST"]}",
+        "database.port": "#{ENV["PG_PORT"]}",
+        "database.user": "#{ENV["PG_USER"]}",
+        "database.password": "#{ENV["PG_PASSWORD"]}",
+        "database.dbname": "#{ENV["DB_NAME"]}_#{Rails.env}",
+        "database.server.name": "#{ENV["KAFKA_CONNECT_DB_SERVER_NAME"]}",
+        "schema.include.list": "public",
+        "table.include.list": "public.meetings_outboxes",
+        "tombstones.on.delete": "false",
+        "slot.name" : "meetings",
+        "slot.drop_on_stop": "#{Rails.env.development?}"
       }
     }
   EOF`
