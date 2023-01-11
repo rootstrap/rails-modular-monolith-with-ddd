@@ -9,6 +9,8 @@ module Meetings
     # Event triggered when an admin accepts a given meeting group proposal
     MEETING_GROUP_PROPOSAL_ACCEPTED = 'meeting_group_proposal_accepted_domain_event.administration'
     # Event triggered when a member is created sucessfully
-    CREATED_MEMBER_SUCCESSFULLY = 'created_member_successfully.meetings'
+    MEMBER_CREATED_SUCCESS = 'member_created_success.meetings'
+    # Event triggered when a member fails to be created
+    MEMBER_CREATED_FAILURE = 'member_created_failure.meetings'
   end
 end
