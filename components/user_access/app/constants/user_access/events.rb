@@ -5,7 +5,7 @@ module UserAccess
     # Event triggered when a user confirms their email
     USER_REGISTRATION_CONFIRMED = 'USER_REGISTRATION_CONFIRMED.USER_ACCESS'
     # Event triggered when a member is created sucessfully
-    CREATED_MEMBER_SUCCESSFULLY = 'created_member_successfully.meetings'
+    MEMBER_CREATED_SUCCESS = 'member_created_success.meetings'
     USER_ACTIVATION_SUCCEEDED = 'user_activation_succeeded.user_access'
     USER_ACTIVATION_FAILED = 'user_activation_failed.user_access'
   end
