@@ -32,8 +32,8 @@ module UserAccess
 
     attr_accessor :skip_password_validation  # virtual attribute to skip password validation while saving
 
-    has_many :user_roles
-    has_many :role_to_permissions, through: :user_roles
+    has_many :user_roles, dependent: :destroy
+    has_many :role_to_permissions, through: :user_roles, dependent: :destroy
     has_many :permissions, through: :role_to_permissions
 
     validates_uniqueness_of :identifier, :email, :login

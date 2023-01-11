@@ -6,6 +6,8 @@ module UserAccess
     USER_REGISTRATION_CONFIRMED = 'USER_REGISTRATION_CONFIRMED.USER_ACCESS'
     # Event triggered when a member is created sucessfully
     MEMBER_CREATED_SUCCESS = 'member_created_success.meetings'
+    # Event triggered when a member fails to be created
+    MEMBER_CREATED_FAILURE = 'member_created_failure.meetings'
     USER_ACTIVATION_SUCCEEDED = 'user_activation_succeeded.user_access'
     USER_ACTIVATION_FAILED = 'user_activation_failed.user_access'
   end
