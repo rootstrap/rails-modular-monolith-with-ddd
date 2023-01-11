@@ -8,13 +8,6 @@ module Meetings
 
     def call
       Meetings::OutboxService.new.create!(event: Meetings::Events::MEMBER_CREATED_SUCCESS) do
-        member = Member.new(
-          event_payload.slice(
-            'identifier', 'login', 'email',
-            'first_name', 'last_name', 'name'
-          )
-        )
-
         member.save!
         member
       end
@@ -23,6 +16,17 @@ module Meetings
       Rails.logger.error { exception.message }
       Meetings::OutboxService.new.create!(event: Meetings::Events::MEMBER_CREATED_FAILURE) { member }
       false
+    end
+
+    private
+
+    def member
+      @member ||= Member.new(
+        event_payload.slice(
+          'identifier', 'login', 'email',
+          'first_name', 'last_name', 'name'
+        )
+      )
     end
   end
 end
