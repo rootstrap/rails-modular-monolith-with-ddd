@@ -34,12 +34,16 @@ class KarafkaApp < Karafka::App
         consumer UserAccess::BatchBaseConsumer
 
         dead_letter_queue(
-          # Name of the target topic where problematic messages should be moved to
-          topic: 'dead_messages',
-          # How many times we should retry processing with a back-off before
-          # moving the message to the DLQ topic and continuing the work
-          #
-          # If set to zero, will not retry at all.
+          topic: 'user_access_dead_messages',
+          max_retries: 2
+        )
+      end
+
+      topic "#{ENV["KAFKA_CONNECT_DB_SERVER_NAME"]}.public.meetings_outboxes" do
+        consumer UserAccess::BatchBaseConsumer
+
+        dead_letter_queue(
+          topic: 'user_access_dead_messages',
           max_retries: 2
         )
       end
@@ -49,12 +53,7 @@ class KarafkaApp < Karafka::App
       topic "#{ENV["KAFKA_CONNECT_DB_SERVER_NAME"]}.public.user_access_outboxes" do
         consumer Meetings::BatchBaseConsumer
         dead_letter_queue(
-          # Name of the target topic where problematic messages should be moved to
-          topic: 'dead_messages',
-          # How many times we should retry processing with a back-off before
-          # moving the message to the DLQ topic and continuing the work
-          #
-          # If set to zero, will not retry at all.
+          topic: 'meetings_dead_messages',
           max_retries: 2
         )
       end
