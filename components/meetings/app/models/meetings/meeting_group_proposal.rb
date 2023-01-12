@@ -23,6 +23,8 @@
 #
 module Meetings
   class MeetingGroupProposal < ApplicationRecord
+    include TransactionalOutbox::Outboxable
+
     enum status_code: {
       in_verification: 0,
       accepted: 1

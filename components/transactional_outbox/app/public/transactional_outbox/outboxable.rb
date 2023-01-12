@@ -31,7 +31,7 @@ module TransactionalOutbox
     def create_outbox!(action)
       outbox = TransactionalOutbox::Outbox.new(
         aggregate: self.class.name,
-        aggregate_identifier: identifier,
+        aggregate_identifier: try(:identifier) || id,
         event: @outbox_event || "#{action.upcase}_#{self.class.name.underscore.upcase}",
         identifier: SecureRandom.uuid,
         payload: payload(action)

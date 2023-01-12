@@ -26,15 +26,14 @@ RSpec.describe Meetings::CreateMeetingGroupProposalService do
         expect(Meetings::MeetingGroupProposal.last.status_code).to eq('in_verification')
       end
 
-      it 'publishes the meeting_group_proposed_domain_event' do
-        allow(ActiveSupport::Notifications).to receive(:instrument).and_call_original
-        expect(ActiveSupport::Notifications).to receive(:instrument).with(
-          Meetings::Events::MEETING_GROUP_PROPOSED,
-          attributes.merge(
-            id: anything
-          )
-        )
-        subject
+      it 'creates an outbox record' do
+        expect { subject }.to create_transactional_outbox_record.with_attributes lambda {
+          {
+            'event' => Meetings::Events::MEETING_GROUP_PROPOSED,
+            'aggregate' => 'Meetings::MeetingGroupProposal',
+            'aggregate_identifier' => Meetings::MeetingGroupProposal.last.id.to_s
+          }
+        }
       end
     end
   end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_11_24_194524) do
+ActiveRecord::Schema[7.0].define(version: 2023_01_12_143852) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -63,7 +63,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_24_194524) do
 
   create_table "transactional_outbox_outboxes", force: :cascade do |t|
     t.string "aggregate", null: false
-    t.uuid "aggregate_identifier", null: false
+    t.string "aggregate_identifier", null: false
     t.string "event", null: false
     t.uuid "identifier", null: false
     t.jsonb "payload"

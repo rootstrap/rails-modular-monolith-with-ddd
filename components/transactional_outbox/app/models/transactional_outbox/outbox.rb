@@ -4,7 +4,7 @@
 #
 #  id                   :bigint           not null, primary key
 #  aggregate            :string           not null
-#  aggregate_identifier :uuid             not null
+#  aggregate_identifier :string           not null
 #  event                :string           not null
 #  identifier           :uuid             not null
 #  payload              :jsonb
