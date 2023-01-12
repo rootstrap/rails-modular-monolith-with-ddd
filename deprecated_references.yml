@@ -11,6 +11,13 @@ components/meetings:
     - privacy
     files:
     - karafka.rb
+components/transactional_outbox:
+  "::TransactionalOutbox::Outbox":
+    violations:
+    - dependency
+    - privacy
+    files:
+    - spec/rails_helper.rb
 components/user_access:
   "::UserAccess::BatchBaseConsumer":
     violations:
