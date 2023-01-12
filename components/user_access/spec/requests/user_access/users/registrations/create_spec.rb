@@ -34,7 +34,9 @@ RSpec.describe 'POST /users' do
     end
 
     it 'creates an outbox record' do
-      expect { request }.to create_transactional_outbox_record.with_attributes(event: 'NEW_USER_REGISTERED_DOMAIN_EVENT.USER_ACCESS')
+      expect { request }.to create_transactional_outbox_record.with_attributes(
+        'event' => 'NEW_USER_REGISTERED_DOMAIN_EVENT.USER_ACCESS'
+      )
     end
 
     it 'enqueues the confirmation email' do
