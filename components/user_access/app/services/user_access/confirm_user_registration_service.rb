@@ -13,10 +13,6 @@ module UserAccess
       user_registration.confirmed_at = Time.current
 
       user_registration.save!(outbox_event: UserAccess::Events::USER_REGISTRATION_CONFIRMED)
-      # UserAccess::OutboxService.new.create!(event: UserAccess::Events::USER_REGISTRATION_CONFIRMED) do
-        # user_registration
-      # end
-      # true
     rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotFound => exception
       Rails.logger.error { exception.message }
       false
