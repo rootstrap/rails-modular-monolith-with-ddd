@@ -35,7 +35,7 @@ RSpec.describe 'POST /users' do
 
     it 'creates an outbox record' do
       expect { request }.to create_transactional_outbox_record.with_attributes(
-        'event' => 'NEW_USER_REGISTERED_DOMAIN_EVENT.USER_ACCESS'
+        'event' => UserAccess::Events::NEW_USER_REGISTERED
       )
     end
 
