@@ -77,12 +77,6 @@ RSpec.configure do |config|
   FactoryBot.find_definitions
 
   config.before type: :request do
-    allow(UserAccess::Outbox).to receive(:create!).and_wrap_original do |m, *args|
-      outbox_message = m.call(*args)
-      karafka.produce(Support::KafkaConnectMock.wrap_message(outbox_message))
-      consumer.consume
-    end
-
     allow(TransactionalOutbox::Outbox).to receive(:create!).and_wrap_original do |m, *args|
       outbox_message = m.call(*args)
       karafka.produce(Support::KafkaConnectMock.wrap_message(outbox_message))

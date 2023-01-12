@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_01_12_143852) do
+ActiveRecord::Schema[7.0].define(version: 2023_01_12_145120) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -78,17 +78,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_12_143852) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["event_id", "aggregate"], name: "index_user_access_consumed_messages_on_event_id_and_aggregate", unique: true
-  end
-
-  create_table "user_access_outboxes", force: :cascade do |t|
-    t.uuid "identifier", null: false
-    t.string "event", null: false
-    t.jsonb "payload"
-    t.string "aggregate", null: false
-    t.uuid "aggregate_identifier", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["identifier"], name: "index_user_access_outboxes_on_identifier", unique: true
   end
 
   create_table "user_access_permissions", force: :cascade do |t|
