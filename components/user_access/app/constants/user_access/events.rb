@@ -1,8 +1,8 @@
 module UserAccess
   module Events
     # Event triggered when a user registers in the app
-    NEW_USER_REGISTERED = 'new_user_registered_domain_event.user_access'.underscore.upcase
+    NEW_USER_REGISTERED = 'NEW_USER_REGISTERED_DOMAIN_EVENT.USER_ACCESS'
     # Event triggered when a user confirms their email
-    USER_REGISTRATION_CONFIRMED = 'user_registration_confirmed_domain_event.user_access'.underscore.upcase
+    USER_REGISTRATION_CONFIRMED = 'USER_REGISTRATION_CONFIRMED_DOMAIN_EVENT.USER_ACCESS'
   end
 end
