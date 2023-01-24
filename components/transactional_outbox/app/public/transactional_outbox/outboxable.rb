@@ -32,7 +32,7 @@ module TransactionalOutbox
       outbox = TransactionalOutbox::Outbox.new(
         aggregate: self.class.name,
         aggregate_identifier: try(:identifier) || id,
-        event: @outbox_event || "#{action.upcase}_#{self.class.name.underscore.upcase}",
+        event: @outbox_event || "#{action.upcase}_#{self.class.name.split('::').reverse.join('.').underscore.upcase}",
         identifier: SecureRandom.uuid,
         payload: payload(action)
       )
@@ -64,5 +64,7 @@ module TransactionalOutbox
       end
       payload
     end
+
+
   end
 end

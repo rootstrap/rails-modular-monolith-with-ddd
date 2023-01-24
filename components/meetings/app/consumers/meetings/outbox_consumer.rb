@@ -15,7 +15,7 @@ module Meetings
       if Meetings::ConsumedMessage.already_processed?(identifier, aggregate)
         Karafka.logger.info "Already processed event: <identifier: #{identifier}, aggregate: #{aggregate}>"
         return
-      else
+      elsif EVENTS_MAPPING.keys.include?(event)
         Karafka.logger.info "New [Meetings::Outbox] event: <identifier: #{identifier}, aggregate: #{aggregate}>"
         EVENTS_MAPPING[event].new(data).call
         Meetings::ConsumedMessage.create!(event_id: identifier, aggregate: aggregate)
