@@ -80,7 +80,6 @@ RSpec.configure do |config|
     allow_any_instance_of(TransactionalOutbox::Outbox).to receive(:save!).and_wrap_original do |m, *args|
       result = m.call(*args)
       return unless result
-      byebug
       outbox_message = TransactionalOutbox::Outbox.last
       karafka.produce(Support::KafkaConnectMock.wrap_message(outbox_message))
       consumer.consume

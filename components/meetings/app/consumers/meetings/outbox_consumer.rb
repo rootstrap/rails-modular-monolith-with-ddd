@@ -17,8 +17,13 @@ module Meetings
         return
       elsif EVENTS_MAPPING.keys.include?(event)
         Karafka.logger.info "New [Meetings::Outbox] event: <identifier: #{identifier}, aggregate: #{aggregate}>"
-        EVENTS_MAPPING[event].new(data).call
-        Meetings::ConsumedMessage.create!(event_id: identifier, aggregate: aggregate)
+        consumed_message = Meetings::ConsumedMessage.create!(event_id: identifier, aggregate: aggregate, status: :processing)
+        begin
+          EVENTS_MAPPING[event].new(data).call
+          consumed_message.update!(status: :succeeded)
+        rescue
+          consumed_message.update!(status: :failed)
+        end
       end
     end
 
