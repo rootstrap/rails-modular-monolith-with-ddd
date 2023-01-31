@@ -2,11 +2,13 @@
 
 Full Modular Monolith Rails application with Domain-Driven Design approach. This is the Rails version of the [.NET application](https://github.com/kgrzybek/modular-monolith-with-ddd).
 
-## Main Transactional Outbox
+## Main Saga
 
-This version of the app extends [main-packwerk](https://github.com/rootstrap/rails-modular-monolith-with-ddd/tree/main-packwerk) to replace `ActiveSupport::Notifications` for [Kafka](https://kafka.apache.org/) for sending and consuming events. This means that events are now processed asynchronously, and a step towards a microservices architecture.
+This version of the app extends [main-transactional-outbox](https://github.com/rootstrap/rails-modular-monolith-with-ddd/tree/main-transactional-outbox) to support async distributed transactions between modules.
 
-It implements the [Transactional Outbox pattern](https://microservices.io/patterns/data/transactional-outbox.html) to guarantee delivery of all the events, and makes use of [Kafka Connect](https://docs.confluent.io/platform/current/connect/index.html) to do the log tailing on the DB and pushing the events to `Kafka`.
+It implements the [Saga](https://microservices.io/patterns/data/saga.html) pattern which is a sequence of local transactions. If a local transaction fails then the saga executes a series of compensating transactions that undo the changes that were made by the preceding local transactions. Specifically it follows a Choreography-based saga.
+
+It builds on top of the [Transactional Outbox pattern](https://microservices.io/patterns/data/transactional-outbox.html) that guarantees delivery of all the events, and makes use of [Kafka Connect](https://docs.confluent.io/platform/current/connect/index.html) to do the log tailing on the DB and pushing the events to `Kafka`.
 
 `Kafka` is used through the [Karafka gem](https://github.com/karafka/karafka) which simplifies its usage.
 

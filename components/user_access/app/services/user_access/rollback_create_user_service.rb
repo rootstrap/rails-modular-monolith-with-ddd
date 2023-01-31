@@ -1,5 +1,5 @@
 module UserAccess
-  class RollbackCreateUserService
+  class RollbackCreateUserService < BaseService
     attr_reader :identifier
 
     def initialize(event_payload)

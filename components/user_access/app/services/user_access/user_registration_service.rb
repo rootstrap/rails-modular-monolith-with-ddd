@@ -1,5 +1,5 @@
 module UserAccess
-  class UserRegistrationService
+  class UserRegistrationService < BaseService
     attr_reader :login, :password, :password_confirmation, :email, :first_name, :last_name
 
     def initialize(attributes)

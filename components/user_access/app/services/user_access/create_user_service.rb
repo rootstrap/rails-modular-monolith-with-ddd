@@ -1,9 +1,28 @@
 module UserAccess
   class CreateUserService
-    attr_reader :user_registration_id
+    # attr_reader :user_registration_id
 
-    def initialize(event_payload)
-      @user_registration_id = event_payload['id']
+    # def initialize(event_payload)
+    #   @user_registration_id = event_payload['id']
+    # end
+
+    attr_reader :identifier
+
+    def initialize(rollback: false)
+      @rollback = rollback
+    end
+
+    def self.call
+      new
+    end
+
+    def self.rollback
+      new(rollback: true)
+    end
+
+    def perform(event_payload)
+      @identifier = event_payload['identifier']
+      @rollback ? rollback : call
     end
 
     def call
@@ -24,10 +43,31 @@ module UserAccess
       user.save!
     end
 
+    def rollback
+      ActiveRecord::Base.transaction do
+        raise ActiveRecord::Rollback unless user.present? && user_registration.present?
+
+        user.destroy!
+        user_registration.update!(status_code: :waiting_for_confirmation)
+      end
+    rescue ActiveRecord::RecordNotDestroyed, ActiveRecord::RecordInvalid, ActiveRecord::Rollback => exception
+      Rails.logger.error { exception.message }
+      false
+    end
+
+
     private
 
     def user_registration
-      @user_registration ||= UserRegistration.find(user_registration_id)
+      @user_registration ||= UserRegistration.find_by(identifier: identifier)
     end
+
+    def user
+      @user ||= User.find_by(identifier: identifier)
+    end
+
+    # def user_registration
+    #   @user_registration ||= UserRegistration.find(user_registration_id)
+    # end
   end
 end

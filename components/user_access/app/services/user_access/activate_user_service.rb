@@ -1,9 +1,10 @@
 module UserAccess
-  class ActivateUserService
+  class ActivateUserService < BaseService
     attr_reader :user_identifier
 
-    def initialize(event_payload)
+    def perform(event_payload)
       @user_identifier = event_payload['identifier']
+      super
     end
 
     def call

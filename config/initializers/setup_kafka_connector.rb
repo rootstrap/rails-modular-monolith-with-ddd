@@ -16,6 +16,7 @@ if !Rails.env.test? && defined?(Rails::Server) && ENV["SETUP_KAFKA_CONNECTOR"] =
         "schema.include.list": "public",
         "table.include.list": "public.user_access_outboxes",
         "tombstones.on.delete": "false",
+        "publication.name": "user_access_publication",
         "slot.name" : "user_access",
         "slot.drop_on_stop": "#{Rails.env.development?}"
       }
@@ -38,6 +39,7 @@ if !Rails.env.test? && defined?(Rails::Server) && ENV["SETUP_KAFKA_CONNECTOR"] =
         "schema.include.list": "public",
         "table.include.list": "public.meetings_outboxes",
         "tombstones.on.delete": "false",
+        "publication.name": "meetings_publication",
         "slot.name" : "meetings",
         "slot.drop_on_stop": "#{Rails.env.development?}"
       }

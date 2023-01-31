@@ -1,9 +1,10 @@
 module UserAccess
-  class SendUserConfirmationEmailService
+  class SendUserConfirmationEmailService < BaseService
     attr_reader :user_registration_id
 
-    def initialize(event_payload)
+    def perform(event_payload)
       @user_registration_id = event_payload['id']
+      super
     end
 
     def call
