@@ -57,11 +57,12 @@ module Karafka
         end
 
         def _karafka_produce(payload, metadata = {})
-          MAPPINGS = {
+          # TODO: Move somewhere else
+          mappings = {
             'MEETINGS' => "#{ENV["KAFKA_CONNECT_DB_SERVER_NAME"]}.public.meetings_outboxes"
           }
           # TODO: add before for destroy case
-          topic = MAPPINGS[JSON.parse(payload)['payload']['after']['event'].slice('.').last]
+          topic = mappings[JSON.parse(payload)['payload']['after']['event'].split('.').last]
 
           Karafka.producer.produce_sync(
             {
