@@ -24,6 +24,8 @@ module Karafka
           #return unless message[:topic] == consumer.topic.name
 
           consumers_with_topic = consumers.select { |consumer| consumer.topic.name == message[:topic] }
+          return unless consumers_with_topic.present?
+
           topic = consumers_with_topic.first.topic
 
           metadata = _karafka_message_metadata_defaults(topic)
@@ -66,7 +68,7 @@ module Karafka
 
           Karafka.producer.produce_sync(
             {
-              topic: consumer.topic.name,
+              topic: topic,
               payload: payload
             }.merge(metadata)
           )

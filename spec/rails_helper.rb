@@ -86,7 +86,7 @@ RSpec.configure do |config|
       return unless result
       outbox_message = TransactionalOutbox::Outbox.last
       karafka.produce(Support::KafkaConnectMock.wrap_message(outbox_message))
-      consumer.consume
+      consumer.consume # TODO: which consumer?
     end
   end
 end
