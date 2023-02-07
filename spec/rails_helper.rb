@@ -10,6 +10,8 @@ require 'karafka/testing/rspec/helpers'
 require 'support/kafka_connect_mock'
 require 'support/karafka_consumer_mock'
 require 'super_diff/rspec-rails'
+require 'support/karafka_consumer_helpers'
+require 'support/karafka_test_helper'
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -75,6 +77,8 @@ RSpec.configure do |config|
 
   FactoryBot.definition_file_paths = Dir.glob('components/*/spec/factories')
   FactoryBot.find_definitions
+
+  config.include_context 'Karafka consumer helpers', type: :request
 
   config.before type: :request do
     allow_any_instance_of(TransactionalOutbox::Outbox).to receive(:save!).and_wrap_original do |m, *args|

@@ -3,20 +3,13 @@
 require 'rails_helper'
 
 RSpec.describe 'POST /meetings/meeting_group_proposals' do
-  subject(:consumer) do
-    Support::KarafkaConsumerMock.build(
-      Meetings::BatchBaseConsumer.new,
-      "#{ENV["KAFKA_CONNECT_DB_SERVER_NAME"]}.public.user_access_outboxes",
-      _karafka_consumer_client
-    )
-  end
   let(:user) { create(:user_access_user) }
 
   before do
     sign_in user
   end
 
-  let(:request) { post meetings_meeting_group_proposals_path, params: params }
+  subject(:request) { post meetings_meeting_group_proposals_path, params: params }
 
   context 'when a member exists' do
     let!(:member) { create(:meetings_member, identifier: user.identifier) }
