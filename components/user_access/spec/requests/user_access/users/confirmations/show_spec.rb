@@ -3,14 +3,6 @@
 require 'rails_helper'
 
 RSpec.describe 'GET /users/confirmations' do
-  subject(:consumer) do
-    Support::KarafkaConsumerMock.build(
-      UserAccess::BatchBaseConsumer.new,
-      "#{ENV["KAFKA_CONNECT_DB_SERVER_NAME"]}.public.user_access_outboxes",
-      _karafka_consumer_client
-    )
-  end
-
   let(:user_registration) { create(:user_access_user_registration) }
   let(:request) do
     get user_registration_confirmation_path, params: params

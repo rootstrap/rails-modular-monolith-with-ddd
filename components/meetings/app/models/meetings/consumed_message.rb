@@ -6,7 +6,7 @@
 #
 #  id         :bigint           not null, primary key
 #  aggregate  :string
-#  status     :integer          default(0), not null
+#  status     :integer          default("processing"), not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #  event_id   :uuid

@@ -3,14 +3,6 @@
 require 'rails_helper'
 
 RSpec.describe 'POST /users' do
-  subject(:consumer) do
-    Support::KarafkaConsumerMock.build(
-      UserAccess::BatchBaseConsumer.new,
-      "#{ENV["KAFKA_CONNECT_DB_SERVER_NAME"]}.public.user_access_outboxes",
-      _karafka_consumer_client
-    )
-  end
-
   let(:request) do
     post user_registration_registration_path, params: params
   end

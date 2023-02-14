@@ -1,11 +1,15 @@
+# Follow karafka.rb config to match the consumers defined here
 RSpec.shared_context 'Karafka consumer helpers' do
   let(:consumers) do
-    [
-      Support::KarafkaConsumerMock.build(
-        Meetings::BatchBaseConsumer.new,
-        "#{ENV["KAFKA_CONNECT_DB_SERVER_NAME"]}.public.user_access_outboxes",
-        _karafka_consumer_client
-      )
-    ]
+    Karafka::App.routes.map do |cg|
+      next if cg.name == 'app'
+      cg.topics.map do |t|
+        Support::KarafkaConsumerMock.build(
+          t.consumer.new,
+          t.name,
+          _karafka_consumer_client
+        )
+      end
+    end.flatten.compact
   end
 end
