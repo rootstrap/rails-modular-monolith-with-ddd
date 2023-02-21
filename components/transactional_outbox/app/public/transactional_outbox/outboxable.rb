@@ -5,9 +5,22 @@ module TransactionalOutbox
     extend ActiveSupport::Concern
 
     included do
-      after_create { create_outbox!(:create) }
-      after_update { create_outbox!(:update) }
-      after_destroy { create_outbox!(:destroy) }
+      *namespace, klass = name.underscore.upcase.split('/')
+      namespace = namespace.reverse.join('.')
+
+      module_parent.const_set('Events', Module.new) unless module_parent.const_defined?('Events')
+
+      { create: 'CREATED', update: 'UPDATED', destroy: 'DESTROYED' }.each do |key, value|
+        const_name = "#{klass}_#{value}"
+
+        unless module_parent::Events.const_defined?(const_name)
+          module_parent::Events.const_set(const_name, "#{const_name}.#{namespace}")
+        end
+
+        event_name = module_parent::Events.const_get(const_name)
+
+        send("after_#{key}") { create_outbox!(key, event_name) }
+      end
     end
 
     def save(**options, &block)
@@ -28,11 +41,11 @@ module TransactionalOutbox
 
     private
 
-    def create_outbox!(action)
+    def create_outbox!(action, event_name)
       outbox = TransactionalOutbox::Outbox.new(
         aggregate: self.class.name,
         aggregate_identifier: try(:identifier) || id,
-        event: @outbox_event || "#{action.upcase}_#{self.class.name.split('::').reverse.join('.').underscore.upcase}",
+        event: @outbox_event || event_name,
         identifier: SecureRandom.uuid,
         payload: payload(action)
       )
