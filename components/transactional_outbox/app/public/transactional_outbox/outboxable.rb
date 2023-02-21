@@ -77,7 +77,5 @@ module TransactionalOutbox
       end
       payload
     end
-
-
   end
 end
