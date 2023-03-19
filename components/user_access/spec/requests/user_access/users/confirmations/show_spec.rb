@@ -20,7 +20,7 @@ RSpec.describe 'GET /users/confirmations' do
     end
 
     it 'creates an outbox record' do
-      expect { request }.to create_transactional_outbox_record.with_attributes(
+      expect { request }.to create_outbox_record(UserAccess::Outbox).with_attributes(
           'event' => UserAccess::Events::USER_REGISTRATION_CONFIRMED,
           'aggregate' => 'UserAccess::UserRegistration',
           'aggregate_identifier' => user_registration.identifier
@@ -44,7 +44,7 @@ RSpec.describe 'GET /users/confirmations' do
     end
 
     it 'does not create an outbox record' do
-      expect { request }.to_not create_transactional_outbox_record
+      expect { request }.to_not create_outbox_record(UserAccess::Outbox)
     end
 
     it 'renders the errors' do

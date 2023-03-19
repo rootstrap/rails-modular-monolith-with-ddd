@@ -34,7 +34,7 @@ RSpec.describe UserAccess::UserRegistrationService do
     end
 
     it 'creates an outbox record' do
-      expect { subject }.to create_transactional_outbox_record.with_attributes lambda {
+      expect { subject }.to create_outbox_record(UserAccess::Outbox).with_attributes lambda {
         {
           'event' => UserAccess::Events::NEW_USER_REGISTERED,
           'aggregate' => 'UserAccess::UserRegistration',
@@ -51,7 +51,7 @@ RSpec.describe UserAccess::UserRegistrationService do
       end
 
       it 'does not create an outbox record' do
-        expect { subject }.to_not create_transactional_outbox_record
+        expect { subject }.to_not create_outbox_record(UserAccess::Outbox)
       end
     end
   end

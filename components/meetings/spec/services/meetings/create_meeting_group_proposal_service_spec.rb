@@ -27,7 +27,7 @@ RSpec.describe Meetings::CreateMeetingGroupProposalService do
       end
 
       it 'creates an outbox record' do
-        expect { subject }.to create_transactional_outbox_record.with_attributes lambda {
+        expect { subject }.to create_outbox_record(Meetings::Outbox).with_attributes lambda {
           {
             'event' => Meetings::Events::MEETING_GROUP_PROPOSED,
             'aggregate' => 'Meetings::MeetingGroupProposal',

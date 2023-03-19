@@ -24,7 +24,7 @@ RSpec.describe UserAccess::ConfirmUserRegistrationService do
       it { is_expected.to be true }
 
       it 'creates an outbox record' do
-        expect { subject }.to create_transactional_outbox_record.with_attributes(
+        expect { subject }.to create_outbox_record(UserAccess::Outbox).with_attributes(
           'event' => UserAccess::Events::USER_REGISTRATION_CONFIRMED,
           'aggregate' => 'UserAccess::UserRegistration',
           'aggregate_identifier' => user_registration.identifier
