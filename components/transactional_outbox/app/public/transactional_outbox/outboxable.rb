@@ -4,10 +4,20 @@ module TransactionalOutbox
   module Outboxable
     extend ActiveSupport::Concern
 
-    included do |base|
-      base.extend(ClassMethods)
+    included do
       *namespace, klass = name.underscore.upcase.split('/')
       namespace = namespace.reverse.join('.')
+
+      unless module_parent.const_defined?('OUTBOX_MODEL')
+        parent_module_name = module_parent == Object ? '' : module_parent.name
+        outbox_model = TransactionalOutbox::Outbox.subclasses.find do |subklass|
+          condition = subklass.name.include? parent_module_name
+          # Exclude modules if Outbox class has no module_parent
+          condition &&= subklass.name.exclude? '::' if parent_module_name.blank?
+          condition
+        end || TransactionalOutbox::Outbox
+        module_parent.const_set('OUTBOX_MODEL', outbox_model)
+      end
 
       module_parent.const_set('Events', Module.new) unless module_parent.const_defined?('Events')
 
@@ -40,18 +50,10 @@ module TransactionalOutbox
       super(**options, &block)
     end
 
-    module ClassMethods
-      def outbox_model
-        @outbox_model ||= begin
-          TransactionalOutbox::Outbox.subclasses.find { |klass| klass.name.include? module_parent.name } || TransactionalOutbox::Outbox
-        end
-      end
-    end
-
     private
 
     def create_outbox!(action, event_name)
-      outbox = self.class.outbox_model.new(
+      outbox = self.class.module_parent.const_get('OUTBOX_MODEL').new(
         aggregate: self.class.name,
         aggregate_identifier: try(:identifier) || id,
         event: @outbox_event || event_name,
