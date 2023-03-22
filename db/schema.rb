@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_19_201406) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_22_142851) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -71,38 +71,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_19_201406) do
     t.uuid "aggregate_identifier", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["identifier"], name: "index_meetings_outboxes_on_identifier", unique: true
-  end
-
-  create_table "user_access_consumed_messages", force: :cascade do |t|
-    t.uuid "event_id"
-    t.string "aggregate"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["event_id", "aggregate"], name: "index_user_access_consumed_messages_on_event_id_and_aggregate", unique: true
-  end
-
-  create_table "user_access_outboxes", force: :cascade do |t|
-    t.uuid "identifier", null: false
-    t.string "event", null: false
-    t.jsonb "payload"
-    t.string "aggregate", null: false
-    t.uuid "aggregate_identifier", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.index ["aggregate_identifier"], name: "index_meetings_outboxes_on_aggregate_identifier"
     t.index ["identifier"], name: "index_meetings_outboxes_on_identifier", unique: true
-  end
-
-  create_table "transactional_outbox_outboxes", force: :cascade do |t|
-    t.string "aggregate", null: false
-    t.string "aggregate_identifier", null: false
-    t.string "event", null: false
-    t.uuid "identifier", null: false
-    t.jsonb "payload"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["identifier"], name: "index_transactional_outbox_outboxes_on_identifier"
   end
 
   create_table "user_access_consumed_messages", force: :cascade do |t|
