@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 module TransactionalOutbox
   module Outboxable
     extend ActiveSupport::Concern
@@ -10,12 +9,7 @@ module TransactionalOutbox
 
       unless module_parent.const_defined?('OUTBOX_MODEL')
         parent_module_name = module_parent == Object ? '' : module_parent.name
-        outbox_model = TransactionalOutbox::Outbox.subclasses.find do |subklass|
-          condition = subklass.name.include? parent_module_name
-          # Exclude modules if Outbox class has no module_parent
-          condition &&= subklass.name.exclude? '::' if parent_module_name.blank?
-          condition
-        end || TransactionalOutbox::Outbox
+        outbox_model = ::TransactionalOutbox.configuration.outbox_mapping[parent_module_name] || TransactionalOutbox::Outbox
         module_parent.const_set('OUTBOX_MODEL', outbox_model)
       end
 

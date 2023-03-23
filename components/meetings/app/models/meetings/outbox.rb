@@ -16,6 +16,7 @@
 #  index_transactional_outbox_outboxes_on_identifier  (identifier)
 #
 module Meetings
-  class Outbox < TransactionalOutbox::Outbox
+  class Outbox < ApplicationRecord
+    validates_presence_of :identifier, :payload, :aggregate, :aggregate_identifier, :event
   end
 end
