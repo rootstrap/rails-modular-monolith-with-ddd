@@ -24,7 +24,8 @@ module Meetings
         name: name,
         proposal_date: Time.current,
         status_code: :in_verification,
-        proposal_user_id: member.id
+        proposal_user_id: member.id,
+        identifier: SecureRandom.uuid
       )
     end
 

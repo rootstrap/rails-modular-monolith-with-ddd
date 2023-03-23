@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe TransactionalOutbox::Outboxable do
   context 'when using component specific Outbox model' do
-    Outbox = Class.new(TransactionalOutbox::Outbox) do
+    Outbox = Class.new(ApplicationRecord) do
       def self.name
         'Outbox'
       end
@@ -12,6 +12,12 @@ RSpec.describe TransactionalOutbox::Outboxable do
       def self.table_name
         'outboxes'
       end
+    end
+
+    TransactionalOutbox.configure do |config|
+      config.outbox_mapping.merge!(
+        'Object' => Outbox
+      )
     end
 
     FakeModel = Class.new(ApplicationRecord) do

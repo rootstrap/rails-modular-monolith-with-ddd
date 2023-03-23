@@ -4,6 +4,7 @@
 #
 #  id                    :bigint           not null, primary key
 #  description           :text
+#  identifier            :uuid             not null
 #  location_city         :string           not null
 #  location_country_code :string           not null
 #  name                  :string           not null

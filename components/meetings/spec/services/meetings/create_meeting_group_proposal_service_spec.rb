@@ -31,7 +31,7 @@ RSpec.describe Meetings::CreateMeetingGroupProposalService do
           {
             'event' => Meetings::Events::MEETING_GROUP_PROPOSED,
             'aggregate' => 'Meetings::MeetingGroupProposal',
-            'aggregate_identifier' => Meetings::MeetingGroupProposal.last.id.to_s
+            'aggregate_identifier' => Meetings::MeetingGroupProposal.last.identifier
           }
         }
       end

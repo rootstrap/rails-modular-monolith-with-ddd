@@ -3,11 +3,11 @@ module TransactionalOutbox
     attr_accessor :configuration
 
     def configuration
-      @configuration ||= Configuration.new
+      @configuration ||= TransactionalOutbox::Configuration.new
     end
 
     def reset
-      @configuration = Configuration.new
+      @configuration = TransactionalOutbox::Configuration.new
     end
 
     def configure
@@ -15,15 +15,11 @@ module TransactionalOutbox
     end
   end
 
-  def configuration
-    @configuration ||= Configuration.new
-  end
-end
+  class Configuration
+    attr_accessor :outbox_mapping
 
-class Configuration
-  attr_accessor :outbox_mapping
-
-  def initialize
-    @outbox_mapping = {}
+    def initialize
+      @outbox_mapping = {}
+    end
   end
 end
