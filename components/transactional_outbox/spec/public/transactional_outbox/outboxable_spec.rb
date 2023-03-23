@@ -8,6 +8,10 @@ RSpec.describe TransactionalOutbox::Outboxable do
       def self.name
         'Outbox'
       end
+
+      def self.table_name
+        'outboxes'
+      end
     end
 
     FakeModel = Class.new(ApplicationRecord) do

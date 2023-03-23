@@ -1,9 +1,6 @@
-# Load Outbox classes in development
-return unless Rails.env.development? || Rails.env.test?
-
-Rails.application.config.to_prepare do
-  outbox_subclasses = [
-    UserAccess::Outbox,
-    Meetings::Outbox
-  ]
+TransactionalOutbox.configure do |config|
+  config.outbox_mapping = {
+    'UserAccess' => UserAccess::Outbox,
+    'Meetings' => Meetings::Outbox
+  }
 end

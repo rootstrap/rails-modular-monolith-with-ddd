@@ -17,7 +17,6 @@
 #
 module TransactionalOutbox
   class Outbox < ApplicationRecord
-    self.abstract_class = true
     validates_presence_of :identifier, :payload, :aggregate, :aggregate_identifier, :event
   end
 end
