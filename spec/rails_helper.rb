@@ -89,4 +89,31 @@ RSpec.configure do |config|
       consumers.each { |consumer| consumer.consume } # TODO: which consumer?
     end
   end
+
+  config.before :all do
+    # move to schema
+    ActiveRecord::Base.connection.create_table :custom_outbox_test_models do |t|
+      t.uuid :identifier, null: false
+    end
+
+    ActiveRecord::Base.connection.create_table :default_outbox_test_models do |t|
+      t.uuid :identifier, null: false
+    end
+
+    ActiveRecord::Base.connection.create_table :custom_outbox_outboxes do |t|
+      t.uuid :identifier, null: false, index: { unique: true }
+      t.string :event, null: false
+      t.jsonb :payload
+      t.string :aggregate, null: false
+      t.uuid :aggregate_identifier, null: false
+
+      t.timestamps
+    end
+  end
+
+  config.after :all do
+    ActiveRecord::Base.connection.drop_table :custom_outbox_test_models
+    ActiveRecord::Base.connection.drop_table :default_outbox_test_models
+    ActiveRecord::Base.connection.drop_table :custom_outbox_outboxes
+  end
 end

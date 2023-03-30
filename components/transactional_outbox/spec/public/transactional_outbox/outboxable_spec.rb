@@ -4,51 +4,10 @@ require 'rails_helper'
 
 RSpec.describe TransactionalOutbox::Outboxable do
   context 'when using component specific Outbox model' do
-    Outbox = Class.new(ApplicationRecord) do
-      def self.name
-        'Outbox'
-      end
-
-      def self.table_name
-        'outboxes'
-      end
-    end
-
-    TransactionalOutbox.configure do |config|
-      config.outbox_mapping.merge!(
-        'Object' => Outbox
-      )
-    end
-
-    FakeModel = Class.new(ApplicationRecord) do
-      def self.name
-        'FakeModel'
-      end
-
-      include TransactionalOutbox::Outboxable
-      validates :identifier, presence: true
-    end
-
-    before do
-      ActiveRecord::Base.connection.create_table :fake_models do |t|
-        t.uuid :identifier, null: false
-      end
-
-      ActiveRecord::Base.connection.create_table :outboxes do |t|
-        t.uuid :identifier, null: false, index: { unique: true }
-        t.string :event, null: false
-        t.jsonb :payload
-        t.string :aggregate, null: false
-        t.uuid :aggregate_identifier, null: false
-
-        t.timestamps
-      end
-    end
-
     describe '#save' do
       subject { fake_model_instance.save }
 
-      let(:fake_model_instance) { FakeModel.new(identifier: identifier) }
+      let(:fake_model_instance) { CustomOutbox::TestModel.new(identifier: identifier) }
       let(:identifier) { SecureRandom.uuid }
 
       context 'when record is created' do
@@ -56,21 +15,21 @@ RSpec.describe TransactionalOutbox::Outboxable do
           it { is_expected.to be true }
 
           it 'creates the record' do
-            expect { subject }.to change(FakeModel, :count).by(1)
+            expect { subject }.to change(CustomOutbox::TestModel, :count).by(1)
           end
 
           it 'creates the outbox record' do
-            expect { subject }.to change(Outbox, :count).by(1)
+            expect { subject }.to change(CustomOutbox::Outbox, :count).by(1)
           end
 
           it 'creates the outbox record with the correct data' do
             subject
-            outbox = Outbox.last
-            expect(outbox.aggregate).to eq('FakeModel')
+            outbox = CustomOutbox::Outbox.last
+            expect(outbox.aggregate).to eq('CustomOutbox::TestModel')
             expect(outbox.aggregate_identifier).to eq(identifier)
             expect(outbox.event).to eq('FAKE_MODEL_CREATED')
             expect(outbox.identifier).not_to be_nil
-            expect(outbox.payload['after'].to_json).to eq(FakeModel.last.to_json)
+            expect(outbox.payload['after'].to_json).to eq(CustomOutbox::TestModel.last.to_json)
             expect(outbox.payload['before']).to be_nil
           end
         end
@@ -78,17 +37,17 @@ RSpec.describe TransactionalOutbox::Outboxable do
         context 'when there is a record invalid error when creating the outbox record' do
           before do
             outbox = build(:transactional_outbox_outbox, event: nil)
-            allow(Outbox).to receive(:new).and_return(outbox)
+            allow(CustomOutbox::Outbox).to receive(:new).and_return(outbox)
           end
 
           it { is_expected.to be false }
 
           it 'does not create the record' do
-            expect { subject }.not_to change(FakeModel, :count)
+            expect { subject }.not_to change(CustomOutbox::TestModel, :count)
           end
 
           it 'does not create the outbox record' do
-            expect { subject }.not_to change(Outbox, :count)
+            expect { subject }.not_to change(CustomOutbox::Outbox, :count)
           end
 
           it 'adds the errors to the model' do
@@ -98,7 +57,7 @@ RSpec.describe TransactionalOutbox::Outboxable do
 
         context 'when there is an error when creating the outbox record' do
           before do
-            outbox = instance_double(Outbox, invalid?: false)
+            outbox = instance_double(CustomOutbox::Outbox, invalid?: false)
             allow(Outbox).to receive(:new).and_return(outbox)
             allow(outbox).to receive(:save!).and_raise(ActiveRecord::RecordNotSaved)
           end
@@ -108,11 +67,11 @@ RSpec.describe TransactionalOutbox::Outboxable do
           end
 
           it 'does not create the record' do
-            expect { subject }.to raise_error(ActiveRecord::RecordNotSaved).and not_change(FakeModel, :count)
+            expect { subject }.to raise_error(ActiveRecord::RecordNotSaved).and not_change(CustomOutbox::TestModel, :count)
           end
 
           it 'does not create the outbox record' do
-            expect { subject }.to raise_error(ActiveRecord::RecordNotSaved).and not_change(Outbox, :count)
+            expect { subject }.to raise_error(ActiveRecord::RecordNotSaved).and not_change(CustomOutbox::Outbox, :count)
           end
         end
       end
@@ -123,11 +82,11 @@ RSpec.describe TransactionalOutbox::Outboxable do
         it { is_expected.to be false }
 
         it 'does not create the record' do
-          expect { subject }.not_to change(FakeModel, :count)
+          expect { subject }.not_to change(CustomOutbox::TestModel, :count)
         end
 
         it 'does not create the outbox record' do
-          expect { subject }.not_to change(Outbox, :count)
+          expect { subject }.not_to change(CustomOutbox::Outbox, :count)
         end
       end
 
@@ -137,7 +96,7 @@ RSpec.describe TransactionalOutbox::Outboxable do
           fake_model_instance.save
         end
 
-        let(:fake_model_instance) { FakeModel.create(identifier: identifier) }
+        let(:fake_model_instance) { CustomOutbox::TestModel.create(identifier: identifier) }
         let!(:fake_model_json) { fake_model_instance.to_json }
         let(:identifier) { SecureRandom.uuid }
         let(:new_identifier) { SecureRandom.uuid }
@@ -146,22 +105,22 @@ RSpec.describe TransactionalOutbox::Outboxable do
           it { is_expected.to be true }
 
           it 'updates the record' do
-            expect { subject }.to not_change(FakeModel, :count)
+            expect { subject }.to not_change(CustomOutbox::TestModel, :count)
               .and change(fake_model_instance, :identifier).to(new_identifier)
           end
 
           it 'creates the outbox record' do
-            expect { subject }.to change(Outbox, :count).by(1)
+            expect { subject }.to change(CustomOutbox::Outbox, :count).by(1)
           end
 
           it 'creates the outbox record with the correct data' do
             subject
-            outbox = Outbox.last
-            expect(outbox.aggregate).to eq('FakeModel')
+            outbox = CustomOutbox::Outbox.last
+            expect(outbox.aggregate).to eq('CustomOutbox::TestModel')
             expect(outbox.aggregate_identifier).to eq(new_identifier)
             expect(outbox.event).to eq('FAKE_MODEL_UPDATED')
             expect(outbox.identifier).not_to be_nil
-            expect(outbox.payload['after'].to_json).to eq(FakeModel.last.to_json)
+            expect(outbox.payload['after'].to_json).to eq(CustomOutbox::TestModel.last.to_json)
             expect(outbox.payload['before'].to_json).to eq(fake_model_json)
           end
         end
@@ -172,25 +131,25 @@ RSpec.describe TransactionalOutbox::Outboxable do
       subject { fake_model_instance.save! }
 
       let(:identifier) { SecureRandom.uuid }
-      let(:fake_model_instance) { FakeModel.new(identifier: identifier) }
+      let(:fake_model_instance) { CustomOutbox::TestModel.new(identifier: identifier) }
 
       context 'when record is created' do
         context 'when outbox record is created' do
           it { is_expected.to be true }
 
           it 'creates the record' do
-            expect { subject }.to change(FakeModel, :count).by(1)
+            expect { subject }.to change(CustomOutbox::TestModel, :count).by(1)
           end
 
           it 'creates the outbox record' do
-            expect { subject }.to change(Outbox, :count).by(1)
+            expect { subject }.to change(CustomOutbox::Outbox, :count).by(1)
           end
         end
 
         context 'when there is a record invalid error when creating the outbox record' do
           before do
             outbox = build(:transactional_outbox_outbox, event: nil)
-            allow(Outbox).to receive(:new).and_return(outbox)
+            allow(CustomOutbox::Outbox).to receive(:new).and_return(outbox)
           end
 
           it 'raises error' do
@@ -198,11 +157,11 @@ RSpec.describe TransactionalOutbox::Outboxable do
           end
 
           it 'does not create the record' do
-            expect { subject }.to raise_error(ActiveRecord::RecordInvalid).and not_change(FakeModel, :count)
+            expect { subject }.to raise_error(ActiveRecord::RecordInvalid).and not_change(CustomOutbox::TestModel, :count)
           end
 
           it 'does not create the outbox record' do
-            expect { subject }.to raise_error(ActiveRecord::RecordInvalid).and not_change(Outbox, :count)
+            expect { subject }.to raise_error(ActiveRecord::RecordInvalid).and not_change(CustomOutbox::Outbox, :count)
           end
 
           it 'adds the errors to the model' do
@@ -213,8 +172,8 @@ RSpec.describe TransactionalOutbox::Outboxable do
 
         context 'when there is an error when creating the outbox record' do
           before do
-            outbox = instance_double(Outbox, invalid?: false)
-            allow(Outbox).to receive(:new).and_return(outbox)
+            outbox = instance_double(CustomOutbox::Outbox, invalid?: false)
+            allow(CustomOutbox::Outbox).to receive(:new).and_return(outbox)
             allow(outbox).to receive(:save!).and_raise(ActiveRecord::RecordNotSaved)
           end
 
@@ -223,11 +182,11 @@ RSpec.describe TransactionalOutbox::Outboxable do
           end
 
           it 'does not create the record' do
-            expect { subject }.to raise_error(ActiveRecord::RecordNotSaved).and not_change(FakeModel, :count)
+            expect { subject }.to raise_error(ActiveRecord::RecordNotSaved).and not_change(CustomOutbox::TestModel, :count)
           end
 
           it 'does not create the outbox record' do
-            expect { subject }.to raise_error(ActiveRecord::RecordNotSaved).and not_change(Outbox, :count)
+            expect { subject }.to raise_error(ActiveRecord::RecordNotSaved).and not_change(CustomOutbox::Outbox, :count)
           end
         end
       end
@@ -240,40 +199,40 @@ RSpec.describe TransactionalOutbox::Outboxable do
         end
 
         it 'does not create the record' do
-          expect { subject }.to raise_error(ActiveRecord::RecordInvalid).and not_change(FakeModel, :count)
+          expect { subject }.to raise_error(ActiveRecord::RecordInvalid).and not_change(CustomOutbox::TestModel, :count)
         end
 
         it 'does not create the outbox record' do
-          expect { subject }.to raise_error(ActiveRecord::RecordInvalid).and not_change(Outbox, :count)
+          expect { subject }.to raise_error(ActiveRecord::RecordInvalid).and not_change(CustomOutbox::Outbox, :count)
         end
       end
     end
 
     describe '#create' do
-      subject { FakeModel.create(identifier: identifier) }
+      subject { CustomOutbox::TestModel.create(identifier: identifier) }
 
       let(:identifier) { SecureRandom.uuid }
 
       context 'when record is created' do
         context 'when outbox record is created' do
-          it { is_expected.to eq(FakeModel.last) }
+          it { is_expected.to eq(CustomOutbox::TestModel.last) }
 
           it 'creates the record' do
-            expect { subject }.to change(FakeModel, :count).by(1)
+            expect { subject }.to change(CustomOutbox::TestModel, :count).by(1)
           end
 
           it 'creates the outbox record' do
-            expect { subject }.to change(Outbox, :count).by(1)
+            expect { subject }.to change(CustomOutbox::Outbox, :count).by(1)
           end
 
           it 'creates the outbox record with the correct data' do
             subject
-            outbox = Outbox.last
-            expect(outbox.aggregate).to eq('FakeModel')
+            outbox = CustomOutbox::Outbox.last
+            expect(outbox.aggregate).to eq('CustomOutbox::TestModel')
             expect(outbox.aggregate_identifier).to eq(identifier)
             expect(outbox.event).to eq('FAKE_MODEL_CREATED')
             expect(outbox.identifier).not_to be_nil
-            expect(outbox.payload['after'].to_json).to eq(FakeModel.last.to_json)
+            expect(outbox.payload['after'].to_json).to eq(CustomOutbox::TestModel.last.to_json)
             expect(outbox.payload['before']).to be_nil
           end
         end
@@ -283,7 +242,7 @@ RSpec.describe TransactionalOutbox::Outboxable do
     describe '#update' do
       subject { fake_model.update(identifier: new_identifier) }
 
-      let!(:fake_model) { FakeModel.create(identifier: identifier) }
+      let!(:fake_model) { CustomOutbox::TestModel.create(identifier: identifier) }
       let!(:fake_old_model) { fake_model.to_json }
       let(:identifier) { SecureRandom.uuid }
       let(:new_identifier) { SecureRandom.uuid }
@@ -293,18 +252,18 @@ RSpec.describe TransactionalOutbox::Outboxable do
           it { is_expected.to be true }
 
           it 'updates the record' do
-            expect { subject }.to not_change(FakeModel, :count)
+            expect { subject }.to not_change(CustomOutbox::TestModel, :count)
               .and change(fake_model, :identifier).to(new_identifier)
           end
 
           it 'creates the outbox record' do
-            expect { subject }.to change(Outbox, :count).by(1)
+            expect { subject }.to change(CustomOutbox::Outbox, :count).by(1)
           end
 
           it 'creates the outbox record with the correct data' do
             subject
-            outbox = Outbox.last
-            expect(outbox.aggregate).to eq('FakeModel')
+            outbox = CustomOutbox::Outbox.last
+            expect(outbox.aggregate).to eq('CustomOutbox::TestModel')
             expect(outbox.aggregate_identifier).to eq(new_identifier)
             expect(outbox.event).to eq('FAKE_MODEL_UPDATED')
             expect(outbox.identifier).not_to be_nil
@@ -318,7 +277,7 @@ RSpec.describe TransactionalOutbox::Outboxable do
     describe '#destroy' do
       subject { fake_model.destroy }
 
-      let!(:fake_model) { FakeModel.create(identifier: identifier) }
+      let!(:fake_model) { CustomOutbox::TestModel.create(identifier: identifier) }
       let(:identifier) { SecureRandom.uuid }
 
       context 'when record is destroyed' do
@@ -326,17 +285,17 @@ RSpec.describe TransactionalOutbox::Outboxable do
           it { is_expected.to eq(fake_model) }
 
           it 'destroys the record' do
-            expect { subject }.to change(FakeModel, :count).by(-1)
+            expect { subject }.to change(CustomOutbox::TestModel, :count).by(-1)
           end
 
           it 'creates the outbox record' do
-            expect { subject }.to change(Outbox, :count).by(1)
+            expect { subject }.to change(CustomOutbox::Outbox, :count).by(1)
           end
 
           it 'creates the outbox record with the correct data' do
             subject
-            outbox = Outbox.last
-            expect(outbox.aggregate).to eq('FakeModel')
+            outbox = CustomOutbox::Outbox.last
+            expect(outbox.aggregate).to eq('CustomOutbox::TestModel')
             expect(outbox.aggregate_identifier).to eq(identifier)
             expect(outbox.event).to eq('FAKE_MODEL_DESTROYED')
             expect(outbox.identifier).not_to be_nil
@@ -349,25 +308,10 @@ RSpec.describe TransactionalOutbox::Outboxable do
   end
 
   context 'when using default TransactionalOutbox::Outbox model' do
-    FakeModel = Class.new(ApplicationRecord) do
-      def self.name
-        'FakeModel'
-      end
-
-      include TransactionalOutbox::Outboxable
-      validates :identifier, presence: true
-    end
-
-    before do
-      ActiveRecord::Base.connection.create_table :fake_models do |t|
-        t.uuid :identifier, null: false
-      end
-    end
-
     describe '#save' do
       subject { fake_model_instance.save }
 
-      let(:fake_model_instance) { FakeModel.new(identifier: identifier) }
+      let(:fake_model_instance) { DefaultOutbox::TestModel.new(identifier: identifier) }
       let(:identifier) { SecureRandom.uuid }
 
       context 'when record is created' do
@@ -375,7 +319,7 @@ RSpec.describe TransactionalOutbox::Outboxable do
           it { is_expected.to be true }
 
           it 'creates the record' do
-            expect { subject }.to change(FakeModel, :count).by(1)
+            expect { subject }.to change(DefaultOutbox::TestModel, :count).by(1)
           end
 
           it 'creates the outbox record' do
@@ -385,11 +329,11 @@ RSpec.describe TransactionalOutbox::Outboxable do
           it 'creates the outbox record with the correct data' do
             subject
             outbox = TransactionalOutbox::Outbox.last
-            expect(outbox.aggregate).to eq('FakeModel')
+            expect(outbox.aggregate).to eq('DefaultOutbox::TestModel')
             expect(outbox.aggregate_identifier).to eq(identifier)
             expect(outbox.event).to eq('FAKE_MODEL_CREATED')
             expect(outbox.identifier).not_to be_nil
-            expect(outbox.payload['after'].to_json).to eq(FakeModel.last.to_json)
+            expect(outbox.payload['after'].to_json).to eq(DefaultOutbox::TestModel.last.to_json)
             expect(outbox.payload['before']).to be_nil
           end
         end
@@ -403,7 +347,7 @@ RSpec.describe TransactionalOutbox::Outboxable do
           it { is_expected.to be false }
 
           it 'does not create the record' do
-            expect { subject }.not_to change(FakeModel, :count)
+            expect { subject }.not_to change(DefaultOutbox::TestModel, :count)
           end
 
           it 'does not create the outbox record' do
@@ -427,7 +371,7 @@ RSpec.describe TransactionalOutbox::Outboxable do
           end
 
           it 'does not create the record' do
-            expect { subject }.to raise_error(ActiveRecord::RecordNotSaved).and not_change(FakeModel, :count)
+            expect { subject }.to raise_error(ActiveRecord::RecordNotSaved).and not_change(DefaultOutbox::TestModel, :count)
           end
 
           it 'does not create the outbox record' do
@@ -442,7 +386,7 @@ RSpec.describe TransactionalOutbox::Outboxable do
         it { is_expected.to be false }
 
         it 'does not create the record' do
-          expect { subject }.not_to change(FakeModel, :count)
+          expect { subject }.not_to change(DefaultOutbox::TestModel, :count)
         end
 
         it 'does not create the outbox record' do
@@ -456,7 +400,7 @@ RSpec.describe TransactionalOutbox::Outboxable do
           fake_model_instance.save
         end
 
-        let(:fake_model_instance) { FakeModel.create(identifier: identifier) }
+        let(:fake_model_instance) { DefaultOutbox::TestModel.create(identifier: identifier) }
         let!(:fake_model_json) { fake_model_instance.to_json }
         let(:identifier) { SecureRandom.uuid }
         let(:new_identifier) { SecureRandom.uuid }
@@ -465,7 +409,7 @@ RSpec.describe TransactionalOutbox::Outboxable do
           it { is_expected.to be true }
 
           it 'updates the record' do
-            expect { subject }.to not_change(FakeModel, :count)
+            expect { subject }.to not_change(DefaultOutbox::TestModel, :count)
               .and change(fake_model_instance, :identifier).to(new_identifier)
           end
 
@@ -476,11 +420,11 @@ RSpec.describe TransactionalOutbox::Outboxable do
           it 'creates the outbox record with the correct data' do
             subject
             outbox = TransactionalOutbox::Outbox.last
-            expect(outbox.aggregate).to eq('FakeModel')
+            expect(outbox.aggregate).to eq('DefaultOutbox::TestModel')
             expect(outbox.aggregate_identifier).to eq(new_identifier)
             expect(outbox.event).to eq('FAKE_MODEL_UPDATED')
             expect(outbox.identifier).not_to be_nil
-            expect(outbox.payload['after'].to_json).to eq(FakeModel.last.to_json)
+            expect(outbox.payload['after'].to_json).to eq(DefaultOutbox::TestModel.last.to_json)
             expect(outbox.payload['before'].to_json).to eq(fake_model_json)
           end
         end
@@ -491,14 +435,14 @@ RSpec.describe TransactionalOutbox::Outboxable do
       subject { fake_model_instance.save! }
 
       let(:identifier) { SecureRandom.uuid }
-      let(:fake_model_instance) { FakeModel.new(identifier: identifier) }
+      let(:fake_model_instance) { DefaultOutbox::TestModel.new(identifier: identifier) }
 
       context 'when record is created' do
         context 'when outbox record is created' do
           it { is_expected.to be true }
 
           it 'creates the record' do
-            expect { subject }.to change(FakeModel, :count).by(1)
+            expect { subject }.to change(DefaultOutbox::TestModel, :count).by(1)
           end
 
           it 'creates the outbox record' do
@@ -517,7 +461,7 @@ RSpec.describe TransactionalOutbox::Outboxable do
           end
 
           it 'does not create the record' do
-            expect { subject }.to raise_error(ActiveRecord::RecordInvalid).and not_change(FakeModel, :count)
+            expect { subject }.to raise_error(ActiveRecord::RecordInvalid).and not_change(DefaultOutbox::TestModel, :count)
           end
 
           it 'does not create the outbox record' do
@@ -542,7 +486,7 @@ RSpec.describe TransactionalOutbox::Outboxable do
           end
 
           it 'does not create the record' do
-            expect { subject }.to raise_error(ActiveRecord::RecordNotSaved).and not_change(FakeModel, :count)
+            expect { subject }.to raise_error(ActiveRecord::RecordNotSaved).and not_change(DefaultOutbox::TestModel, :count)
           end
 
           it 'does not create the outbox record' do
@@ -559,7 +503,7 @@ RSpec.describe TransactionalOutbox::Outboxable do
         end
 
         it 'does not create the record' do
-          expect { subject }.to raise_error(ActiveRecord::RecordInvalid).and not_change(FakeModel, :count)
+          expect { subject }.to raise_error(ActiveRecord::RecordInvalid).and not_change(DefaultOutbox::TestModel, :count)
         end
 
         it 'does not create the outbox record' do
@@ -569,16 +513,16 @@ RSpec.describe TransactionalOutbox::Outboxable do
     end
 
     describe '#create' do
-      subject { FakeModel.create(identifier: identifier) }
+      subject { DefaultOutbox::TestModel.create(identifier: identifier) }
 
       let(:identifier) { SecureRandom.uuid }
 
       context 'when record is created' do
         context 'when outbox record is created' do
-          it { is_expected.to eq(FakeModel.last) }
+          it { is_expected.to eq(DefaultOutbox::TestModel.last) }
 
           it 'creates the record' do
-            expect { subject }.to change(FakeModel, :count).by(1)
+            expect { subject }.to change(DefaultOutbox::TestModel, :count).by(1)
           end
 
           it 'creates the outbox record' do
@@ -588,11 +532,11 @@ RSpec.describe TransactionalOutbox::Outboxable do
           it 'creates the outbox record with the correct data' do
             subject
             outbox = TransactionalOutbox::Outbox.last
-            expect(outbox.aggregate).to eq('FakeModel')
+            expect(outbox.aggregate).to eq('DefaultOutbox::TestModel')
             expect(outbox.aggregate_identifier).to eq(identifier)
             expect(outbox.event).to eq('FAKE_MODEL_CREATED')
             expect(outbox.identifier).not_to be_nil
-            expect(outbox.payload['after'].to_json).to eq(FakeModel.last.to_json)
+            expect(outbox.payload['after'].to_json).to eq(DefaultOutbox::TestModel.last.to_json)
             expect(outbox.payload['before']).to be_nil
           end
         end
@@ -602,7 +546,7 @@ RSpec.describe TransactionalOutbox::Outboxable do
     describe '#update' do
       subject { fake_model.update(identifier: new_identifier) }
 
-      let!(:fake_model) { FakeModel.create(identifier: identifier) }
+      let!(:fake_model) { DefaultOutbox::TestModel.create(identifier: identifier) }
       let!(:fake_old_model) { fake_model.to_json }
       let(:identifier) { SecureRandom.uuid }
       let(:new_identifier) { SecureRandom.uuid }
@@ -612,7 +556,7 @@ RSpec.describe TransactionalOutbox::Outboxable do
           it { is_expected.to be true }
 
           it 'updates the record' do
-            expect { subject }.to not_change(FakeModel, :count)
+            expect { subject }.to not_change(DefaultOutbox::TestModel, :count)
               .and change(fake_model, :identifier).to(new_identifier)
           end
 
@@ -623,7 +567,7 @@ RSpec.describe TransactionalOutbox::Outboxable do
           it 'creates the outbox record with the correct data' do
             subject
             outbox = TransactionalOutbox::Outbox.last
-            expect(outbox.aggregate).to eq('FakeModel')
+            expect(outbox.aggregate).to eq('DefaultOutbox::TestModel')
             expect(outbox.aggregate_identifier).to eq(new_identifier)
             expect(outbox.event).to eq('FAKE_MODEL_UPDATED')
             expect(outbox.identifier).not_to be_nil
@@ -637,7 +581,7 @@ RSpec.describe TransactionalOutbox::Outboxable do
     describe '#destroy' do
       subject { fake_model.destroy }
 
-      let!(:fake_model) { FakeModel.create(identifier: identifier) }
+      let!(:fake_model) { DefaultOutbox::TestModel.create(identifier: identifier) }
       let(:identifier) { SecureRandom.uuid }
 
       context 'when record is destroyed' do
@@ -645,7 +589,7 @@ RSpec.describe TransactionalOutbox::Outboxable do
           it { is_expected.to eq(fake_model) }
 
           it 'destroys the record' do
-            expect { subject }.to change(FakeModel, :count).by(-1)
+            expect { subject }.to change(DefaultOutbox::TestModel, :count).by(-1)
           end
 
           it 'creates the outbox record' do
@@ -655,7 +599,7 @@ RSpec.describe TransactionalOutbox::Outboxable do
           it 'creates the outbox record with the correct data' do
             subject
             outbox = TransactionalOutbox::Outbox.last
-            expect(outbox.aggregate).to eq('FakeModel')
+            expect(outbox.aggregate).to eq('DefaultOutbox::TestModel')
             expect(outbox.aggregate_identifier).to eq(identifier)
             expect(outbox.event).to eq('FAKE_MODEL_DESTROYED')
             expect(outbox.identifier).not_to be_nil

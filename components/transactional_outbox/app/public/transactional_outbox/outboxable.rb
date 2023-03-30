@@ -8,7 +8,8 @@ module TransactionalOutbox
       namespace = namespace.reverse.join('.')
 
       unless module_parent.const_defined?('OUTBOX_MODEL')
-        outbox_model = TransactionalOutbox.configuration.outbox_mapping[module_parent.name] || TransactionalOutbox::Outbox
+        outbox_model_name = TransactionalOutbox.configuration.outbox_mapping[module_parent.name]
+        outbox_model = outbox_model_name&.safe_constantize || TransactionalOutbox::Outbox
         module_parent.const_set('OUTBOX_MODEL', outbox_model)
       end
 
