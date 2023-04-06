@@ -5,4 +5,4 @@ enforce_dependencies: true
 enforce_privacy: true
 
 # A list of this package's dependencies
-dependencies:
+# dependencies:
