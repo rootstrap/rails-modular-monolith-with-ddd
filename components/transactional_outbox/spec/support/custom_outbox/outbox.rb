@@ -1,4 +1,4 @@
 module CustomOutbox
-  class Outbox < ApplicationRecord
+  class Outbox < CustomOutbox::ApplicationRecord
   end
 end

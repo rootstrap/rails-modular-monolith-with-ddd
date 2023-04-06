@@ -1,5 +1,5 @@
 module CustomOutbox
-  class TestModel < ApplicationRecord
+  class TestModel < CustomOutbox::ApplicationRecord
     include TransactionalOutbox::Outboxable
     validates :identifier, presence: true
   end
