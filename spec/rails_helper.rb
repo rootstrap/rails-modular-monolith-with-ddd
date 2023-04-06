@@ -81,12 +81,15 @@ RSpec.configure do |config|
   config.include_context 'Karafka consumer helpers', type: :request
 
   config.before type: :request do
-    allow_any_instance_of(TransactionalOutbox::Outbox).to receive(:save!).and_wrap_original do |m, *args|
-      result = m.call(*args)
-      return unless result
-      outbox_message = TransactionalOutbox::Outbox.last
-      karafka.produce(Support::KafkaConnectMock.wrap_message(outbox_message))
-      consumers.each { |consumer| consumer.consume } # TODO: which consumer?
+    TransactionalOutbox.configuration.outbox_mapping.each_value do |outbox_klass|
+      outbox_klass = outbox_klass.constantize
+      allow_any_instance_of(outbox_klass).to receive(:save!).and_wrap_original do |m, *args|
+        result = m.call(*args)
+        return unless result
+        outbox_message = outbox_klass.last
+        karafka.produce(Support::KafkaConnectMock.wrap_message(outbox_message))
+        consumers.each { |consumer| consumer.consume } # TODO: which consumer?
+      end
     end
   end
 

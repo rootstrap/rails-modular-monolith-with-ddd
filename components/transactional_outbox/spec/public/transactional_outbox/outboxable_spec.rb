@@ -27,7 +27,7 @@ RSpec.describe TransactionalOutbox::Outboxable do
             outbox = CustomOutbox::Outbox.last
             expect(outbox.aggregate).to eq('CustomOutbox::TestModel')
             expect(outbox.aggregate_identifier).to eq(identifier)
-            expect(outbox.event).to eq('FAKE_MODEL_CREATED')
+            expect(outbox.event).to eq('TEST_MODEL_CREATED.CUSTOM_OUTBOX')
             expect(outbox.identifier).not_to be_nil
             expect(outbox.payload['after'].to_json).to eq(CustomOutbox::TestModel.last.to_json)
             expect(outbox.payload['before']).to be_nil
@@ -58,7 +58,7 @@ RSpec.describe TransactionalOutbox::Outboxable do
         context 'when there is an error when creating the outbox record' do
           before do
             outbox = instance_double(CustomOutbox::Outbox, invalid?: false)
-            allow(Outbox).to receive(:new).and_return(outbox)
+            allow(CustomOutbox::Outbox).to receive(:new).and_return(outbox)
             allow(outbox).to receive(:save!).and_raise(ActiveRecord::RecordNotSaved)
           end
 
@@ -118,7 +118,7 @@ RSpec.describe TransactionalOutbox::Outboxable do
             outbox = CustomOutbox::Outbox.last
             expect(outbox.aggregate).to eq('CustomOutbox::TestModel')
             expect(outbox.aggregate_identifier).to eq(new_identifier)
-            expect(outbox.event).to eq('FAKE_MODEL_UPDATED')
+            expect(outbox.event).to eq('TEST_MODEL_UPDATED.CUSTOM_OUTBOX')
             expect(outbox.identifier).not_to be_nil
             expect(outbox.payload['after'].to_json).to eq(CustomOutbox::TestModel.last.to_json)
             expect(outbox.payload['before'].to_json).to eq(fake_model_json)
@@ -230,7 +230,7 @@ RSpec.describe TransactionalOutbox::Outboxable do
             outbox = CustomOutbox::Outbox.last
             expect(outbox.aggregate).to eq('CustomOutbox::TestModel')
             expect(outbox.aggregate_identifier).to eq(identifier)
-            expect(outbox.event).to eq('FAKE_MODEL_CREATED')
+            expect(outbox.event).to eq('TEST_MODEL_CREATED.CUSTOM_OUTBOX')
             expect(outbox.identifier).not_to be_nil
             expect(outbox.payload['after'].to_json).to eq(CustomOutbox::TestModel.last.to_json)
             expect(outbox.payload['before']).to be_nil
@@ -265,7 +265,7 @@ RSpec.describe TransactionalOutbox::Outboxable do
             outbox = CustomOutbox::Outbox.last
             expect(outbox.aggregate).to eq('CustomOutbox::TestModel')
             expect(outbox.aggregate_identifier).to eq(new_identifier)
-            expect(outbox.event).to eq('FAKE_MODEL_UPDATED')
+            expect(outbox.event).to eq('TEST_MODEL_UPDATED.CUSTOM_OUTBOX')
             expect(outbox.identifier).not_to be_nil
             expect(outbox.payload['before'].to_json).to eq(fake_old_model)
             expect(outbox.payload['after'].to_json).to eq(fake_model.reload.to_json)
@@ -297,7 +297,7 @@ RSpec.describe TransactionalOutbox::Outboxable do
             outbox = CustomOutbox::Outbox.last
             expect(outbox.aggregate).to eq('CustomOutbox::TestModel')
             expect(outbox.aggregate_identifier).to eq(identifier)
-            expect(outbox.event).to eq('FAKE_MODEL_DESTROYED')
+            expect(outbox.event).to eq('TEST_MODEL_DESTROYED.CUSTOM_OUTBOX')
             expect(outbox.identifier).not_to be_nil
             expect(outbox.payload['after']).to be_nil
             expect(outbox.payload['before'].to_json).to eq(fake_model.to_json)
@@ -331,7 +331,7 @@ RSpec.describe TransactionalOutbox::Outboxable do
             outbox = TransactionalOutbox::Outbox.last
             expect(outbox.aggregate).to eq('DefaultOutbox::TestModel')
             expect(outbox.aggregate_identifier).to eq(identifier)
-            expect(outbox.event).to eq('FAKE_MODEL_CREATED')
+            expect(outbox.event).to eq('TEST_MODEL_CREATED.DEFAULT_OUTBOX')
             expect(outbox.identifier).not_to be_nil
             expect(outbox.payload['after'].to_json).to eq(DefaultOutbox::TestModel.last.to_json)
             expect(outbox.payload['before']).to be_nil
@@ -422,7 +422,7 @@ RSpec.describe TransactionalOutbox::Outboxable do
             outbox = TransactionalOutbox::Outbox.last
             expect(outbox.aggregate).to eq('DefaultOutbox::TestModel')
             expect(outbox.aggregate_identifier).to eq(new_identifier)
-            expect(outbox.event).to eq('FAKE_MODEL_UPDATED')
+            expect(outbox.event).to eq('TEST_MODEL_UPDATED.DEFAULT_OUTBOX')
             expect(outbox.identifier).not_to be_nil
             expect(outbox.payload['after'].to_json).to eq(DefaultOutbox::TestModel.last.to_json)
             expect(outbox.payload['before'].to_json).to eq(fake_model_json)
@@ -534,7 +534,7 @@ RSpec.describe TransactionalOutbox::Outboxable do
             outbox = TransactionalOutbox::Outbox.last
             expect(outbox.aggregate).to eq('DefaultOutbox::TestModel')
             expect(outbox.aggregate_identifier).to eq(identifier)
-            expect(outbox.event).to eq('FAKE_MODEL_CREATED')
+            expect(outbox.event).to eq('TEST_MODEL_CREATED.DEFAULT_OUTBOX')
             expect(outbox.identifier).not_to be_nil
             expect(outbox.payload['after'].to_json).to eq(DefaultOutbox::TestModel.last.to_json)
             expect(outbox.payload['before']).to be_nil
@@ -569,7 +569,7 @@ RSpec.describe TransactionalOutbox::Outboxable do
             outbox = TransactionalOutbox::Outbox.last
             expect(outbox.aggregate).to eq('DefaultOutbox::TestModel')
             expect(outbox.aggregate_identifier).to eq(new_identifier)
-            expect(outbox.event).to eq('FAKE_MODEL_UPDATED')
+            expect(outbox.event).to eq('TEST_MODEL_UPDATED.DEFAULT_OUTBOX')
             expect(outbox.identifier).not_to be_nil
             expect(outbox.payload['before'].to_json).to eq(fake_old_model)
             expect(outbox.payload['after'].to_json).to eq(fake_model.reload.to_json)
@@ -601,7 +601,7 @@ RSpec.describe TransactionalOutbox::Outboxable do
             outbox = TransactionalOutbox::Outbox.last
             expect(outbox.aggregate).to eq('DefaultOutbox::TestModel')
             expect(outbox.aggregate_identifier).to eq(identifier)
-            expect(outbox.event).to eq('FAKE_MODEL_DESTROYED')
+            expect(outbox.event).to eq('TEST_MODEL_DESTROYED.DEFAULT_OUTBOX')
             expect(outbox.identifier).not_to be_nil
             expect(outbox.payload['after']).to be_nil
             expect(outbox.payload['before'].to_json).to eq(fake_model.to_json)

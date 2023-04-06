@@ -61,7 +61,7 @@ RSpec.describe 'POST /meetings/meeting_group_proposals' do
       end
 
       it 'raises an error' do
-        expect { request }.to raise_error
+        expect { request }.to raise_error(NoMethodError)
       end
     end
   end
