@@ -93,8 +93,11 @@ RSpec.configure do |config|
     end
   end
 
-  config.before :all do
-    # move to schema
+  config.define_derived_metadata(file_path: %r{components/transactional_outbox/spec/}) do |metadata|
+    metadata[:transactional_outbox] = true
+  end
+
+  config.before :each, transactional_outbox: true do
     ActiveRecord::Base.connection.create_table :custom_outbox_test_models do |t|
       t.uuid :identifier, null: false
     end
@@ -112,11 +115,5 @@ RSpec.configure do |config|
 
       t.timestamps
     end
-  end
-
-  config.after :all do
-    ActiveRecord::Base.connection.drop_table :custom_outbox_test_models
-    ActiveRecord::Base.connection.drop_table :default_outbox_test_models
-    ActiveRecord::Base.connection.drop_table :custom_outbox_outboxes
   end
 end
