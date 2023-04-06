@@ -7,3 +7,4 @@ enforce_privacy: true
 # A list of this package's dependencies
 dependencies:
 - components/app_base
+- components/transactional_outbox

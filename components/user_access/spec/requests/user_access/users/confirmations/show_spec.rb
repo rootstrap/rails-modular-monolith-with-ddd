@@ -3,14 +3,6 @@
 require 'rails_helper'
 
 RSpec.describe 'GET /users/confirmations' do
-  subject(:consumer) do
-    Support::KarafkaConsumerMock.build(
-      UserAccess::BatchBaseConsumer.new,
-      "#{ENV["KAFKA_CONNECT_DB_SERVER_NAME"]}.public.user_access_outboxes",
-      _karafka_consumer_client
-    )
-  end
-
   let(:user_registration) { create(:user_access_user_registration) }
   let(:request) do
     get user_registration_confirmation_path, params: params
@@ -28,7 +20,11 @@ RSpec.describe 'GET /users/confirmations' do
     end
 
     it 'creates an outbox record' do
-      expect { request }.to change(UserAccess::Outbox, :count).by(1)
+      expect { request }.to create_outbox_record(UserAccess::Outbox).with_attributes(
+          'event' => UserAccess::Events::USER_REGISTRATION_CONFIRMED,
+          'aggregate' => 'UserAccess::UserRegistration',
+          'aggregate_identifier' => user_registration.identifier
+        )
     end
 
     it 'redirects to home page' do
@@ -48,7 +44,7 @@ RSpec.describe 'GET /users/confirmations' do
     end
 
     it 'does not create an outbox record' do
-      expect { request }.to_not change(UserAccess::Outbox, :count)
+      expect { request }.to_not create_outbox_record(UserAccess::Outbox)
     end
 
     it 'renders the errors' do

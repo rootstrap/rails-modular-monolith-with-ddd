@@ -17,8 +17,3 @@ components/user_access:
     - privacy
     files:
     - karafka.rb
-  "::UserAccess::Outbox":
-    violations:
-    - privacy
-    files:
-    - spec/rails_helper.rb

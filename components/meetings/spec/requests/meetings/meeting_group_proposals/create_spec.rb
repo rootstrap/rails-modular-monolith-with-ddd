@@ -9,9 +9,7 @@ RSpec.describe 'POST /meetings/meeting_group_proposals' do
     sign_in user
   end
 
-  subject do
-    post meetings_meeting_group_proposals_path, params: params
-  end
+  subject(:request) { post meetings_meeting_group_proposals_path, params: params }
 
   context 'when a member exists' do
     let!(:member) { create(:meetings_member, identifier: user.identifier) }
@@ -29,7 +27,7 @@ RSpec.describe 'POST /meetings/meeting_group_proposals' do
       end
 
       it 'creates a new meeting group proposal' do
-        expect { subject }.to change(Meetings::MeetingGroupProposal, :count).by(1)
+        expect { request }.to change(Meetings::MeetingGroupProposal, :count).by(1)
       end
     end
 
@@ -44,7 +42,7 @@ RSpec.describe 'POST /meetings/meeting_group_proposals' do
 
       xit 'does not create a new meeting group proposal' do
         # TODO: fix this test
-        expect { subject }.not_to change(Meetings::MeetingGroupProposal, :count)
+        expect { request }.not_to change(Meetings::MeetingGroupProposal, :count)
       end
     end
   end
@@ -63,7 +61,7 @@ RSpec.describe 'POST /meetings/meeting_group_proposals' do
       end
 
       it 'raises an error' do
-        expect { subject }.to raise_error
+        expect { request }.to raise_error(NoMethodError)
       end
     end
   end

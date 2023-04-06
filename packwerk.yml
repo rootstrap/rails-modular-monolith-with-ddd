@@ -6,8 +6,9 @@
 # - "**/*.{rb,rake,erb}"
 
 # List of patterns for folder paths to exclude
-# exclude:
-# - "{bin,node_modules,script,tmp,vendor}/**/*"
+exclude:
+  - "{bin,node_modules,script,tmp,vendor}/**/*"
+  - "components/transactional_outbox/lib/generators/outbox/templates/migration.rb"
 
 # Patterns to find package configuration files
 # package_paths: "**/"

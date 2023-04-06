@@ -15,10 +15,15 @@ module UserAccess
       if UserAccess::ConsumedMessage.already_processed?(identifier, aggregate)
         Karafka.logger.info "Already processed event: <identifier: #{identifier}, aggregate: #{aggregate}>"
         return
-      else
+      elsif EVENTS_MAPPING.keys.include?(event)
         Karafka.logger.info "New [UserAccess::Outbox] event: <identifier: #{identifier}, aggregate: #{aggregate}>"
-        EVENTS_MAPPING[event].new(data).call
-        UserAccess::ConsumedMessage.create!(event_id: identifier, aggregate: aggregate)
+        consumed_message = UserAccess::ConsumedMessage.create!(event_id: identifier, aggregate: aggregate, status: :processing)
+        begin
+          EVENTS_MAPPING[event].new(data).call
+          consumed_message.update!(status: :succeeded)
+        rescue
+          consumed_message.update!(status: :failed)
+        end
       end
     end
 
@@ -43,7 +48,7 @@ module UserAccess
     end
 
     def data
-      JSON.parse(payload.dig('payload', 'after', 'payload'))
+      JSON.parse(payload.dig('payload', 'after', 'payload'))['after']
     end
   end
 end

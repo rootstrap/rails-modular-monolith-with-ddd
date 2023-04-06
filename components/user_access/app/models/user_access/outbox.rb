@@ -13,7 +13,8 @@
 #
 # Indexes
 #
-#  index_user_access_outboxes_on_identifier  (identifier) UNIQUE
+#  index_user_access_outboxes_on_aggregate_identifier  (aggregate_identifier)
+#  index_user_access_outboxes_on_identifier            (identifier) UNIQUE
 #
 module UserAccess
   class Outbox < ApplicationRecord
