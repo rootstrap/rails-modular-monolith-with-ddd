@@ -28,9 +28,11 @@ development:
   user_access:
     <<: *default
     database: user_access_development
+    migrations_paths: db/user_access_migrate
   meetings:
     <<: *default
     database: meetings_development
+    migrations_paths: db/meetings_migrate
 
   # The specified database role being used to connect to postgres.
   # To create additional roles in postgres see `$ createuser --help`.
@@ -66,9 +68,11 @@ test:
   user_access:
     <<: *default
     database: user_access_test
+    migrations_paths: db/user_access_migrate
   meetings:
     <<: *default
     database: meetings_test
+    migrations_paths: db/meetings_migrate
 
 # As with config/credentials.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
@@ -94,6 +98,8 @@ production:
   user_access:
     <<: *default
     url: <%= ENV['USER_ACCESS_DATABASE_URL'] %>
+    migrations_paths: db/user_access_migrate
   meetings:
     <<: *default
     url: <%= ENV['MEETINGS_DATABASE_URL'] %>
+    migrations_paths: db/meetings_migrate
