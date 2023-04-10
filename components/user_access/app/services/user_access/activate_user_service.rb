@@ -12,7 +12,6 @@ module UserAccess
       true
     rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotFound => exception
       Rails.logger.error { exception.message }
-      # TODO: Handle failure events inside the OutboxService.create! method
       user.status_code = :failed
       user.save!(outbox_event: UserAccess::Events::USER_ACTIVATION_FAILED, validate: false)
       false
