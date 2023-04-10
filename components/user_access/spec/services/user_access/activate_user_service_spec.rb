@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe UserAccess::ActivateUserService do
   describe '#call' do
     let!(:user) do
-      create(:user_access_user, status: :pending)
+      create(:user_access_user, status_code: :pending)
     end
 
     let(:event_payload) do
@@ -24,8 +24,8 @@ RSpec.describe UserAccess::ActivateUserService do
     context 'when user activation succeeds' do
       it { is_expected.to be true }
 
-      it 'updates the user status' do
-        expect { subject }.to change { user.reload.status }.to('active')
+      it 'updates the user status_code' do
+        expect { subject }.to change { user.reload.status_code }.to('active')
       end
 
       it 'creates an outbox record' do
@@ -39,14 +39,14 @@ RSpec.describe UserAccess::ActivateUserService do
 
     context 'when user activation fails' do
       before do
-        allow_any_instance_of(UserAccess::User).to receive(:update!).with(status: :active).and_raise(ActiveRecord::RecordInvalid)
-        allow_any_instance_of(UserAccess::User).to receive(:update!).with(status: :failed).and_call_original
+        allow_any_instance_of(UserAccess::User).to receive(:update!).with(status_code: :active).and_raise(ActiveRecord::RecordInvalid)
+        allow_any_instance_of(UserAccess::User).to receive(:update!).with(status_code: :failed).and_call_original
       end
 
       it { is_expected.to be false }
 
-      it 'updates the user status' do
-        expect { subject }.to change { user.reload.status }.to('failed')
+      it 'updates the user status_code' do
+        expect { subject }.to change { user.reload.status_code }.to('failed')
       end
 
       it 'creates an outbox record' do

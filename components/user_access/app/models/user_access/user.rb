@@ -9,13 +9,13 @@
 #  encrypted_password     :string           default(""), not null
 #  first_name             :string           not null
 #  identifier             :uuid             not null
-#  is_active              :boolean          not null
 #  last_name              :string           not null
 #  login                  :string           not null
 #  name                   :string           not null
 #  remember_created_at    :datetime
 #  reset_password_sent_at :datetime
 #  reset_password_token   :string
+#  status_code            :integer          default(0)
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #
@@ -38,7 +38,13 @@ module UserAccess
 
     validates_uniqueness_of :identifier, :email, :login
     validates_presence_of :identifier, :email, :encrypted_password, :first_name, :last_name, :name,
-                          :login, :is_active
+                          :login, :status_code
+
+    enum status_code: {
+      pending: 0,
+      active: 1,
+      failed: 2
+    }
 
     protected
 
