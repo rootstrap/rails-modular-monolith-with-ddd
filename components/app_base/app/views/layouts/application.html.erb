@@ -10,7 +10,7 @@
     <%= javascript_include_tag 'application', 'data-turbo-track': 'reload', defer: true %>
   </head>
 
-  <body class='container p-5'>
+  <body class='container-fluid p-5'>
     <% if flash.any? %>
       <div class="flashes">
         <% flash.each do |key, value| %>

@@ -1,6 +1,6 @@
 <h2>Sign up</h2>
 
-<%= form_with(scope: :user, url: registration_path(:user_registration)) do |f| %>
+<%= form_with(scope: :user, url: registration_path(:user_registration), html: { class: 'w-25' }) do |f| %>
   <div class="mb-3">
     <%= f.label :login, class: 'form-label' %><br />
     <%= f.text_field :login, class: 'form-control', autofocus: true %>
