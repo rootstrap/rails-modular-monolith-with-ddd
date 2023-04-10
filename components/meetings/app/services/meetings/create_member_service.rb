@@ -7,7 +7,11 @@ module Meetings
     end
 
     def call
-      member.save!(outbox_event: Meetings::Events::MEMBER_CREATED_SUCCEEDED)
+      unless Flipper.enabled? :break_member_create
+        member.save!(outbox_event: Meetings::Events::MEMBER_CREATED_SUCCEEDED)
+      else
+        raise ActiveRecord::RecordInvalid
+      end
       true
     rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotFound => exception
       Rails.logger.error { exception.message }

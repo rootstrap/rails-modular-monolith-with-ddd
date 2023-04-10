@@ -77,5 +77,32 @@ RSpec.describe Meetings::CreateMemberService do
         subject
       end
     end
+
+    context 'when break FF is enabled' do
+      let(:user_registration) do
+        create(:user_access_user_registration, status_code: :confirmed, confirmed_at: 1.day.ago)
+      end
+
+      before { Flipper.enable(:break_member_create) }
+
+      it 'does not create a new member' do
+        expect { subject }.to_not change(Meetings::Member, :count)
+      end
+
+      it 'creates an outbox record' do
+        expect { subject }.to create_outbox_record(Meetings::Outbox).with_attributes lambda {
+          {
+            'event' => Meetings::Events::MEMBER_CREATED_FAILED,
+            'aggregate' => 'Meetings::Member',
+            'aggregate_identifier' => nil
+          }
+        }
+      end
+
+      it 'logs error' do
+        expect(Rails.logger).to receive(:error)
+        subject
+      end
+    end
   end
 end
