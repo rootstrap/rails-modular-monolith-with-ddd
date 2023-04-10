@@ -10,6 +10,14 @@ module UserAccess
       end
     end
 
+    def enable_break_member_create
+      if Flipper.enabled? :break_member_create
+        Flipper.disable :break_member_create
+      else
+        Flipper.enable :break_member_create
+      end
+    end
+
     private
 
     def user_params

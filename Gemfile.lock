@@ -119,6 +119,12 @@ GEM
     flipper-active_record (0.28.0)
       activerecord (>= 4.2, < 8)
       flipper (~> 0.28.0)
+    flipper-ui (0.28.0)
+      erubi (>= 1.0.0, < 2.0.0)
+      flipper (~> 0.28.0)
+      rack (>= 1.4, < 3)
+      rack-protection (>= 1.5.3, <= 4.0.0)
+      sanitize (< 7)
     globalid (1.0.0)
       activesupport (>= 5.0)
     graphwerk (1.2.1)
@@ -213,6 +219,8 @@ GEM
     rack (2.2.3.1)
     rack-mini-profiler (2.3.4)
       rack (>= 1.2.0)
+    rack-protection (3.0.5)
+      rack
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rails (7.0.3)
@@ -276,6 +284,9 @@ GEM
     rspec-support (3.11.0)
     ruby-graphviz (1.2.5)
       rexml
+    sanitize (6.0.1)
+      crass (~> 1.0.2)
+      nokogiri (>= 1.12.0)
     slop (3.6.0)
     smart_properties (1.17.0)
     sorbet-runtime (0.5.10109)
@@ -328,6 +339,7 @@ DEPENDENCIES
   faker (~> 2.19)
   flipper
   flipper-active_record
+  flipper-ui
   graphwerk (~> 1.2.0)
   jsbundling-rails (~> 1.0.0)
   karafka (~> 2.0)
