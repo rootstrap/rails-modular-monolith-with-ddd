@@ -15,7 +15,7 @@
 #  remember_created_at    :datetime
 #  reset_password_sent_at :datetime
 #  reset_password_token   :string
-#  status_code            :integer          default(0)
+#  status_code            :integer          default("pending")
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #
@@ -27,6 +27,8 @@
 #
 module UserAccess
   class User < ApplicationRecord
+    include TransactionalOutbox::Outboxable
+
     devise :registerable, :database_authenticatable,
            :rememberable, :validatable
 

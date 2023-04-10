@@ -5,8 +5,8 @@ module UserAccess
     EVENTS_MAPPING = {
       UserAccess::Events::NEW_USER_REGISTERED => UserAccess::SendUserConfirmationEmailService,
       UserAccess::Events::USER_REGISTRATION_CONFIRMED => UserAccess::CreateUserService,
-      UserAccess::Events::MEMBER_CREATED_SUCCESS => UserAccess::ActivateUserService,
-      UserAccess::Events::MEMBER_CREATED_FAILURE => UserAccess::RollbackCreateUserService,
+      UserAccess::Events::MEMBER_CREATED_SUCCEEDED => UserAccess::ActivateUserService,
+      UserAccess::Events::MEMBER_CREATED_FAILED => UserAccess::RollbackCreateUserService,
     }
 
     def initialize(payload)

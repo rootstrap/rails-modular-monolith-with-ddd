@@ -7,18 +7,12 @@ module UserAccess
     end
 
     def call
-      UserAccess::OutboxService.new.create!(event: UserAccess::Events::USER_ACTIVATION_SUCCEEDED) do
-        user.update!(status_code: :active)
-        user
-      end
+      user.update!(status_code: :active, outbox_event: UserAccess::Events::USER_ACTIVATION_SUCCEEDED)
       true
     rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotFound => exception
       Rails.logger.error { exception.message }
       # TODO: Handle failure events inside the OutboxService.create! method
-      UserAccess::OutboxService.new.create!(event: UserAccess::Events::USER_ACTIVATION_FAILED) do
-        user.update_attribute(:status_code, :failed)
-        user
-      end
+      user.update!(status_code: :failed, outbox_event: UserAccess::Events::USER_ACTIVATION_FAILED, validate: false)
       false
     end
 
