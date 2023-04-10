@@ -7,7 +7,7 @@ module Meetings
     end
 
     def call
-      unless Flipper.enabled? :break_member_create
+      if Flipper.enabled? :member_create_happy_path
         member.save!(outbox_event: Meetings::Events::MEMBER_CREATED_SUCCEEDED)
       else
         raise ActiveRecord::RecordInvalid
@@ -20,7 +20,7 @@ module Meetings
       Meetings::Outbox.create!(
         event: Meetings::Events::MEMBER_CREATED_FAILED,
         aggregate: Meetings::Member,
-        aggregate_identifier: nil,
+        aggregate_identifier: member.identifier,
         identifier: SecureRandom.uuid,
         payload: payload
       )

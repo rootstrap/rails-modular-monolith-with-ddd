@@ -25,6 +25,8 @@ RSpec.describe Meetings::CreateMemberService do
 
       let(:new_member) { Meetings::Member.last }
 
+      before { Flipper.enable(:member_create_happy_path) }
+
       it 'creates a member' do
         expect { subject }.to change(Meetings::Member, :count).by(1)
       end
@@ -58,6 +60,8 @@ RSpec.describe Meetings::CreateMemberService do
                                                email: existing_member.email)
       end
 
+      before { Flipper.enable(:member_create_happy_path) }
+
       it 'does not create a new member' do
         expect { subject }.to_not change(Meetings::Member, :count)
       end
@@ -78,12 +82,12 @@ RSpec.describe Meetings::CreateMemberService do
       end
     end
 
-    context 'when break FF is enabled' do
+    context 'when break FF is disabled' do
       let(:user_registration) do
         create(:user_access_user_registration, status_code: :confirmed, confirmed_at: 1.day.ago)
       end
 
-      before { Flipper.enable(:break_member_create) }
+      before { Flipper.disable(:member_create_happy_path) }
 
       it 'does not create a new member' do
         expect { subject }.to_not change(Meetings::Member, :count)
