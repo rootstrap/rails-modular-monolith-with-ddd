@@ -52,7 +52,7 @@ module Meetings
     end
 
     def data
-      JSON.parse(payload.dig('payload', 'after', 'payload'))
+      JSON.parse(payload.dig('payload', 'after', 'payload'))['after']
     end
   end
 end
