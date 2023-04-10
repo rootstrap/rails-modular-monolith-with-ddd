@@ -29,7 +29,7 @@ FactoryBot.define do
         source: {
           version: '1.9.4.Final',
           connector: 'postgresql',
-          name: ENV["KAFKA_CONNECT_DB_SERVER_NAME"],
+          name: "#{ENV["KAFKA_CONNECT_DB_SERVER_NAME"]}_user_access",
           ts_ms: 1656622474660,
           snapshot: false,
           db: 'rails_modular_monolith_with_ddd_development',
