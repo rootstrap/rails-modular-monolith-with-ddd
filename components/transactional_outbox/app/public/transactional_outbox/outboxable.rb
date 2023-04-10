@@ -31,7 +31,6 @@ module TransactionalOutbox
     def save(**options, &block)
       if options[:outbox_event].present?
         @outbox_event = options[:outbox_event].underscore.upcase
-        options.except!(:outbox_event)
       end
 
       super(**options, &block)
@@ -40,9 +39,7 @@ module TransactionalOutbox
     def save!(**options, &block)
       if options[:outbox_event].present?
         @outbox_event = options[:outbox_event].underscore.upcase
-        options.except!(:outbox_event)
       end
-
       super(**options, &block)
     end
 

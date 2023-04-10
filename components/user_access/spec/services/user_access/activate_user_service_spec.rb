@@ -32,7 +32,7 @@ RSpec.describe UserAccess::ActivateUserService do
         expect { subject }.to create_outbox_record(UserAccess::Outbox).with_attributes lambda {
           {
             'event' => UserAccess::Events::USER_ACTIVATION_SUCCEEDED,
-            'aggregate' => 'UserAccess::Member',
+            'aggregate' => 'UserAccess::User',
             'aggregate_identifier' => UserAccess::User.last.identifier
           }
         }
@@ -41,8 +41,8 @@ RSpec.describe UserAccess::ActivateUserService do
 
     context 'when user activation fails' do
       before do
-        allow_any_instance_of(UserAccess::User).to receive(:update!).with(status_code: :active, outbox_event: UserAccess::Events::USER_ACTIVATION_SUCCEEDED).and_raise(ActiveRecord::RecordInvalid)
-        allow_any_instance_of(UserAccess::User).to receive(:update!).with(status_code: :failed, outbox_event: UserAccess::Events::USER_ACTIVATION_FAILED, validate: false).and_call_original
+        allow_any_instance_of(UserAccess::User).to receive(:save!).with(outbox_event: UserAccess::Events::USER_ACTIVATION_SUCCEEDED).and_raise(ActiveRecord::RecordInvalid)
+        allow_any_instance_of(UserAccess::User).to receive(:save!).with(outbox_event: UserAccess::Events::USER_ACTIVATION_FAILED, validate: false).and_call_original
       end
 
       it { is_expected.to be false }
@@ -55,7 +55,7 @@ RSpec.describe UserAccess::ActivateUserService do
         expect { subject }.to create_outbox_record(UserAccess::Outbox).with_attributes lambda {
           {
             'event' => UserAccess::Events::USER_ACTIVATION_FAILED,
-            'aggregate' => 'UserAccess::Member',
+            'aggregate' => 'UserAccess::User',
             'aggregate_identifier' => UserAccess::User.last.identifier
           }
         }
