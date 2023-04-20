@@ -2,9 +2,9 @@
 
 Full Modular Monolith Rails application with Domain-Driven Design approach. This is the Rails version of the [.NET application](https://github.com/kgrzybek/modular-monolith-with-ddd).
 
-## Main Transactional Outbox
+## Main Multi DBs Saga
 
-This version of the app extends [main-packwerk](https://github.com/rootstrap/rails-modular-monolith-with-ddd/tree/main-packwerk) to replace `ActiveSupport::Notifications` for [Kafka](https://kafka.apache.org/) for sending and consuming events. This means that events are now processed asynchronously, and a step towards a microservices architecture.
+This version of the app extends [main-multi-dbs](https://github.com/rootstrap/rails-modular-monolith-with-ddd/tree/main-multi-dbs) to implement a Saga coreographed flow example, using all the previously built features like multiple domains with packwerk, one database per domain and transactional outbox.
 
 It implements the [Transactional Outbox pattern](https://microservices.io/patterns/data/transactional-outbox.html) to guarantee delivery of all the events, and makes use of [Kafka Connect](https://docs.confluent.io/platform/current/connect/index.html) to do the log tailing on the DB and pushing the events to `Kafka`.
 

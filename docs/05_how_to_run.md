@@ -29,7 +29,7 @@
 - https://docs.docker.com/compose/install/
 
 #### Build and run images
-- Run `docker-compose up`
+- Run `docker-compose up --build`
 
 ### Troubleshooting Docker
 
