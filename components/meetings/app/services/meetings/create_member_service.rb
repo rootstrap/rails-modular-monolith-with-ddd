@@ -7,14 +7,26 @@ module Meetings
     end
 
     def call
-      member = Member.new(
+      Meetings::OutboxService.new.create!(event: Meetings::Events::MEMBER_CREATED_SUCCESS) do
+        member.save!
+        member
+      end
+      true
+    rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotFound => exception
+      Rails.logger.error { exception.message }
+      Meetings::OutboxService.new.create!(event: Meetings::Events::MEMBER_CREATED_FAILURE) { member }
+      false
+    end
+
+    private
+
+    def member
+      @member ||= Member.new(
         event_payload.slice(
           'identifier', 'login', 'email',
           'first_name', 'last_name', 'name'
         )
       )
-
-      member.save!
     end
   end
 end

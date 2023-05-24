@@ -32,12 +32,30 @@ class KarafkaApp < Karafka::App
     consumer_group :user_access do
       topic "#{ENV["KAFKA_CONNECT_DB_SERVER_NAME"]}.public.user_access_outboxes" do
         consumer UserAccess::BatchBaseConsumer
+
+        dead_letter_queue(
+          topic: 'user_access_dead_messages',
+          max_retries: 2
+        )
+      end
+
+      topic "#{ENV["KAFKA_CONNECT_DB_SERVER_NAME"]}.public.meetings_outboxes" do
+        consumer UserAccess::BatchBaseConsumer
+
+        dead_letter_queue(
+          topic: 'user_access_dead_messages',
+          max_retries: 2
+        )
       end
     end
 
     consumer_group :meetings do
       topic "#{ENV["KAFKA_CONNECT_DB_SERVER_NAME"]}.public.user_access_outboxes" do
         consumer Meetings::BatchBaseConsumer
+        dead_letter_queue(
+          topic: 'meetings_dead_messages',
+          max_retries: 2
+        )
       end
     end
   end

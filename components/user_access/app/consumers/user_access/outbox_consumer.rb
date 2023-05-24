@@ -4,7 +4,9 @@ module UserAccess
   class OutboxConsumer
     EVENTS_MAPPING = {
       UserAccess::Events::NEW_USER_REGISTERED => UserAccess::SendUserConfirmationEmailService,
-      UserAccess::Events::USER_REGISTRATION_CONFIRMED => UserAccess::CreateUserService
+      UserAccess::Events::USER_REGISTRATION_CONFIRMED => UserAccess::CreateUserService,
+      UserAccess::Events::MEMBER_CREATED_SUCCESS => UserAccess::ActivateUserService,
+      UserAccess::Events::MEMBER_CREATED_FAILURE => UserAccess::RollbackCreateUserService,
     }
 
     def initialize(payload)
@@ -13,7 +15,7 @@ module UserAccess
 
     def consume
       if UserAccess::ConsumedMessage.already_processed?(identifier, aggregate)
-        Karafka.logger.info "Already processed event: <identifier: #{identifier}, aggregate: #{aggregate}>"
+        Karafka.logger.info "Already processed event: #{pretty_print_event}"
         return
       elsif EVENTS_MAPPING.keys.include?(event)
         Karafka.logger.info "New [UserAccess::Outbox] event: <identifier: #{identifier}, aggregate: #{aggregate}>"
@@ -30,6 +32,10 @@ module UserAccess
     private
 
     attr_reader :payload
+
+    def pretty_print_event
+      "<identifier: #{identifier}, event: #{event} , aggregate: #{aggregate}>"
+    end
 
     def id
       payload.dig('payload', 'after', 'id')

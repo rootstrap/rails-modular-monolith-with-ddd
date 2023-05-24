@@ -17,6 +17,7 @@ module UserAccess
       user_registration.save!(outbox_event: UserAccess::Events::NEW_USER_REGISTERED)
     rescue ActiveRecord::RecordInvalid => exception
       Rails.logger.error { exception.message }
+      byebug
       false
     end
 
