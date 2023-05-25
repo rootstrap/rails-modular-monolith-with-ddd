@@ -5,8 +5,8 @@ module UserAccess
     EVENTS_MAPPING = {
       UserAccess::Events::NEW_USER_REGISTERED => UserAccess::SendUserConfirmationEmailService,
       UserAccess::Events::USER_REGISTRATION_CONFIRMED => UserAccess::CreateUserService,
-      UserAccess::Events::MEMBER_CREATED_SUCCESS => UserAccess::ActivateUserService,
-      UserAccess::Events::MEMBER_CREATED_FAILURE => UserAccess::RollbackCreateUserService,
+      UserAccess::Events::MEMBER_CREATED_SUCCEEDED => UserAccess::ActivateUserService,
+      UserAccess::Events::MEMBER_CREATED_FAILED => UserAccess::RollbackCreateUserService,
     }
 
     def initialize(payload)
@@ -18,7 +18,7 @@ module UserAccess
         Karafka.logger.info "Already processed event: #{pretty_print_event}"
         return
       elsif EVENTS_MAPPING.keys.include?(event)
-        Karafka.logger.info "New [UserAccess::Outbox] event: <identifier: #{identifier}, aggregate: #{aggregate}>"
+        Karafka.logger.info "New [UserAccess::Outbox] event: #{pretty_print_event}"
         consumed_message = UserAccess::ConsumedMessage.create!(event_id: identifier, aggregate: aggregate, status: :processing)
         begin
           EVENTS_MAPPING[event].new(data).call

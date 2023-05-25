@@ -61,7 +61,7 @@ module Karafka
         def _karafka_produce(payload, metadata = {})
           # TODO: add before for destroy case
           component = JSON.parse(payload)['payload']['after']['event'].split('.').last.downcase
-          topic = "#{ENV["KAFKA_CONNECT_DB_SERVER_NAME"]}.public.#{component}_outboxes"
+          topic = "#{ENV["KAFKA_CONNECT_DB_SERVER_NAME"]}_#{component}.public.#{component}_outboxes"
 
           Karafka.producer.produce_sync(
             {

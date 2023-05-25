@@ -16,7 +16,7 @@ module Meetings
         Karafka.logger.info "Already processed event: #{pretty_print_event}"
         return
       elsif EVENTS_MAPPING.keys.include?(event)
-        Karafka.logger.info "New [Meetings::Outbox] event: <identifier: #{identifier}, aggregate: #{aggregate}>"
+        Karafka.logger.info "New [Meetings::Outbox] event: #{pretty_print_event}"
         consumed_message = Meetings::ConsumedMessage.create!(event_id: identifier, aggregate: aggregate, status: :processing)
         begin
           EVENTS_MAPPING[event].new(data).call
@@ -52,7 +52,7 @@ module Meetings
     end
 
     def data
-      JSON.parse(payload.dig('payload', 'after', 'payload'))
+      JSON.parse(payload.dig('payload', 'after', 'payload'))['after']
     end
   end
 end

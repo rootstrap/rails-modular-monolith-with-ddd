@@ -40,7 +40,6 @@ module TransactionalOutbox
       if options[:outbox_event].present?
         @outbox_event = options[:outbox_event].underscore.upcase
       end
-
       super(**options, &block)
     end
 
@@ -49,7 +48,7 @@ module TransactionalOutbox
     def create_outbox!(action, event_name)
       outbox = self.class.module_parent.const_get('OUTBOX_MODEL').new(
         aggregate: self.class.name,
-        aggregate_identifier: try(:identifier) || id,
+        aggregate_identifier: try(:identifier) || id || nil,
         event: @outbox_event || event_name,
         identifier: SecureRandom.uuid,
         payload: payload(action)

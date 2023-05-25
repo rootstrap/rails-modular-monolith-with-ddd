@@ -29,18 +29,20 @@ RSpec.describe UserAccess::ActivateUserService do
       end
 
       it 'creates an outbox record' do
-        expect { subject }.to change(UserAccess::Outbox, :count).by(1)
-        outbox = UserAccess::Outbox.last
-        expect(outbox.event).to eq(UserAccess::Events::USER_ACTIVATION_SUCCEEDED)
-        expect(outbox.aggregate).to eq('UserAccess::User')
-        expect(outbox.aggregate_identifier).to eq(user.identifier)
+        expect { subject }.to create_outbox_record(UserAccess::Outbox).with_attributes lambda {
+          {
+            'event' => UserAccess::Events::USER_ACTIVATION_SUCCEEDED,
+            'aggregate' => 'UserAccess::User',
+            'aggregate_identifier' => UserAccess::User.last.identifier
+          }
+        }
       end
     end
 
     context 'when user activation fails' do
       before do
-        allow_any_instance_of(UserAccess::User).to receive(:update!).with(status_code: :active).and_raise(ActiveRecord::RecordInvalid)
-        allow_any_instance_of(UserAccess::User).to receive(:update!).with(status_code: :failed).and_call_original
+        allow_any_instance_of(UserAccess::User).to receive(:save!).with(outbox_event: UserAccess::Events::USER_ACTIVATION_SUCCEEDED).and_raise(ActiveRecord::RecordInvalid)
+        allow_any_instance_of(UserAccess::User).to receive(:save!).with(outbox_event: UserAccess::Events::USER_ACTIVATION_FAILED, validate: false).and_call_original
       end
 
       it { is_expected.to be false }
@@ -50,11 +52,13 @@ RSpec.describe UserAccess::ActivateUserService do
       end
 
       it 'creates an outbox record' do
-        expect { subject }.to change(UserAccess::Outbox, :count).by(1)
-        outbox = UserAccess::Outbox.last
-        expect(outbox.event).to eq(UserAccess::Events::USER_ACTIVATION_FAILED)
-        expect(outbox.aggregate).to eq('UserAccess::User')
-        expect(outbox.aggregate_identifier).to eq(user.identifier)
+        expect { subject }.to create_outbox_record(UserAccess::Outbox).with_attributes lambda {
+          {
+            'event' => UserAccess::Events::USER_ACTIVATION_FAILED,
+            'aggregate' => 'UserAccess::User',
+            'aggregate_identifier' => UserAccess::User.last.identifier
+          }
+        }
       end
     end
   end

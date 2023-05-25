@@ -44,7 +44,7 @@ RSpec.describe Meetings::CreateMemberService do
         expect { subject }.to change(Meetings::Outbox, :count).by(1)
         member = Meetings::Member.last
         outbox = Meetings::Outbox.last
-        expect(outbox.event).to eq(Meetings::Events::MEMBER_CREATED_SUCCESS)
+        expect(outbox.event).to eq(Meetings::Events::MEMBER_CREATED_SUCCEEDED)
         expect(outbox.aggregate).to eq('Meetings::Member')
         expect(outbox.aggregate_identifier).to eq(member.identifier)
       end
@@ -61,8 +61,14 @@ RSpec.describe Meetings::CreateMemberService do
         expect { subject }.to_not change(Meetings::Member, :count)
       end
 
-      it 'does not create an outbox record' do
-        expect { subject }.to_not change(Meetings::Outbox, :count)
+      it 'creates an outbox record' do
+        expect { subject }.to create_outbox_record(Meetings::Outbox).with_attributes lambda {
+          {
+            'event' => Meetings::Events::MEMBER_CREATED_FAILED,
+            'aggregate' => 'Meetings::Member',
+            'aggregate_identifier' => user_registration.identifier
+          }
+        }
       end
 
       it 'logs error' do

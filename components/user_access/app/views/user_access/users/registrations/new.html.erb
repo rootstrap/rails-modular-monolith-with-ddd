@@ -1,42 +1,41 @@
 <h2>Sign up</h2>
 
-<%= form_with(scope: :user, url: registration_path(:user_registration)) do |f| %>
-  <div class="field">
-    <%= f.label :login %><br />
-    <%= f.text_field :login, autofocus: true %>
+<%= form_with(scope: :user, url: registration_path(:user_registration), html: { class: 'w-25' }) do |f| %>
+  <div class="mb-3">
+    <%= f.label :login, class: 'form-label' %><br />
+    <%= f.text_field :login, class: 'form-control', autofocus: true %>
   </div>
 
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autocomplete: "email" %>
+  <div class="mb-3">
+    <%= f.label :email, class: 'form-label' %><br />
+    <%= f.email_field :email, class: 'form-control', autocomplete: "email" %>
   </div>
 
-  <div class="field">
-    <%= f.label :first_name %><br />
-    <%= f.text_field :first_name %>
+  <div class="mb-3">
+    <%= f.label :first_name, class: 'form-label' %><br />
+    <%= f.text_field :first_name, class: 'form-control' %>
   </div>
 
-  <div class="field">
-    <%= f.label :last_name %><br />
-    <%= f.text_field :last_name %>
+  <div class="mb-3">
+    <%= f.label :last_name, class: 'form-label' %><br />
+    <%= f.text_field :last_name, class: 'form-control' %>
   </div>
 
-  <div class="field">
-    <%= f.label :password %>
+  <div class="mb-3">
+    <%= f.label :password, class: 'form-label' %>
     <% if @minimum_password_length %>
     <em>(<%= @minimum_password_length %> characters minimum)</em>
     <% end %><br />
-    <%= f.password_field :password, autocomplete: "new-password" %>
+    <%= f.password_field :password, class: 'form-control', autocomplete: "new-password" %>
   </div>
 
-  <div class="field">
-    <%= f.label :password_confirmation %><br />
-    <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
+  <div class="mb-3">
+    <%= f.label :password_confirmation, class: 'form-label' %><br />
+    <%= f.password_field :password_confirmation, class: 'form-control', autocomplete: "new-password" %>
   </div>
 
   <div class="actions">
-    <%= f.submit "Sign up" %>
+    <%= f.submit "Sign up", class: 'btn btn-primary' %>
   </div>
 <% end %>
-
 <%= render "user_access/users/shared/links" %>
