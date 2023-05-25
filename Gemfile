@@ -29,9 +29,6 @@ gem 'bootsnap', '>= 1.4.4', require: false
 gem 'devise', '~> 4.8'
 
 gem 'karafka', '~> 2.0'
-gem 'flipper'
-gem 'flipper-active_record'
-gem 'flipper-ui'
 
 group :development, :test do
   gem 'byebug', '~> 11.1.3'

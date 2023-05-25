@@ -7,11 +7,7 @@ module Meetings
     end
 
     def call
-      if Flipper.enabled? :member_create_happy_path
-        member.save!(outbox_event: Meetings::Events::MEMBER_CREATED_SUCCEEDED)
-      else
-        raise ActiveRecord::RecordInvalid
-      end
+      member.save!(outbox_event: Meetings::Events::MEMBER_CREATED_SUCCEEDED)
       true
     rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotFound => exception
       Rails.logger.error { exception.message }

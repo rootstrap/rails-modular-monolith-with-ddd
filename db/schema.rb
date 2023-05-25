@@ -14,22 +14,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_10_184746) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "flipper_features", force: :cascade do |t|
-    t.string "key", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["key"], name: "index_flipper_features_on_key", unique: true
-  end
-
-  create_table "flipper_gates", force: :cascade do |t|
-    t.string "feature_key", null: false
-    t.string "key", null: false
-    t.string "value"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["feature_key", "key", "value"], name: "index_flipper_gates_on_feature_key_and_key_and_value", unique: true
-  end
-
   create_table "transactional_outbox_outboxes", force: :cascade do |t|
     t.string "aggregate", null: false
     t.string "aggregate_identifier", null: false
@@ -39,6 +23,17 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_10_184746) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["identifier"], name: "index_transactional_outbox_outboxes_on_identifier"
+  end
+
+  create_table "meetings_outboxes", force: :cascade do |t|
+    t.uuid "identifier", null: false
+    t.string "event", null: false
+    t.jsonb "payload"
+    t.string "aggregate", null: false
+    t.uuid "aggregate_identifier", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["identifier"], name: "index_meetings_outboxes_on_identifier", unique: true
   end
 
   create_table "user_access_consumed_messages", force: :cascade do |t|

@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-  mount Flipper::UI.app(Flipper) => '/flipper'
   draw(:user_access)
 
   authenticated do

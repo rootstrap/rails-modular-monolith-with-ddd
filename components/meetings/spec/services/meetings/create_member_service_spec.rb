@@ -25,8 +25,6 @@ RSpec.describe Meetings::CreateMemberService do
 
       let(:new_member) { Meetings::Member.last }
 
-      before { Flipper.enable(:member_create_happy_path) }
-
       it 'creates a member' do
         expect { subject }.to change(Meetings::Member, :count).by(1)
       end
@@ -43,13 +41,12 @@ RSpec.describe Meetings::CreateMemberService do
       end
 
       it 'creates an outbox record' do
-        expect { subject }.to create_outbox_record(Meetings::Outbox).with_attributes lambda {
-          {
-            'event' => Meetings::Events::MEMBER_CREATED_SUCCEEDED,
-            'aggregate' => 'Meetings::Member',
-            'aggregate_identifier' => Meetings::Member.last.identifier
-          }
-        }
+        expect { subject }.to change(Meetings::Outbox, :count).by(1)
+        member = Meetings::Member.last
+        outbox = Meetings::Outbox.last
+        expect(outbox.event).to eq(Meetings::Events::MEMBER_CREATED_SUCCEEDED)
+        expect(outbox.aggregate).to eq('Meetings::Member')
+        expect(outbox.aggregate_identifier).to eq(member.identifier)
       end
     end
 
@@ -60,8 +57,6 @@ RSpec.describe Meetings::CreateMemberService do
                                                email: existing_member.email)
       end
 
-      before { Flipper.enable(:member_create_happy_path) }
-
       it 'does not create a new member' do
         expect { subject }.to_not change(Meetings::Member, :count)
       end
@@ -71,34 +66,7 @@ RSpec.describe Meetings::CreateMemberService do
           {
             'event' => Meetings::Events::MEMBER_CREATED_FAILED,
             'aggregate' => 'Meetings::Member',
-            'aggregate_identifier' => nil
-          }
-        }
-      end
-
-      it 'logs error' do
-        expect(Rails.logger).to receive(:error)
-        subject
-      end
-    end
-
-    context 'when break FF is disabled' do
-      let(:user_registration) do
-        create(:user_access_user_registration, status_code: :confirmed, confirmed_at: 1.day.ago)
-      end
-
-      before { Flipper.disable(:member_create_happy_path) }
-
-      it 'does not create a new member' do
-        expect { subject }.to_not change(Meetings::Member, :count)
-      end
-
-      it 'creates an outbox record' do
-        expect { subject }.to create_outbox_record(Meetings::Outbox).with_attributes lambda {
-          {
-            'event' => Meetings::Events::MEMBER_CREATED_FAILED,
-            'aggregate' => 'Meetings::Member',
-            'aggregate_identifier' => nil
+            'aggregate_identifier' => user_registration.identifier
           }
         }
       end
