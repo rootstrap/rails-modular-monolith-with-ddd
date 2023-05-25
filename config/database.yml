@@ -25,8 +25,14 @@ default: &default
   password: <%= ENV.fetch('PG_PASSWORD', nil) %>
 
 development:
-  <<: *default
-  database: <%= ENV.fetch('DB_NAME', 'rails_modular_monolith_with_ddd') %>_development
+  user_access:
+    <<: *default
+    database: user_access_development
+    migrations_paths: db/user_access_migrate
+  meetings:
+    <<: *default
+    database: meetings_development
+    migrations_paths: db/meetings_migrate
 
   # The specified database role being used to connect to postgres.
   # To create additional roles in postgres see `$ createuser --help`.
@@ -59,8 +65,14 @@ development:
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
 test:
-  <<: *default
-  database: <%= ENV.fetch('DB_NAME', 'rails_modular_monolith_with_ddd') %>_test
+  user_access:
+    <<: *default
+    database: user_access_test
+    migrations_paths: db/user_access_migrate
+  meetings:
+    <<: *default
+    database: meetings_test
+    migrations_paths: db/meetings_migrate
 
 # As with config/credentials.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
@@ -83,7 +95,11 @@ test:
 # for a full overview on how database connection configuration can be specified.
 #
 production:
-  <<: *default
-  database: <%= ENV.fetch('DB_NAME', 'rails_modular_monolith_with_ddd') %>_production
-  username: rails_modular_monolith_with_ddd
-  password: <%= ENV['RAILS_MODULAR_MONOLITH_WITH_DDD_DATABASE_PASSWORD'] %>
+  user_access:
+    <<: *default
+    url: <%= ENV['USER_ACCESS_DATABASE_URL'] %>
+    migrations_paths: db/user_access_migrate
+  meetings:
+    <<: *default
+    url: <%= ENV['MEETINGS_DATABASE_URL'] %>
+    migrations_paths: db/meetings_migrate

@@ -9,5 +9,6 @@ FactoryBot.define do
     proposal_date { Time.current }
     status_code { :in_verification }
     proposal_user_id { nil }
+    identifier { SecureRandom.uuid }
   end
 end

@@ -34,12 +34,13 @@ RSpec.describe UserAccess::UserRegistrationService do
     end
 
     it 'creates an outbox record' do
-      expect { subject }.to change(UserAccess::Outbox, :count).by(1)
-      user_registration = UserAccess::UserRegistration.last
-      outbox = UserAccess::Outbox.last
-      expect(outbox.event).to eq(UserAccess::Events::NEW_USER_REGISTERED)
-      expect(outbox.aggregate).to eq('UserAccess::UserRegistration')
-      expect(outbox.aggregate_identifier).to eq(user_registration.identifier)
+      expect { subject }.to create_outbox_record(UserAccess::Outbox).with_attributes lambda {
+        {
+          'event' => UserAccess::Events::NEW_USER_REGISTERED,
+          'aggregate' => 'UserAccess::UserRegistration',
+          'aggregate_identifier' => UserAccess::UserRegistration.last.identifier
+        }
+      }
     end
 
     context 'when the password and password confirmation do not match' do
@@ -50,7 +51,7 @@ RSpec.describe UserAccess::UserRegistrationService do
       end
 
       it 'does not create an outbox record' do
-        expect { subject }.to_not change(UserAccess::Outbox, :count)
+        expect { subject }.to_not create_outbox_record(UserAccess::Outbox)
       end
     end
   end

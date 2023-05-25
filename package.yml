@@ -19,4 +19,5 @@ enforce_privacy: false
 # Note that packages in this list require their own `package.yml` file
 dependencies:
 - 'components/meetings'
+- 'components/transactional_outbox'
 - 'components/user_access'

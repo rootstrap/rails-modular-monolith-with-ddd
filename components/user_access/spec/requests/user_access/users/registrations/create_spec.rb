@@ -3,14 +3,6 @@
 require 'rails_helper'
 
 RSpec.describe 'POST /users' do
-  subject(:consumer) do
-    Support::KarafkaConsumerMock.build(
-      UserAccess::BatchBaseConsumer.new,
-      "#{ENV["KAFKA_CONNECT_DB_SERVER_NAME"]}.public.user_access_outboxes",
-      _karafka_consumer_client
-    )
-  end
-
   let(:request) do
     post user_registration_registration_path, params: params
   end
@@ -34,7 +26,11 @@ RSpec.describe 'POST /users' do
     end
 
     it 'creates an outbox record' do
-      expect { request }.to change(UserAccess::Outbox, :count).by(1)
+      expect { request }.to create_outbox_record(UserAccess::Outbox).with_attributes(
+        'event' => UserAccess::Events::NEW_USER_REGISTERED
+      ).and create_outbox_record(UserAccess::Outbox).with_attributes(
+        'event' => UserAccess::Events::USER_REGISTRATION_UPDATED
+      )
     end
 
     it 'enqueues the confirmation email' do

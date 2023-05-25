@@ -27,6 +27,8 @@
 #
 module UserAccess
   class User < ApplicationRecord
+    include TransactionalOutbox::Outboxable
+
     devise :registerable, :database_authenticatable,
            :rememberable, :validatable
 

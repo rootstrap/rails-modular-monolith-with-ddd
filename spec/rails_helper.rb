@@ -9,6 +9,9 @@ require 'rspec/rails'
 require 'karafka/testing/rspec/helpers'
 require 'support/kafka_connect_mock'
 require 'support/karafka_consumer_mock'
+require 'super_diff/rspec-rails'
+require 'support/karafka_consumer_helpers'
+require 'support/karafka_test_helper'
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -23,7 +26,8 @@ require 'support/karafka_consumer_mock'
 # directory. Alternatively, in the individual `*_spec.rb` files, manually
 # require only the support files necessary.
 #
-# Dir[Rails.root.join('spec', 'support', '**', '*.rb')].sort.each { |f| require f }
+
+Dir[Rails.root.join('components', '*', 'spec', 'support', '**', '*.rb')].sort.each { |f| require f }
 
 # Checks for pending migrations and applies them before tests are run.
 # If you are not using ActiveRecord, you can remove these lines.
@@ -69,15 +73,23 @@ RSpec.configure do |config|
   config.include ActiveSupport::Testing::TimeHelpers
   config.include Devise::Test::IntegrationHelpers
   config.include Karafka::Testing::RSpec::Helpers
+  config.include OutboxableTestHelpers
 
   FactoryBot.definition_file_paths = Dir.glob('components/*/spec/factories')
   FactoryBot.find_definitions
 
+  config.include_context 'Karafka consumer helpers', type: :request
+
   config.before type: :request do
-    allow(UserAccess::Outbox).to receive(:create!).and_wrap_original do |m, *args|
-      outbox_message = m.call(*args)
-      karafka.produce(Support::KafkaConnectMock.wrap_message(outbox_message))
-      consumer.consume
+    TransactionalOutbox.configuration.outbox_mapping.each_value do |outbox_klass|
+      outbox_klass = outbox_klass.constantize
+      allow_any_instance_of(outbox_klass).to receive(:save!).and_wrap_original do |m, *args|
+        result = m.call(*args)
+        return unless result
+        outbox_message = outbox_klass.last
+        karafka.produce(Support::KafkaConnectMock.wrap_message(outbox_message))
+        consumers.each { |consumer| consumer.consume } # TODO: which consumer?
+      end
     end
   end
 end

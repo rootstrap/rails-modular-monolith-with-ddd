@@ -30,7 +30,7 @@ class KarafkaApp < Karafka::App
     active_job_topic :default
 
     consumer_group :user_access do
-      topic "#{ENV["KAFKA_CONNECT_DB_SERVER_NAME"]}.public.user_access_outboxes" do
+      topic "#{ENV["KAFKA_CONNECT_DB_SERVER_NAME"]}_user_access.public.user_access_outboxes" do
         consumer UserAccess::BatchBaseConsumer
 
         dead_letter_queue(
@@ -39,7 +39,7 @@ class KarafkaApp < Karafka::App
         )
       end
 
-      topic "#{ENV["KAFKA_CONNECT_DB_SERVER_NAME"]}.public.meetings_outboxes" do
+      topic "#{ENV["KAFKA_CONNECT_DB_SERVER_NAME"]}_meetings.public.meetings_outboxes" do
         consumer UserAccess::BatchBaseConsumer
 
         dead_letter_queue(
@@ -50,7 +50,7 @@ class KarafkaApp < Karafka::App
     end
 
     consumer_group :meetings do
-      topic "#{ENV["KAFKA_CONNECT_DB_SERVER_NAME"]}.public.user_access_outboxes" do
+      topic "#{ENV["KAFKA_CONNECT_DB_SERVER_NAME"]}_user_access.public.user_access_outboxes" do
         consumer Meetings::BatchBaseConsumer
         dead_letter_queue(
           topic: 'meetings_dead_messages',

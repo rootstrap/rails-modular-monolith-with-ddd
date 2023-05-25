@@ -17,8 +17,13 @@ module Meetings
         return
       elsif EVENTS_MAPPING.keys.include?(event)
         Karafka.logger.info "New [Meetings::Outbox] event: #{pretty_print_event}"
-        EVENTS_MAPPING[event].new(data).call
-        Meetings::ConsumedMessage.create!(event_id: identifier, aggregate: aggregate)
+        consumed_message = Meetings::ConsumedMessage.create!(event_id: identifier, aggregate: aggregate, status: :processing)
+        begin
+          EVENTS_MAPPING[event].new(data).call
+          consumed_message.update!(status: :succeeded)
+        rescue
+          consumed_message.update!(status: :failed)
+        end
       end
     end
 
@@ -47,7 +52,7 @@ module Meetings
     end
 
     def data
-      JSON.parse(payload.dig('payload', 'after', 'payload'))
+      JSON.parse(payload.dig('payload', 'after', 'payload'))['after']
     end
   end
 end

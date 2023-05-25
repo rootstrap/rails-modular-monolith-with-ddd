@@ -11,16 +11,7 @@ module Meetings
     end
 
     def call
-      valid = meeting_group_proposal.save
-
-      if valid
-        ActiveSupport::Notifications.instrument(
-          Meetings::Events::MEETING_GROUP_PROPOSED,
-          meeting_group_proposed_domain_event_payload
-        )
-      end
-
-      valid
+      meeting_group_proposal.save!(outbox_event: Meetings::Events::MEETING_GROUP_PROPOSED)
     end
 
     private
@@ -33,7 +24,8 @@ module Meetings
         name: name,
         proposal_date: Time.current,
         status_code: :in_verification,
-        proposal_user_id: member.id
+        proposal_user_id: member.id,
+        identifier: SecureRandom.uuid
       )
     end
 

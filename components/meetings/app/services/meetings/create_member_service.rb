@@ -7,14 +7,19 @@ module Meetings
     end
 
     def call
-      Meetings::OutboxService.new.create!(event: Meetings::Events::MEMBER_CREATED_SUCCESS) do
-        member.save!
-        member
-      end
+      member.save!(outbox_event: Meetings::Events::MEMBER_CREATED_SUCCEEDED)
       true
     rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotFound => exception
       Rails.logger.error { exception.message }
-      Meetings::OutboxService.new.create!(event: Meetings::Events::MEMBER_CREATED_FAILURE) { member }
+      payload = { before: nil, after: nil }
+      payload[:after] = member.as_json
+      Meetings::Outbox.create!(
+        event: Meetings::Events::MEMBER_CREATED_FAILED,
+        aggregate: Meetings::Member,
+        aggregate_identifier: member.identifier,
+        identifier: SecureRandom.uuid,
+        payload: payload
+      )
       false
     end
 

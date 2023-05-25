@@ -4,6 +4,7 @@
 #
 #  id                    :bigint           not null, primary key
 #  description           :text
+#  identifier            :uuid             not null
 #  location_city         :string           not null
 #  location_country_code :string           not null
 #  name                  :string           not null
@@ -23,6 +24,8 @@
 #
 module Meetings
   class MeetingGroupProposal < ApplicationRecord
+    include TransactionalOutbox::Outboxable
+
     enum status_code: {
       in_verification: 0,
       accepted: 1

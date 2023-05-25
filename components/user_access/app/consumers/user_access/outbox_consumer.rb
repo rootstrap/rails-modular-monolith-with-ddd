@@ -5,8 +5,8 @@ module UserAccess
     EVENTS_MAPPING = {
       UserAccess::Events::NEW_USER_REGISTERED => UserAccess::SendUserConfirmationEmailService,
       UserAccess::Events::USER_REGISTRATION_CONFIRMED => UserAccess::CreateUserService,
-      UserAccess::Events::MEMBER_CREATED_SUCCESS => UserAccess::ActivateUserService,
-      UserAccess::Events::MEMBER_CREATED_FAILURE => UserAccess::RollbackCreateUserService,
+      UserAccess::Events::MEMBER_CREATED_SUCCEEDED => UserAccess::ActivateUserService,
+      UserAccess::Events::MEMBER_CREATED_FAILED => UserAccess::RollbackCreateUserService,
     }
 
     def initialize(payload)
@@ -19,8 +19,13 @@ module UserAccess
         return
       elsif EVENTS_MAPPING.keys.include?(event)
         Karafka.logger.info "New [UserAccess::Outbox] event: #{pretty_print_event}"
-        EVENTS_MAPPING[event].new(data).call
-        UserAccess::ConsumedMessage.create!(event_id: identifier, aggregate: aggregate)
+        consumed_message = UserAccess::ConsumedMessage.create!(event_id: identifier, aggregate: aggregate, status: :processing)
+        begin
+          EVENTS_MAPPING[event].new(data).call
+          consumed_message.update!(status: :succeeded)
+        rescue
+          consumed_message.update!(status: :failed)
+        end
       end
     end
 
@@ -49,7 +54,7 @@ module UserAccess
     end
 
     def data
-      JSON.parse(payload.dig('payload', 'after', 'payload'))
+      JSON.parse(payload.dig('payload', 'after', 'payload'))['after']
     end
   end
 end

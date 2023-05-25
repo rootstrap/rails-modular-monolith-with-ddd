@@ -87,8 +87,9 @@ services:
       - KAFKA_CONNECT=connect:8083
       - SETUP_KAFKA_CONNECTOR=true
     restart: on-failure
+    profiles: ["web_only"]
     ports:
-      - 3000:3000
+      - ${RAILS_PORT-3000}:3000
     volumes:
       - .:/app/src
     depends_on:

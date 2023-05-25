@@ -1,14 +1,14 @@
 module UserAccess
   module Events
     # Event triggered when a user registers in the app
-    NEW_USER_REGISTERED = 'new_user_registered_domain_event.user_access'
+    NEW_USER_REGISTERED = 'NEW_USER_REGISTERED.USER_ACCESS'
     # Event triggered when a user confirms their email
-    USER_REGISTRATION_CONFIRMED = 'user_registration_confirmed_domain_event.user_access'
+    USER_REGISTRATION_CONFIRMED = 'USER_REGISTRATION_CONFIRMED.USER_ACCESS'
     # Event triggered when a member is created sucessfully
-    MEMBER_CREATED_SUCCESS = 'member_created_success.meetings'
+    MEMBER_CREATED_SUCCEEDED = 'MEMBER_CREATED_SUCCEEDED.MEETINGS'
     # Event triggered when a member fails to be created
-    MEMBER_CREATED_FAILURE = 'member_created_failure.meetings'
-    USER_ACTIVATION_SUCCEEDED = 'user_activation_succeeded.user_access'
-    USER_ACTIVATION_FAILED = 'user_activation_failed.user_access'
+    MEMBER_CREATED_FAILED = 'MEMBER_CREATED_FAILED.MEETINGS'
+    USER_ACTIVATION_SUCCEEDED = 'USER_ACTIVATION_SUCCEEDED.USER_ACCESS'
+    USER_ACTIVATION_FAILED = 'USER_ACTIVATION_FAILED.USER_ACCESS'
   end
 end
