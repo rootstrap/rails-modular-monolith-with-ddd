@@ -23,3 +23,11 @@ It implements the [Transactional Outbox pattern](https://microservices.io/patter
 `Kafka` is used through the [Karafka gem](https://github.com/karafka/karafka) which simplifies its usage.
 
 The app and all the required services are dockerized to make it easy to work with.
+
+### [main-multi-dbs](https://github.com/rootstrap/rails-modular-monolith-with-ddd/tree/main-multi-dbs)
+
+This version of the app extends `main-transactional-outbox` and splits the single database into multiple databases, one per domain. To achieve this, it uses [Rails Multi DB support](https://guides.rubyonrails.org/active_record_multiple_databases.html)
+
+### [main-saga](https://github.com/rootstrap/rails-modular-monolith-with-ddd/tree/main-saga)
+
+This version of the app extends `main-multi-dbs` and implements the [Saga pattern](https://microservices.io/patterns/data/saga.html) to coordinate a transaction across the multiple DBs. It uses a Choreography-based Saga so that each local transaction publishes domain events that trigger local transactions in other domains.
