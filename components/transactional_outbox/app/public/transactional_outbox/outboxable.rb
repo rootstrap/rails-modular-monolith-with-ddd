@@ -7,12 +7,6 @@ module TransactionalOutbox
       *namespace, klass = name.underscore.upcase.split('/')
       namespace = namespace.reverse.join('.')
 
-      unless module_parent.const_defined?('OUTBOX_MODEL')
-        outbox_model_name = TransactionalOutbox.configuration.outbox_mapping[module_parent.name]
-        outbox_model = outbox_model_name&.safe_constantize || TransactionalOutbox::Outbox
-        module_parent.const_set('OUTBOX_MODEL', outbox_model)
-      end
-
       module_parent.const_set('Events', Module.new) unless module_parent.const_defined?('Events')
 
       { create: 'CREATED', update: 'UPDATED', destroy: 'DESTROYED' }.each do |key, value|
@@ -46,6 +40,14 @@ module TransactionalOutbox
     private
 
     def create_outbox!(action, event_name)
+      unless self.class.module_parent.const_defined?('OUTBOX_MODEL')
+        *namespace, klass = name.underscore.upcase.split('/')
+        namespace = namespace.reverse.join('.')
+        outbox_model_name = TransactionalOutbox.configuration.outbox_mapping[self.class.module_parent.name]
+        outbox_model = outbox_model_name&.safe_constantize || TransactionalOutbox::Outbox
+        self.class.module_parent.const_set('OUTBOX_MODEL', outbox_model)
+      end
+
       outbox = self.class.module_parent.const_get('OUTBOX_MODEL').new(
         aggregate: self.class.name,
         aggregate_identifier: try(:identifier) || id || nil,
