@@ -10,6 +10,7 @@ class KarafkaApp < Karafka::App
     config.concurrency = 2
     config.max_wait_time = 500 # 0.5 second
     config.logger.level = :info
+    config.strict_topics_namespacing = false
     # Recreate consumers with each batch. This will allow Rails code reload to work in the
     # development mode. Otherwise Karafka process would not be aware of code changes
     config.consumer_persistence = !Rails.env.development?

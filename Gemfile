@@ -28,7 +28,7 @@ gem 'bootsnap', '>= 1.4.4', require: false
 # Authentication
 gem 'devise', '~> 4.8'
 
-gem 'karafka', '~> 2.0'
+gem 'karafka', '~> 2.1'
 
 group :development, :test do
   gem 'byebug', '~> 11.1.3'
